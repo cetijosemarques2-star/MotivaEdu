@@ -1,399 +1,282 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MotivaEdu</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>MotivaEdu Advanced</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<style>
+    <style>
+        /* Reset e Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
+        body {
+            background: #f5f7ff;
+        }
 
-body{
-background:#f5f7ff;
-color:#333;
-}
+        /* Cabeçalho com Degradê */
+        header {
+            background: linear-gradient(135deg, #6C63FF, #4F8CFF);
+            color: #fff;
+            padding: 24px;
+            border-radius: 0 0 24px 24px;
+        }
 
-header{
-background:linear-gradient(135deg,#6C63FF,#4F8CFF);
-color:white;
-padding:25px;
-border-radius:0 0 30px 30px;
-}
+        .container {
+            padding: 18px;
+            padding-bottom: 90px;
+        }
 
-.profile{
-display:flex;
-align-items:center;
-gap:15px;
-}
+        /* Cartões e Componentes */
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 16px;
+            margin: 12px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,.08);
+        }
 
-.avatar{
-width:65px;
-height:65px;
-border-radius:50%;
-background:white;
-color:#6C63FF;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:28px;
-font-weight:bold;
-}
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #fff;
+            color: #6C63FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-.level{
-margin-top:15px;
-}
+        .profile {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
 
-.progress{
-height:12px;
-background:rgba(255,255,255,.3);
-border-radius:30px;
-overflow:hidden;
-margin-top:10px;
-}
+        /* Barra de Progresso (XP) */
+        .bar {
+            height: 12px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
 
-.progress-bar{
-height:100%;
-width:65%;
-background:white;
-}
+        .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6C63FF, #4F8CFF);
+            width: 35%;
+            transition: .4s;
+        }
 
-.container{
-padding:20px;
-padding-bottom:100px;
-}
+        /* Controle de Seções */
+        .section {
+            display: none;
+        }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-margin-top:20px;
-}
+        .active {
+            display: block;
+        }
 
-.card{
-background:white;
-padding:20px;
-border-radius:20px;
-box-shadow:0 5px 15px rgba(0,0,0,.08);
-text-align:center;
-}
+        /* Navegação Inferior */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 12px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -4px 10px rgba(0,0,0,.1);
+        }
 
-.card i{
-font-size:28px;
-color:#6C63FF;
-margin-bottom:10px;
-}
+        .nav button, .btn {
+            border: none;
+            background: #6C63FF;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
 
-.section{
-display:none;
-}
+        .rank {
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 10px;
+            margin: 6px 0;
+        }
 
-.section.active{
-display:block;
-}
+        .badge {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #ece8ff;
+            border-radius: 999px;
+            margin: 4px;
+        }
 
-.challenge{
-background:white;
-padding:15px;
-margin-bottom:12px;
-border-radius:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 3px 10px rgba(0,0,0,.05);
-}
+        .mural-item {
+            padding: 10px;
+            border-left: 4px solid #6C63FF;
+            background: #fafafa;
+            margin: 8px 0;
+        }
 
-.btn{
-background:#6C63FF;
-color:white;
-border:none;
-padding:8px 15px;
-border-radius:10px;
-cursor:pointer;
-}
+        /* Animação de entrada */
+        .fade {
+            animation: fade .5s;
+        }
 
-.ranking-item{
-background:white;
-padding:15px;
-margin-bottom:10px;
-border-radius:15px;
-}
-
-.podium{
-display:flex;
-justify-content:center;
-align-items:flex-end;
-gap:10px;
-margin:20px 0;
-}
-
-.place{
-background:#6C63FF;
-color:white;
-width:80px;
-text-align:center;
-border-radius:15px 15px 0 0;
-padding-top:10px;
-}
-
-.second{height:120px;}
-.first{height:160px;}
-.third{height:90px;}
-
-.badges{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-}
-
-.badge{
-background:white;
-padding:20px;
-text-align:center;
-border-radius:15px;
-box-shadow:0 3px 10px rgba(0,0,0,.05);
-}
-
-.badge i{
-font-size:35px;
-color:gold;
-}
-
-.bottom-nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:white;
-display:flex;
-justify-content:space-around;
-padding:15px;
-box-shadow:0 -5px 15px rgba(0,0,0,.1);
-}
-
-.bottom-nav button{
-background:none;
-border:none;
-font-size:22px;
-color:#777;
-cursor:pointer;
-}
-
-.bottom-nav button.active{
-color:#6C63FF;
-}
-
-</style>
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: none; }
+        }
+    </style>
 </head>
 <body>
 
 <header>
-
-<div class="profile">
-
-<div class="avatar">
-GA
-</div>
-
-<div>
-<h2>Gusttavo Alves</h2>
-<p>2º Ano • Nível Prata</p>
-</div>
-
-</div>
-
-<div class="level">
-XP: 250 / 500
-<div class="progress">
-<div class="progress-bar"></div>
-</div>
-</div>
-
+    <div class="profile">
+        <div class="avatar">GA</div>
+        <div>
+            <h2 id="studentName">Gusttavo Alves</h2>
+            <p id="levelText">Prata</p>
+        </div>
+    </div>
+    <div class="bar"><div id="fill" class="fill"></div></div>
+    <p id="xpText">250 XP</p>
 </header>
 
 <div class="container">
 
-<!-- HOME -->
-<div class="section active" id="home">
+    <div id="home" class="section active fade">
+        <div class="card">
+            <h3>Perfil</h3>
+            <p>Turma: 2º Ano</p>
+            <p>Frequência: 95%</p>
+        </div>
+        <div class="card">
+            <h3>Conquistas</h3>
+            <span class="badge">Aluno Destaque</span>
+            <span class="badge">Projeto Escolar</span>
+        </div>
+    </div>
 
-<h2>Seu desempenho</h2>
+    <div id="ranking" class="section fade">
+        <div class="card">
+            <h3>🏆 Ranking</h3>
+            <div class="rank">1º Ana Clara - 520 XP</div>
+            <div class="rank">2º Lucas - 430 XP</div>
+            <div class="rank">3º Gusttavo - 250 XP</div>
+        </div>
+    </div>
 
-<div class="cards">
+    <div id="mural" class="section fade">
+        <div class="card">
+            <h3>📢 Mural</h3>
+            <div class="mural-item">Feira de Ciências na próxima semana.</div>
+            <div class="mural-item">Turma destaque: 2º Ano B.</div>
+            <div class="mural-item">Inscrições abertas para olimpíadas.</div>
+        </div>
+    </div>
 
-<div class="card">
-<i class="fas fa-star"></i>
-<h3>250 XP</h3>
-<p>Pontuação</p>
-</div>
-
-<div class="card">
-<i class="fas fa-trophy"></i>
-<h3>3º</h3>
-<p>Ranking</p>
-</div>
-
-<div class="card">
-<i class="fas fa-medal"></i>
-<h3>8</h3>
-<p>Conquistas</p>
-</div>
-
-<div class="card">
-<i class="fas fa-calendar-check"></i>
-<h3>95%</h3>
-<p>Frequência</p>
-</div>
-
-</div>
-
-</div>
-
-<!-- DESAFIOS -->
-<div class="section" id="desafios">
-
-<h2>🔥 Desafios da Semana</h2>
-
-<div class="challenge">
-Participar da aula
-<button class="btn" onclick="ganharXP(10)">+10 XP</button>
-</div>
-
-<div class="challenge">
-Entregar atividade
-<button class="btn" onclick="ganharXP(20)">+20 XP</button>
-</div>
-
-<div class="challenge">
-Projeto escolar
-<button class="btn" onclick="ganharXP(30)">+30 XP</button>
-</div>
+    <div id="cert" class="section fade">
+        <div class="card">
+            <h3>📄 Certificado</h3>
+            <p>Gerar certificado com QR Code.</p>
+            <button class="btn" onclick="gerarCertificado()">Baixar PDF</button>
+            <div id="qr" style="margin-top:10px"></div>
+        </div>
+    </div>
 
 </div>
 
-<!-- RANKING -->
-<div class="section" id="ranking">
-
-<h2>🏆 Ranking</h2>
-
-<div class="podium">
-<div class="place second">2º</div>
-<div class="place first">1º</div>
-<div class="place third">3º</div>
-</div>
-
-<div class="ranking-item">Ana Clara - 520 XP</div>
-<div class="ranking-item">Lucas - 430 XP</div>
-<div class="ranking-item">Gusttavo - 250 XP</div>
-
-</div>
-
-<!-- CONQUISTAS -->
-<div class="section" id="conquistas">
-
-<h2>🏅 Conquistas</h2>
-
-<div class="badges">
-
-<div class="badge">
-<i class="fas fa-award"></i>
-<p>100 XP</p>
-</div>
-
-<div class="badge">
-<i class="fas fa-book"></i>
-<p>Aluno Leitor</p>
-</div>
-
-<div class="badge">
-<i class="fas fa-rocket"></i>
-<p>Projeto Escolar</p>
-</div>
-
-<div class="badge">
-<i class="fas fa-crown"></i>
-<p>Destaque</p>
-</div>
-
-</div>
-
-</div>
-
-<!-- PERFIL -->
-<div class="section" id="perfil">
-
-<h2>👤 Perfil</h2>
-
-<div class="card">
-<h3>Gusttavo Alves</h3>
-<p>Turma: 2º Ano</p>
-<p>XP Total: 250</p>
-<p>Nível: Prata</p>
-<p>Frequência: 95%</p>
-</div>
-
-</div>
-
-</div>
-
-<div class="bottom-nav">
-
-<button class="active" onclick="mostrar('home',this)">
-<i class="fas fa-house"></i>
-</button>
-
-<button onclick="mostrar('desafios',this)">
-<i class="fas fa-fire"></i>
-</button>
-
-<button onclick="mostrar('ranking',this)">
-<i class="fas fa-trophy"></i>
-</button>
-
-<button onclick="mostrar('conquistas',this)">
-<i class="fas fa-medal"></i>
-</button>
-
-<button onclick="mostrar('perfil',this)">
-<i class="fas fa-user"></i>
-</button>
-
+<div class="nav">
+    <button onclick="show('home')">Home</button>
+    <button onclick="show('ranking')">Ranking</button>
+    <button onclick="show('mural')">Mural</button>
+    <button onclick="show('cert')">Cert.</button>
 </div>
 
 <script>
+    let xp = 250;
 
-function mostrar(id,botao){
+    // Função para alternar entre as abas
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
 
-document.querySelectorAll(".section").forEach(sec=>{
-sec.classList.remove("active");
-});
+    // Lógica de Nível baseada em XP
+    function updateLevel() {
+        let level = 'Bronze';
+        if(xp >= 250) level = 'Prata';
+        if(xp >= 500) level = 'Ouro';
+        if(xp >= 1000) level = 'Diamante';
 
-document.getElementById(id).classList.add("active");
+        document.getElementById('levelText').innerText = level;
+        document.getElementById('xpText').innerText = xp + ' XP';
+        document.getElementById('fill').style.width = Math.min(xp / 10, 100) + '%';
+    }
+    
+    updateLevel();
 
-document.querySelectorAll(".bottom-nav button").forEach(btn=>{
-btn.classList.remove("active");
-});
+    // Inicializa o QR Code
+    new QRCode(document.getElementById("qr"), {
+        text: "MotivaEdu-Certificado-Gusttavo",
+        width: 120,
+        height: 120
+    });
 
-botao.classList.add("active");
-}
+    // Função para Gerar o PDF
+    async function gerarCertificado() {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape');
 
-let xp=250;
+        // Fundo e bordas
+        pdf.setFillColor(108, 99, 255);
+        pdf.rect(0, 0, 297, 210, 'F');
+        pdf.setFillColor(255, 255, 255);
+        pdf.roundedRect(10, 10, 277, 190, 6, 6, 'F');
 
-function ganharXP(valor){
+        // Textos do Certificado
+        pdf.setTextColor(40, 40, 80);
+        pdf.setFontSize(28);
+        pdf.text('CERTIFICADO DE CONQUISTA', 148, 40, { align: 'center' });
 
-xp+=valor;
+        pdf.setFontSize(20);
+        pdf.text('MotivaEdu', 148, 60, { align: 'center' });
 
-alert("Parabéns! Você ganhou "+valor+" XP!");
+        pdf.setFontSize(24);
+        pdf.text('Gusttavo Alves', 148, 95, { align: 'center' });
 
-}
+        pdf.setFontSize(14);
+        pdf.text('Participacao exemplar nas atividades escolares.', 148, 120, { align: 'center' });
+        pdf.text('Nivel: ' + document.getElementById('levelText').innerText, 148, 135, { align: 'center' });
 
+        // Rodapé
+        pdf.text('Data: ' + new Date().toLocaleDateString('pt-BR'), 20, 180);
+        pdf.text('Coordenacao Pedagogica', 80, 180);
+        pdf.text('Direcao Escolar', 210, 180);
+
+        pdf.save('Certificado_MotivaEdu.pdf');
+    
+
+    "
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    */
 </script>
-
 </body>
-  </html>
+</html>
