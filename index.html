@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu v6.2 — Pro Edition</title>
+    <title>MotivaEdu v6.3 — Performance & Streak</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -13,198 +13,117 @@
             --azul-escuro: #1E3A8A;
             --azul-claro: #3B82F6;
             --ouro: #FBBF24;
+            --fogo: #FF4500;
             --branco: #FFFFFF;
             --cinza-fundo: #F3F4F6;
             --texto: #1F2937;
-            --perigo: #EF4444;
-            --sucesso: #22C55E;
             --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: 0.2s; }
-        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 90px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 100px; }
 
-        /* --- HEADER --- */
-        header { 
-            background: var(--azul-escuro); 
-            color: var(--branco); 
-            padding: 30px 20px; 
-            border-radius: 0 0 30px 30px; 
-            box-shadow: var(--card-shadow);
-            position: sticky; top: 0; z-index: 900;
-        }
-        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo { font-size: 22px; font-weight: bold; border-left: 4px solid var(--ouro); padding-left: 10px; }
-        
-        .profile-card { display: flex; align-items: center; gap: 15px; }
-        .avatar-container { position: relative; }
-        .avatar { 
-            width: 65px; height: 65px; border-radius: 50%; 
-            border: 3px solid var(--azul-claro); background: #fff; 
-            display: flex; align-items: center; justify-content: center; font-size: 30px; 
-        }
-        .level-tag { 
-            position: absolute; bottom: -5px; right: -5px; 
-            background: var(--ouro); color: var(--azul-escuro); 
-            font-size: 11px; font-weight: bold; padding: 2px 7px; 
-            border-radius: 10px; border: 2px solid var(--azul-escuro); 
-        }
+        /* --- HEADER & STREAK --- */
+        header { background: var(--azul-escuro); color: white; padding: 25px 20px; border-radius: 0 0 30px 30px; position: sticky; top: 0; z-index: 1000; }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .streak-container { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-weight: bold; color: var(--ouro); }
+        .streak-off { filter: grayscale(1); opacity: 0.5; }
 
-        .xp-group { margin-top: 15px; }
-        .xp-bar-bg { background: rgba(255,255,255,0.2); height: 10px; border-radius: 10px; overflow: hidden; }
-        #xp-bar-fill { background: var(--ouro); height: 100%; width: 0%; box-shadow: 0 0 10px var(--ouro); }
+        .xp-bar-bg { background: rgba(255,255,255,0.2); height: 8px; border-radius: 10px; margin-top: 15px; }
+        #xp-bar-fill { background: var(--ouro); height: 100%; width: 0%; border-radius: 10px; transition: 1s; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .stat-box { background: rgba(255,255,255,0.1); padding: 8px; border-radius: 15px; text-align: center; font-size: 12px; font-weight: 600; }
-
-        /* --- CONTEÚDO --- */
+        /* --- CARDS --- */
         .container { padding: 20px; max-width: 600px; margin: auto; }
         .section { display: none; }
-        .active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--branco); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--card-shadow); border: 1px solid #e5e7eb; }
+        .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: var(--card-shadow); border: 1px solid #eee; }
+        .mission-row { display: flex; justify-content: space-between; align-items: center; }
         
-        /* --- MURAL & INTERAÇÃO --- */
-        .mural-card { border-left: 6px solid var(--azul-claro); }
-        .tag-mural { color: var(--azul-claro); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .reactions { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-react { background: #f3f4f6; border: none; padding: 7px 12px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
-        .btn-react.clicked { background: var(--ouro); color: var(--azul-escuro); }
+        .btn-acao { background: var(--azul-claro); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-acao:disabled { background: #ccc; }
 
-        /* --- MISSÕES --- */
-        .mission-item { display: flex; justify-content: space-between; align-items: center; }
-        .urgente { border-left: 6px solid var(--perigo); background: linear-gradient(to right, #fff, #fff8f8); }
-        .badge-timer { color: var(--perigo); font-size: 10px; font-weight: 800; display: block; margin-bottom: 4px; }
+        /* --- BADGES (NOVA ABA) --- */
+        .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .badge-item { text-align: center; padding: 15px; background: #f8fafc; border-radius: 15px; border: 2px border: 2px dashed #cbd5e1; }
+        .badge-unlocked { border: 2px solid var(--ouro); background: white; }
 
-        .btn-acao { background: var(--azul-claro); color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
-        .btn-acao:active { transform: scale(0.95); }
+        /* --- NAV --- */
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
+        .nav-item { text-align: center; color: #94A3B8; cursor: pointer; font-size: 10px; font-weight: bold; }
+        .nav-item.active { color: var(--azul-claro); }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 3px; }
 
-        /* --- RANKING --- */
-        .podium { display: flex; justify-content: space-around; align-items: flex-end; padding: 20px 0 30px; }
-        .podium-item { text-align: center; width: 30%; font-weight: bold; }
-        .step { border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--azul-escuro); }
-        .p1 { background: var(--ouro); height: 90px; font-size: 35px; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); }
-        .p2 { background: #CBD5E1; height: 65px; }
-        .p3 { background: #94A3B8; height: 45px; }
-
-        /* --- NAVBAR --- */
-        nav { position: fixed; bottom: 0; width: 100%; background: var(--branco); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #e5e7eb; z-index: 1000; }
-        .nav-link { text-align: center; color: #94A3B8; cursor: pointer; flex: 1; text-decoration: none; }
-        .nav-link.active { color: var(--azul-claro); }
-        .nav-link i { display: block; font-size: 22px; margin-bottom: 3px; }
-        .nav-link span { font-size: 10px; font-weight: 600; }
-
-        /* --- LOGIN --- */
-        #login-overlay { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: #fff; padding: 35px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
-        .login-input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #F3F4F6; border-radius: 15px; outline: none; font-size: 16px; }
+        #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 380px; text-align: center; }
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
-<div id="login-overlay">
-    <div class="login-card">
-        <h2 style="color:var(--azul-escuro); font-size: 28px;">MotivaEdu <span style="color:var(--azul-claro)">v6.2</span></h2>
-        <p style="color:#6B7280; font-size: 14px; margin-bottom: 25px;">Transformando esforço em conquistas.</p>
-        <input type="text" id="log-nome" class="login-input" placeholder="Nome do Aluno">
-        <select id="log-turma" class="login-input">
-            <option value="9º Ano A">9º Ano A</option>
-            <option value="1º Médio A">1º Médio A</option>
-            <option value="2º Médio B">2º Médio B</option>
+<div id="login-screen">
+    <div class="login-box">
+        <h2>🚀 MotivaEdu</h2>
+        <p style="font-size:12px; color:#666; margin-bottom:15px">Acesse sua conta escolar</p>
+        <input type="text" id="log-nome" placeholder="Seu Nome">
+        <select id="log-turma">
+            <option value="1º Ano A">1º Ano A</option> <option value="1º Ano B">1º Ano B</option>
+            <option value="2º Ano A">2º Ano A</option> <option value="2º Ano B">2º Ano B</option>
+            <option value="3º Ano A">3º Ano A</option> <option value="3º Ano B">3º Ano B</option>
         </select>
-        <button class="btn-acao" style="width:100%; padding:18px; margin-top:10px" onclick="entrar()">Acessar Plataforma</button>
+        <button class="btn-acao" style="width:100%; margin-top:10px" onclick="entrar()">Entrar</button>
     </div>
 </div>
 
-<header id="app-header" style="display:none">
+<header id="h-app" style="display:none">
     <div class="nav-top">
-        <div class="logo">MotivaEdu</div>
-        <div style="font-size: 20px;">🔔</div>
-    </div>
-    <div class="profile-card">
-        <div class="avatar-container">
-            <div class="avatar">👤</div>
-            <div class="level-tag" id="u-lvl">1</div>
-        </div>
-        <div style="flex:1">
-            <h3 id="u-nome-disp">Aluno</h3>
-            <p id="u-turma-disp" style="font-size:12px; opacity:0.8">Turma</p>
+        <span id="disp-nome" style="font-weight:bold">Aluno</span>
+        <div id="streak-fogo" class="streak-container streak-off">
+            🔥 <span id="u-streak">0</span>
         </div>
     </div>
-    <div class="xp-group">
-        <div class="xp-bar-bg"><div id="xp-bar-fill"></div></div>
-    </div>
-    <div class="stats-grid">
-        <div class="stat-box">🔥 <span id="u-streak">1</span> Dias</div>
-        <div class="stat-box">⭐ <span id="u-coins">0</span> EduCoins</div>
-        <div class="stat-box">🎯 <span id="u-xp">0</span> XP</div>
+    <div style="font-size:12px; opacity:0.8">Progresso do Nível <span id="u-lvl">1</span></div>
+    <div class="xp-bar-bg"><div id="xp-bar-fill"></div></div>
+    <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px">
+        <span>⭐ <span id="u-coins">0</span> EduCoins</span>
+        <span>🎯 <span id="u-xp">0</span> XP</span>
     </div>
 </header>
 
-<div class="container" id="app-content" style="display:none">
+<div class="container" id="c-app" style="display:none">
     
-    <div id="tab-home" class="section active">
-        <div class="card mural-card">
-            <span class="tag-mural">📢 Mural da Escola</span>
-            <p style="margin-top: 8px; font-size: 15px; line-height: 1.4;">Preparem-se! A <b>Temporada de Inverno</b> começou. Missões de biblioteca valem o dobro de XP esta semana! ❄️📚</p>
-            <div class="reactions">
-                <button class="btn-react" onclick="reagir(this)">👏 32</button>
-                <button class="btn-react" onclick="reagir(this)">🔥 18</button>
-                <button class="btn-react" onclick="reagir(this)">🚀 12</button>
-            </div>
-        </div>
-
-        <h3 style="margin: 25px 0 15px;">Missões Disponíveis</h3>
-        <div id="feed-missoes"></div>
+    <div id="tab-missoes" class="section active">
+        <h3>🎯 Missões do Dia</h3>
+        <div id="lista-missoes" style="margin-top:10px"></div>
     </div>
 
-    <div id="tab-rank" class="section">
-        <h3>🏆 Hall da Fama</h3>
-        <div class="podium">
-            <div class="podium-item">
-                <div id="r-nome2" style="font-size: 11px; margin-bottom: 5px;">...</div>
-                <div class="step p2">🥈</div>
-            </div>
-            <div class="podium-item">
-                <div id="r-nome1" style="font-size: 13px; font-weight: 800; margin-bottom: 5px;">...</div>
-                <div class="step p1">🥇</div>
-            </div>
-            <div class="podium-item">
-                <div id="r-nome3" style="font-size: 11px; margin-bottom: 5px;">...</div>
-                <div class="step p3">🥉</div>
-            </div>
+    <div id="tab-conquistas" class="section">
+        <h3>🏅 Suas Medalhas</h3>
+        <div class="badge-grid" style="margin-top:15px">
+            <div class="badge-item badge-unlocked">🏆<br><b>Primeiro Passo</b><br><small>Entrou no App</small></div>
+            <div class="badge-item" id="badge-streak">🔥<br><b>Em Chamas</b><br><small>3 dias seguidos</small></div>
+            <div class="badge-item">📚<br><b>Cientista</b><br><small>10 lições feitas</small></div>
+            <div class="badge-item">🤝<br><b>Monitor</b><br><small>Ajudou um colega</small></div>
         </div>
-        <div id="ranking-lista-full"></div>
     </div>
 
-    <div id="tab-shop" class="section">
-        <h3>🎁 Recompensas</h3>
-        <div class="card">
-            <div class="mission-item" style="padding: 10px 0; border-bottom: 1px solid #eee;">
-                <div><b>Certificado de Honra</b><br><small>50 EduCoins</small></div>
-                <button class="btn-acao" onclick="comprar(50)">Resgatar</button>
-            </div>
-            <div class="mission-item" style="padding: 10px 0;">
-                <div><b>Passe Livre Intervalo</b><br><small>120 EduCoins</small></div>
-                <button class="btn-acao" onclick="comprar(120)">Resgatar</button>
-            </div>
-        </div>
+    <div id="tab-ranking" class="section">
+        <h3>🏆 Top Alunos</h3>
+        <div id="rank-lista" style="margin-top:15px"></div>
     </div>
 
     <div id="tab-prof" class="section">
-        <h3>👨‍🏫 Painel do Mestre</h3>
-        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Aprove as solicitações para liberar o XP.</p>
-        <div id="prof-aprovacoes"></div>
+        <h3>👨‍🏫 Validações</h3>
+        <div id="prof-lista"></div>
     </div>
 </div>
 
-<nav id="app-nav" style="display:none">
-    <div class="nav-link active" onclick="navegar('tab-home', this)"><i>🎯</i><span>Início</span></div>
-    <div class="nav-link" onclick="navegar('tab-rank', this)"><i>🏆</i><span>Ranking</span></div>
-    <div class="nav-link" onclick="navegar('tab-shop', this)"><i>🎁</i><span>Loja</span></div>
-    <div class="nav-link" onclick="acessoMestre()"><i>👨‍🏫</i><span>Mestre</span></div>
+<nav id="n-app" style="display:none">
+    <div class="nav-item active" onclick="aba('tab-missoes', this)"><i>🎯</i><span>Missões</span></div>
+    <div class="nav-item" onclick="aba('tab-conquistas', this)"><i>🏅</i><span>Medalhas</span></div>
+    <div class="nav-item" onclick="aba('tab-ranking', this)"><i>🏆</i><span>Ranking</span></div>
+    <div class="nav-item" onclick="verificarMestre()"><i>👨‍🏫</i><span>Mestre</span></div>
 </nav>
 
 <script type="module">
@@ -223,137 +142,135 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let user = null;
+    let u = null;
 
-    const missoesTemplate = [
-        { t: "Participação em Aula", xp: 20, c: 5, urg: false },
-        { t: "Desafio de Matemática", xp: 100, c: 25, urg: true },
-        { t: "Tarefa de Casa Completa", xp: 30, c: 10, urg: false }
+    const missoesDisp = [
+        { t: "Chegar no horário", xp: 10, c: 2 },
+        { t: "Participar da aula", xp: 20, c: 5 },
+        { t: "Lição de Casa", xp: 30, c: 10 },
+        { t: "Ajudar o Professor", xp: 40, c: 15 },
+        { t: "Organizar a sala", xp: 15, c: 5 },
+        { t: "Desafio Extra", xp: 100, c: 20 }
     ];
 
     window.entrar = async () => {
         const nome = document.getElementById('log-nome').value.trim();
         const turma = document.getElementById('log-turma').value;
-        if(!nome) return alert("Por favor, digite seu nome.");
+        if(!nome) return alert("Nome vazio!");
 
         const id = nome.toLowerCase().replace(/\s/g, '_');
-        const uRef = ref(db, 'v62_users/' + id);
+        const uRef = ref(db, 'v63_users/' + id);
         const snap = await get(uRef);
 
-        if(snap.exists()) {
-            user = snap.val();
-        } else {
-            user = { nome, turma, xp: 0, coins: 0, streak: 1, id };
-            await set(uRef, user);
+        if(snap.exists()) u = snap.val();
+        else {
+            u = { id, nome, turma, xp: 0, coins: 0, streak: 0, lastDate: "" };
+            await set(uRef, u);
         }
 
-        document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('app-header').style.display = 'block';
-        document.getElementById('app-content').style.display = 'block';
-        document.getElementById('app-nav').style.display = 'flex';
+        document.getElementById('login-screen').style.display = 'none';
+        ['h-app','c-app','n-app'].forEach(id => document.getElementById(id).style.display = 'block');
         
-        iniciarFluxo();
+        // Notificação de Boas-vindas
+        if (Notification.permission === "granted") {
+            new Notification("MotivaEdu", { body: `Olá ${u.nome}! Suas missões esperam por você.` });
+        } else {
+            Notification.requestPermission();
+        }
+
+        iniciarApp();
     };
 
-    function iniciarFluxo() {
-        onValue(ref(db, 'v62_users/' + user.id), snap => {
+    function iniciarApp() {
+        onValue(ref(db, 'v63_users/' + u.id), snap => {
             const d = snap.val();
-            document.getElementById('u-nome-disp').innerText = d.nome;
-            document.getElementById('u-turma-disp').innerText = d.turma;
+            document.getElementById('disp-nome').innerText = d.nome + " (" + d.turma + ")";
             document.getElementById('u-xp').innerText = d.xp;
             document.getElementById('u-coins').innerText = d.coins || 0;
-            document.getElementById('u-streak').innerText = d.streak || 1;
+            document.getElementById('u-lvl').innerText = Math.floor(d.xp / 500) + 1;
+            document.getElementById('xp-bar-fill').style.width = (d.xp % 500 / 5) + "%";
             
-            const lvl = Math.floor(d.xp / 500) + 1;
-            document.getElementById('u-lvl').innerText = lvl;
-            document.getElementById('xp-bar-fill').style.width = ((d.xp % 500) / 500 * 100) + "%";
+            // Lógica do Foguinho (Streak)
+            document.getElementById('u-streak').innerText = d.streak || 0;
+            if(d.streak > 0) document.getElementById('streak-fogo').classList.remove('streak-off');
+            if(d.streak >= 3) document.getElementById('badge-streak').classList.add('badge-unlocked');
         });
 
-        renderFeed();
-        syncRank();
-        syncAprovacoes();
-    }
-
-    function renderFeed() {
-        document.getElementById('feed-missoes').innerHTML = missoesTemplate.map(m => `
-            <div class="card ${m.urg ? 'urgente' : ''}">
-                <div class="mission-item">
-                    <div>
-                        ${m.urg ? '<span class="badge-timer">⏱️ EXPIRA EM 4H</span>' : ''}
-                        <b>${m.t}</b><br>
-                        <small style="color:#666">+${m.xp} XP | +${m.c} Coins</small>
-                    </div>
-                    <button class="btn-acao" onclick="pedirAprovacao('${m.t}', ${m.xp}, ${m.c}, this)">Concluir</button>
-                </div>
+        document.getElementById('lista-missoes').innerHTML = missoesDisp.map(m => `
+            <div class="card mission-row">
+                <div><b>${m.t}</b><br><small>+${m.xp} XP</small></div>
+                <button class="btn-acao" onclick="pedir('${m.t}', ${m.xp}, ${m.c}, this)">Fiz!</button>
             </div>
         `).join('');
+
+        syncRanking();
+        syncMestre();
     }
 
-    window.pedirAprovacao = (task, xp, coins, btn) => {
-        push(ref(db, 'v62_pedidos'), { aluno: user.nome, uid: user.id, task, xp, coins, turma: user.turma });
+    window.pedir = (t, xp, c, btn) => {
+        push(ref(db, 'v63_pedidos'), { uid: u.id, nome: u.nome, t, xp, c });
         btn.innerText = "⏳"; btn.disabled = true;
     };
 
-    function syncAprovacoes() {
-        onValue(ref(db, 'v62_pedidos'), snap => {
+    function syncMestre() {
+        onValue(ref(db, 'v63_pedidos'), snap => {
             const data = snap.val();
-            let html = "";
-            for(let key in data) {
-                html += `
-                <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding: 15px;">
-                    <div style="font-size: 13px;"><b>${data[key].aluno}</b> (${data[key].turma})<br>${data[key].task}</div>
-                    <button class="btn-acao" style="background:var(--sucesso)" onclick="validarPedido('${key}', '${data[key].uid}', ${data[key].xp}, ${data[key].coins})">✔</button>
+            let h = "";
+            for(let k in data) {
+                h += `<div class="card mission-row">
+                    <div><b>${data[k].nome}</b><br>${data[k].t}</div>
+                    <button class="btn-acao" onclick="aprovar('${k}','${data[k].uid}',${data[k].xp},${data[k].c})">✔</button>
                 </div>`;
             }
-            document.getElementById('prof-aprovacoes').innerHTML = html || "Sem pendências no momento.";
+            document.getElementById('prof-lista').innerHTML = h || "Tudo limpo!";
         });
     }
 
-    window.validarPedido = async (key, uid, xp, coins) => {
-        const uRef = ref(db, 'v62_users/' + uid);
+    window.aprovar = async (key, uid, xp, c) => {
+        const uRef = ref(db, 'v63_users/' + uid);
         const s = await get(uRef);
-        const cur = s.val();
-        await update(uRef, { xp: cur.xp + xp, coins: (cur.coins || 0) + coins });
-        await remove(ref(db, 'v62_pedidos/' + key));
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
+        const user = s.val();
+
+        // Lógica de Atualizar Streak ao Aprovar primeira missão do dia
+        const hoje = new Date().toLocaleDateString();
+        let novoStreak = user.streak || 0;
+        if(user.lastDate !== hoje) {
+            novoStreak++;
+        }
+
+        await update(uRef, { 
+            xp: user.xp + xp, 
+            coins: (user.coins || 0) + c,
+            streak: novoStreak,
+            lastDate: hoje
+        });
+        await remove(ref(db, 'v63_pedidos/' + key));
+        confetti();
     };
 
-    function syncRank() {
-        onValue(ref(db, 'v62_users'), snap => {
-            const users = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
-            if(users[0]) document.getElementById('r-nome1').innerText = users[0].nome.split(' ')[0];
-            if(users[1]) document.getElementById('r-nome2').innerText = users[1].nome.split(' ')[0];
-            if(users[2]) document.getElementById('r-nome3').innerText = users[2].nome.split(' ')[0];
-            
-            document.getElementById('ranking-lista-full').innerHTML = users.map((u, i) => `
-                <div class="card" style="display:flex; justify-content:space-between; padding: 12px 20px;">
-                    <span><b>${i+1}º</b> ${u.nome}</span>
-                    <strong style="color:var(--azul-claro)">${u.xp} XP</strong>
+    function syncRanking() {
+        onValue(ref(db, 'v63_users'), snap => {
+            const list = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
+            document.getElementById('rank-lista').innerHTML = list.map((u,i) => `
+                <div class="card mission-row">
+                    <span>${i+1}º ${u.nome}</span>
+                    <b>${u.xp} XP</b>
                 </div>
             `).join('');
         });
     }
 
-    window.reagir = (btn) => {
-        btn.classList.toggle('clicked');
-        let val = parseInt(btn.innerText.split(' ')[1]);
-        btn.innerText = btn.innerText.split(' ')[0] + " " + (btn.classList.contains('clicked') ? val + 1 : val - 1);
-    };
-
-    window.navegar = (id, el) => {
+    window.aba = (id, el) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     };
 
-    window.acessoMestre = () => {
-        if(prompt("Código de Acesso do Mestre:") === "1234") {
-            navegar('tab-prof', document.querySelectorAll('.nav-link')[3]);
-        }
+    window.verificarMestre = () => {
+        if(prompt("PIN:") === "1234") aba('tab-prof', document.querySelectorAll('.nav-item')[3]);
     };
 
-    window.comprar = (c) => alert("Solicitação enviada ao Mestre! Prepare o EduCoins.");
 </script>
 </body>
 </html>
