@@ -3,52 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - EdTech Edition</title>
+    <title>MotivaEdu Pro - Dashboard Edition</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root {
-            --primary: #6C63FF;
-            --secondary: #4F8CFF;
-            --bg: #f5f7ff;
-            --card-bg: #ffffff;
-            --text: #333;
-            --accent: #FFD700;
-        }
-
-        /* Estilo para Modo Escuro */
-        body.dark-mode {
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #e0e0e0;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; --accent: #FFD700; }
+        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e0e0e0; }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: var(--text); transition: 0.3s; }
         
-        header { 
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
-            color: #fff; padding: 25px; border-radius: 0 0 30px 30px; 
-        }
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; position: relative; }
+        .container { padding: 20px; padding-bottom: 100px; max-width: 800px; margin: auto; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
 
-        .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: auto; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; shadow: 0 10px 20px rgba(0,0,0,0.05); }
-
-        /* IME Indicator */
         .ime-badge { background: var(--accent); color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; z-index: 100; }
+        .nav-btn { cursor: pointer; font-size: 20px; filter: grayscale(1); transition: 0.3s; }
+        .nav-btn.active-icon { filter: grayscale(0); transform: scale(1.2); }
 
-        /* Missões */
-        .mission-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
-        .mission-item button { background: var(--primary); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-
-        .nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
         .section { display: none; }
-        .active { display: block; animation: slideUp 0.4s; }
+        .active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .dark-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; }
+        .btn { border: none; background: var(--primary); color: white; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
+        .mission-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .dark-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -58,99 +42,132 @@
     <div style="display:flex; align-items:center; gap:15px">
         <div style="width:60px; height:60px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-weight:bold; font-size:24px">GA</div>
         <div>
-            <h2>Gusttavo Alves</h2>
-            <span class="ime-badge">IME: 87/100 • Motivação Alta</span>
+            <h2 id="userName">Carregando...</h2>
+            <span class="ime-badge">IME: <span id="imeVal">87</span>/100</span>
         </div>
     </div>
-    <p id="xpDisplay" style="margin-top:15px; font-weight:bold">XP: 250</p>
+    <div style="margin-top:15px">
+        <p>Progresso do Nível: <span id="xpText">0</span> XP</p>
+        <div style="height:8px; background:rgba(255,255,255,0.3); border-radius:10px; margin-top:5px">
+            <div id="xpBar" style="height:100%; background:#fff; width:0%; border-radius:10px; transition: 0.5s"></div>
+        </div>
+    </div>
 </header>
 
 <div class="container">
     <div id="home" class="section active">
-        <h3>🎯 Missões Diárias</h3>
+        <h3>🎯 Missões do Dia</h3>
         <div class="card">
-            <div class="mission-item">
-                <span>Entrar no app (+5 XP)</span>
-                <button onclick="addXP(5, this)">Check-in</button>
-            </div>
-            <div class="mission-item">
-                <span>Entregar atividade (+20 XP)</span>
-                <button onclick="addXP(20, this)">Enviar</button>
-            </div>
+            <div class="mission-item"><span>Check-in Diário (+5 XP)</span><button class="btn" style="width:auto" onclick="addXP(5, this)">Fazer</button></div>
+            <div class="mission-item"><span>Tarefa de Casa (+20 XP)</span><button class="btn" style="width:auto" onclick="addXP(20, this)">Enviar</button></div>
         </div>
-        
-        <h3>📈 Insights do Assistente</h3>
-        <div class="card" style="border-left: 5px solid var(--accent)">
-            <p id="assistantMsg">"Você está a apenas 30 XP do próximo nível! Vamos lá?"</p>
-        </div>
+        <h3>📈 Sua Evolução</h3>
+        <div class="card"><canvas id="chartEvolucao"></canvas></div>
     </div>
 
-    <div id="rank" class="section">
-        <h3>🏆 Ranking Global</h3>
+    <div id="teacher" class="section">
+        <h3>👨‍🏫 Painel de Gestão (Professor)</h3>
         <div class="card">
-            <p>1º Ana Clara - 520 XP</p>
-            <p><strong>3º Gusttavo - <span class="currentXP">250</span> XP</strong></p>
+            <p><strong>Turma:</strong> 2º Ano B</p>
+            <p><strong>Média IME da Turma:</strong> 74/100</p>
+            <div style="margin-top:15px">
+                <button class="btn" style="background:var(--secondary); margin-bottom:10px" onclick="createChallenge()">🚀 Criar Desafio Global</button>
+                <button class="btn" style="background:#4caf50" onclick="alert('Relatório exportado para o e-mail da coordenação!')">📊 Gerar Relatório PDF</button>
+            </div>
         </div>
     </div>
 
     <div id="cert" class="section">
         <div class="card" style="text-align:center">
-            <h3>📜 Validação de Conquista</h3>
-            <div id="qrcode" style="margin: 20px auto; display: inline-block;"></div>
-            <button onclick="gerarPDF()" style="width:100%; padding:15px; background:var(--secondary); color:#fff; border:none; border-radius:10px">Baixar Certificado Verificável</button>
+            <h3>📜 Certificado Verificável</h3>
+            <p>Disponível para nível Prata ou superior.</p>
+            <div id="qrcode" style="margin:20px 0"></div>
+            <button class="btn" onclick="gerarCertificado()">Baixar com Validação Digital</button>
         </div>
     </div>
 </div>
 
 <nav class="nav">
-    <div onclick="show('home')">🏠</div>
-    <div onclick="show('rank')">🏆</div>
-    <div onclick="show('cert')">📜</div>
+    <div class="nav-btn active-icon" onclick="show('home', this)">🏠</div>
+    <div class="nav-btn" onclick="show('teacher', this)">👨‍🏫</div>
+    <div class="nav-btn" onclick="show('cert', this)">📜</div>
 </nav>
 
 <script>
-    let xp = 250;
+    // Inicialização de dados persistentes
+    let xp = parseInt(localStorage.getItem('motiva_xp')) || 250;
+    let nome = "Gusttavo Alves";
 
-    function show(id) {
+    function updateUI() {
+        document.getElementById('userName').innerText = nome;
+        document.getElementById('xpText').innerText = xp;
+        document.getElementById('xpBar').style.width = Math.min(xp/10, 100) + '%';
+        localStorage.setItem('motiva_xp', xp);
+    }
+
+    function show(id, btn) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-icon'));
         document.getElementById(id).classList.add('active');
+        btn.classList.add('active-icon');
+        if(id === 'home') renderChart(); // Recarrega gráfico ao abrir
     }
 
     function addXP(val, btn) {
         xp += val;
-        document.getElementById('xpDisplay').innerText = `XP: ${xp}`;
-        document.querySelectorAll('.currentXP').forEach(e => e.innerText = xp);
         btn.innerText = "✅";
         btn.disabled = true;
-        btn.style.opacity = "0.5";
-        checkMilestones();
-    }
-
-    function checkMilestones() {
-        const msg = document.getElementById('assistantMsg');
-        if (xp >= 300) msg.innerText = "Incrível! Você atingiu a meta da semana!";
+        updateUI();
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
 
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
-        const icon = document.querySelector('.dark-toggle');
-        icon.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     }
 
-    new QRCode(document.getElementById("qrcode"), {
-        text: "VALID-MOTIVA-2026-GA",
-        width: 150, height: 150
-    });
+    // Gráfico de Evolução (Chart.js)
+    function renderChart() {
+        const ctx = document.getElementById('chartEvolucao').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Hoje'],
+                datasets: [{
+                    label: 'Pontos XP',
+                    data: [120, 150, 180, 170, 210, xp],
+                    borderColor: '#6C63FF',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(108, 99, 255, 0.1)'
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+    }
 
-    // Função de PDF similar à anterior, mas com código de autenticação único
-    function gerarPDF() {
+    function gerarCertificado() {
+        confetti({ particleCount: 150, spread: 100 });
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l');
-        doc.text("Certificado de Autenticidade", 105, 40, {align: 'center'});
-        doc.text(`Aluno: Gusttavo Alves | XP: ${xp}`, 105, 60, {align: 'center'});
-        doc.text("Código de Validação: " + Math.random().toString(36).substr(2, 9).toUpperCase(), 105, 80, {align: 'center'});
-        doc.save("MotivaEdu_Certificado.pdf");
+        doc.setFontSize(22);
+        doc.text("Certificado de Mérito Estudantil", 148, 50, {align:'center'});
+        doc.setFontSize(16);
+        doc.text(`O aluno ${nome} atingiu a marca de ${xp} XP`, 148, 80, {align:'center'});
+        doc.text("Código de Validação: " + Math.random().toString(36).toUpperCase().slice(2,10), 148, 120, {align:'center'});
+        doc.save("Certificado_MotivaEdu.pdf");
     }
+
+    function createChallenge() {
+        const msg = prompt("Qual o nome do novo desafio para a turma?");
+        if(msg) alert("Desafio '" + msg + "' enviado para todos os alunos!");
+    }
+
+    // Início
+    window.onload = () => {
+        updateUI();
+        renderChart();
+        new QRCode(document.getElementById("qrcode"), { text: "VALID-2026-" + nome, width: 128, height: 128 });
+    };
 </script>
 </body>
 </html>
