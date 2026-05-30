@@ -3,299 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Advanced</title>
-
+    <title>MotivaEdu Pro - EdTech Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* Estilos Gerais */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4F8CFF;
+            --bg: #f5f7ff;
+            --card-bg: #ffffff;
+            --text: #333;
+            --accent: #FFD700;
         }
 
-        body {
-            background: #f5f7ff;
-            color: #333;
+        /* Estilo para Modo Escuro */
+        body.dark-mode {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
         }
 
-        /* Cabeçalho */
-        header {
-            background: linear-gradient(135deg, #6C63FF, #4F8CFF);
-            color: #fff;
-            padding: 24px;
-            border-radius: 0 0 24px 24px;
-            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.2);
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); transition: 0.3s; }
+        
+        header { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: #fff; padding: 25px; border-radius: 0 0 30px 30px; 
         }
 
-        .profile {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
+        .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: auto; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
-        .avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: #fff;
-            color: #6C63FF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-        }
+        /* IME Indicator */
+        .ime-badge { background: var(--accent); color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; }
 
-        /* Barra de Progresso */
-        .bar {
-            height: 12px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
+        /* Missões */
+        .mission-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+        .mission-item button { background: var(--primary); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
 
-        .fill {
-            height: 100%;
-            background: #fff;
-            width: 0%; /* Atualizado via JS */
-            transition: width 0.6s ease;
-        }
+        .nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
+        .section { display: none; }
+        .active { display: block; animation: slideUp 0.4s; }
 
-        /* Container de Conteúdo */
-        .container {
-            padding: 18px;
-            padding-bottom: 90px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 18px;
-            padding: 16px;
-            margin: 12px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,.08);
-        }
-
-        /* Controle de Visibilidade das Seções */
-        .section {
-            display: none;
-        }
-
-        .active {
-            display: block;
-        }
-
-        /* Navegação Inferior */
-        .nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #fff;
-            padding: 12px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-
-        .nav button, .btn {
-            border: none;
-            background: #6C63FF;
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .nav button:active, .btn:hover {
-            transform: scale(0.95);
-            background: #4F8CFF;
-        }
-
-        /* Elementos Internos */
-        .rank { padding: 10px; background: #fafafa; border-radius: 10px; margin: 6px 0; border-left: 4px solid #4F8CFF; }
-        .badge { display: inline-block; padding: 8px 12px; background: #ece8ff; border-radius: 999px; margin: 4px; font-size: 13px; color: #6C63FF; }
-        .mural-item { padding: 10px; border-left: 4px solid #6C63FF; background: #fafafa; margin: 8px 0; }
-
-        /* Animação */
-        .fade {
-            animation: fade 0.4s ease-in-out;
-        }
-
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .dark-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="profile">
-        <div class="avatar">GA</div>
+    <div class="dark-toggle" onclick="toggleDarkMode()">🌙</div>
+    <div style="display:flex; align-items:center; gap:15px">
+        <div style="width:60px; height:60px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-weight:bold; font-size:24px">GA</div>
         <div>
-            <h2 id="studentName">Gusttavo Alves</h2>
-            <p id="levelText">Carregando...</p>
+            <h2>Gusttavo Alves</h2>
+            <span class="ime-badge">IME: 87/100 • Motivação Alta</span>
         </div>
     </div>
-    <div class="bar"><div id="fill" class="fill"></div></div>
-    <p id="xpText" style="margin-top: 5px; font-size: 14px;">0 XP</p>
+    <p id="xpDisplay" style="margin-top:15px; font-weight:bold">XP: 250</p>
 </header>
 
 <div class="container">
-
-    <div id="home" class="section active fade">
+    <div id="home" class="section active">
+        <h3>🎯 Missões Diárias</h3>
         <div class="card">
-            <h3>Perfil Acadêmico</h3>
-            <p style="margin-top:8px">Turma: 2º Ano A</p>
-            <p>Frequência: 95%</p>
+            <div class="mission-item">
+                <span>Entrar no app (+5 XP)</span>
+                <button onclick="addXP(5, this)">Check-in</button>
+            </div>
+            <div class="mission-item">
+                <span>Entregar atividade (+20 XP)</span>
+                <button onclick="addXP(20, this)">Enviar</button>
+            </div>
         </div>
-        <div class="card">
-            <h3>Minhas Conquistas</h3>
-            <span class="badge">🥇 Aluno Destaque</span>
-            <span class="badge">🔬 Feira de Ciências</span>
-            <span class="badge">📚 Leitor do Mês</span>
+        
+        <h3>📈 Insights do Assistente</h3>
+        <div class="card" style="border-left: 5px solid var(--accent)">
+            <p id="assistantMsg">"Você está a apenas 30 XP do próximo nível! Vamos lá?"</p>
         </div>
     </div>
 
-    <div id="ranking" class="section fade">
+    <div id="rank" class="section">
+        <h3>🏆 Ranking Global</h3>
         <div class="card">
-            <h3>🏆 Ranking da Turma</h3>
-            <div class="rank">1º Ana Clara - 520 XP</div>
-            <div class="rank">2º Lucas Silva - 430 XP</div>
-            <div class="rank" style="background: #ece8ff; font-weight: bold;">3º Gusttavo (Você) - 250 XP</div>
-            <div class="rank">4º Marina Souza - 210 XP</div>
+            <p>1º Ana Clara - 520 XP</p>
+            <p><strong>3º Gusttavo - <span class="currentXP">250</span> XP</strong></p>
         </div>
     </div>
 
-    <div id="mural" class="section fade">
-        <div class="card">
-            <h3>📢 Avisos Importantes</h3>
-            <div class="mural-item"><strong>Feira de Ciências:</strong> Entrega de projetos até sexta-feira.</div>
-            <div class="mural-item"><strong>Olimpíadas:</strong> Inscrições abertas para a OBMEP.</div>
-            <div class="mural-item"><strong>Evento:</strong> Palestra sobre tecnologia às 14h no auditório.</div>
+    <div id="cert" class="section">
+        <div class="card" style="text-align:center">
+            <h3>📜 Validação de Conquista</h3>
+            <div id="qrcode" style="margin: 20px auto; display: inline-block;"></div>
+            <button onclick="gerarPDF()" style="width:100%; padding:15px; background:var(--secondary); color:#fff; border:none; border-radius:10px">Baixar Certificado Verificável</button>
         </div>
     </div>
-
-    <div id="cert" class="section fade">
-        <div class="card" style="text-align: center;">
-            <h3>📄 Certificado de Nível</h3>
-            <p style="margin: 10px 0;">Sua dedicação transformou-se em reconhecimento.</p>
-            <button class="btn" onclick="gerarCertificado()">Baixar PDF</button>
-            <center><div id="qr" style="margin-top:20px"></div></center>
-        </div>
-    </div>
-
 </div>
 
-<div class="nav">
-    <button onclick="show('home')">Home</button>
-    <button onclick="show('ranking')">Ranking</button>
-    <button onclick="show('mural')">Mural</button>
-    <button onclick="show('cert')">Cert.</button>
-</div>
+<nav class="nav">
+    <div onclick="show('home')">🏠</div>
+    <div onclick="show('rank')">🏆</div>
+    <div onclick="show('cert')">📜</div>
+</nav>
 
 <script>
-    // Dados iniciais
-    let xp = 250; 
-    let nomeEstudante = "Gusttavo Alves";
+    let xp = 250;
 
-    // Função para alternar entre as telas
     function show(id) {
-        // Esconde todas as seções
-        const sections = document.querySelectorAll('.section');
-        sections.forEach(s => s.classList.remove('active'));
-        
-        // Mostra a seção clicada
-        const target = document.getElementById(id);
-        if (target) {
-            target.classList.add('active');
-        }
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
 
-    // Função para atualizar XP e Nível visualmente
-    function updateLevel() {
-        let level = 'Bronze';
-        if(xp >= 250) level = 'Prata';
-        if(xp >= 500) level = 'Ouro';
-        if(xp >= 1000) level = 'Diamante';
-
-        document.getElementById('levelText').innerText = 'Nível ' + level;
-        document.getElementById('xpText').innerText = xp + ' XP acumulados';
-        
-        // Calcula a porcentagem da barra (ex: 250 XP vira 25%)
-        let percentage = Math.min(xp / 10, 100);
-        document.getElementById('fill').style.width = percentage + '%';
+    function addXP(val, btn) {
+        xp += val;
+        document.getElementById('xpDisplay').innerText = `XP: ${xp}`;
+        document.querySelectorAll('.currentXP').forEach(e => e.innerText = xp);
+        btn.innerText = "✅";
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        checkMilestones();
     }
 
-    // Inicializar QR Code
-    function initQR() {
-        const qrContainer = document.getElementById("qr");
-        qrContainer.innerHTML = ""; // Limpa antes de gerar
-        new QRCode(qrContainer, {
-            text: "MotivaEdu-Validacao-" + nomeEstudante,
-            width: 128,
-            height: 128,
-            colorDark: "#6C63FF",
-            colorLight: "#ffffff"
-        });
+    function checkMilestones() {
+        const msg = document.getElementById('assistantMsg');
+        if (xp >= 300) msg.innerText = "Incrível! Você atingiu a meta da semana!";
     }
 
-    // Gerar o PDF do Certificado
-    async function gerarCertificado() {
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const icon = document.querySelector('.dark-toggle');
+        icon.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
+
+    new QRCode(document.getElementById("qrcode"), {
+        text: "VALID-MOTIVA-2026-GA",
+        width: 150, height: 150
+    });
+
+    // Função de PDF similar à anterior, mas com código de autenticação único
+    function gerarPDF() {
         const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('landscape');
-        const level = document.getElementById('levelText').innerText;
-
-        // Estética do Certificado
-        pdf.setFillColor(108, 99, 255);
-        pdf.rect(0, 0, 297, 210, 'F');
-        pdf.setFillColor(255, 255, 255);
-        pdf.roundedRect(10, 10, 277, 190, 5, 5, 'F');
-
-        pdf.setTextColor(60, 60, 60);
-        pdf.setFontSize(30);
-        pdf.text('CERTIFICADO DE EXCELÊNCIA', 148, 50, {align: 'center'});
-
-        pdf.setFontSize(18);
-        pdf.text('A plataforma MotivaEdu reconhece que', 148, 75, {align: 'center'});
-
-        pdf.setFontSize(26);
-        pdf.setTextColor(108, 99, 255);
-        pdf.text(nomeEstudante, 148, 100, {align: 'center'});
-
-        pdf.setFontSize(16);
-        pdf.setTextColor(60, 60, 60);
-        pdf.text('atingiu os objetivos pedagógicos e conquistou o', 148, 120, {align: 'center'});
-        pdf.setFont("helvetica", "bold");
-        pdf.text(level, 148, 130, {align: 'center'});
-
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(12);
-        pdf.text('Data de emissão: ' + new Date().toLocaleDateString('pt-BR'), 148, 155, {align: 'center'});
-
-        // Linhas de Assinatura
-        pdf.line(40, 180, 120, 180);
-        pdf.text('Coordenação', 80, 185, {align: 'center'});
-        pdf.line(177, 180, 257, 180);
-        pdf.text('Direção Escolar', 217, 185, {align: 'center'});
-
-        pdf.save('Certificado_' + nomeEstudante + '.pdf');
+        const doc = new jsPDF('l');
+        doc.text("Certificado de Autenticidade", 105, 40, {align: 'center'});
+        doc.text(`Aluno: Gusttavo Alves | XP: ${xp}`, 105, 60, {align: 'center'});
+        doc.text("Código de Validação: " + Math.random().toString(36).substr(2, 9).toUpperCase(), 105, 80, {align: 'center'});
+        doc.save("MotivaEdu_Certificado.pdf");
     }
-
-    // Executar ao carregar a página
-    window.onload = () => {
-        updateLevel();
-        initQR();
-    };
 </script>
-
 </body>
 </html>
