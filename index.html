@@ -3,180 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - Conectado ao Firebase</title>
+    <title>MotivaEdu Pro - Sistema Integrado</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; --accent: #FFD700; }
+        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32; --diamond: #B9F2FF; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: var(--text); }
 
-        /* Telas */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; }
-        .login-card input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; }
+        /* Telas de Acesso */
+        #auth-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+        .auth-card { background: white; padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; font-size: 16px; }
 
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; }
-        .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: auto; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
+        /* Header e HUD */
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; position: sticky; top: 0; z-index: 100; }
+        .hud-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .xp-bar-container { background: rgba(255,255,255,0.2); height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+        #xp-fill { background: white; height: 100%; width: 0%; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .btn { border: none; background: var(--primary); color: white; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; }
-        .rank-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
-        
-        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
+        /* Conteúdo */
+        .container { padding: 20px 15px 100px 15px; max-width: 800px; margin: auto; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.02); }
         .section { display: none; }
-        .active { display: block; }
-        
-        #loading-overlay { display: none; color: white; margin-top: 10px; font-size: 14px; }
+        .active { display: block; animation: fadeIn 0.5s ease; }
+
+        /* Elementos Específicos */
+        .ime-tag { background: #E3F2FD; color: #1976D2; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 12px; }
+        .level-badge { padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        .btn { border: none; background: var(--primary); color: white; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:active { transform: scale(0.95); }
+        .mural-item { border-left: 4px solid var(--primary); background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 4px; }
+
+        /* Navegação */
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; z-index: 1000; }
+        .nav-item { font-size: 24px; cursor: pointer; opacity: 0.4; transition: 0.3s; }
+        .nav-item.active { opacity: 1; transform: scale(1.2); color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-card">
-        <h2>🚀 MotivaEdu Cloud</h2>
-        <p>Entre com seu nome para carregar seus dados</p>
-        <input type="text" id="inputNome" placeholder="Seu nome">
-        <button class="btn" id="btnLogin">Entrar / Criar Conta</button>
-        <div id="loading-overlay">Conectando ao banco de dados...</div>
+<div id="auth-screen">
+    <div class="auth-card">
+        <h2 style="color: var(--primary)">MotivaEdu Pro</h2>
+        <p style="margin-bottom: 20px">Plataforma Educacional Inteligente</p>
+        <input type="text" id="login-nome" placeholder="Nome completo">
+        <select id="login-turma">
+            <option value="A">Turma A</option>
+            <option value="B">Turma B</option>
+            <option value="C">Turma C</option>
+        </select>
+        <button class="btn" style="width: 100%" onclick="autenticar()">Entrar</button>
+        <p id="professor-link" style="margin-top:15px; font-size:12px; cursor:pointer; color: #666" onclick="toggleRole()">Acesso Professor</p>
     </div>
 </div>
 
-<header>
-    <div style="display:flex; align-items:center; gap:15px">
-        <div id="userInitials" style="width:50px; height:50px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-weight:bold;">?</div>
+<header id="main-header" style="display:none">
+    <div class="hud-info">
         <div>
-            <h2 id="displayNome">Usuário</h2>
-            <p>Pontuação Total: <span id="xpValor">0</span> XP</p>
+            <h3 id="user-display-name">Nome Usuário</h3>
+            <span id="user-level" class="level-badge">Bronze</span>
+        </div>
+        <div style="text-align: right">
+            <span class="ime-tag">IME: <span id="ime-val">0</span>%</span>
+            <p style="font-size: 12px; margin-top:5px"><span id="user-xp">0</span> XP</p>
         </div>
     </div>
+    <div class="xp-bar-container"><div id="xp-fill"></div></div>
 </header>
 
-<div class="container">
+<div class="container" id="main-content" style="display:none">
+    
     <div id="home" class="section active">
-        <h3>🎯 Desafios de Hoje</h3>
         <div class="card">
-            <div class="rank-item"><span>📖 Leitura Diária (+15 XP)</span> <button onclick="addXP(15, this)">Fiz</button></div>
-            <div class="rank-item"><span>🧠 Exercícios (+25 XP)</span> <button onclick="addXP(25, this)">Fiz</button></div>
+            <h4>📢 Mural Escolar</h4>
+            <div id="mural-container">
+                <div class="mural-item">Bem-vindo ao novo semestre!</div>
+            </div>
         </div>
-        <h3>🏆 Ranking da Escola</h3>
-        <div class="card" id="listaRanking">Carregando ranking...</div>
+
+        <h3>🎯 Desafios Disponíveis</h3>
+        <div id="desafios-lista">
+            </div>
+    </div>
+
+    <div id="ranking" class="section">
+        <div class="card">
+            <div style="display:flex; justify-content: space-around; margin-bottom:15px">
+                <button class="btn" style="background:none; color:var(--text)" onclick="renderRanking('global')">Geral</button>
+                <button class="btn" style="background:none; color:var(--text)" onclick="renderRanking('turma')">Minha Turma</button>
+            </div>
+            <div id="ranking-container"></div>
+        </div>
+    </div>
+
+    <div id="admin" class="section">
+        <h3>👨‍🏫 Gestão Pedagógica</h3>
+        <div class="card">
+            <h4>Aprovar Atividades</h4>
+            <div id="pendencias-lista">Nenhuma atividade pendente.</div>
+        </div>
+        <div class="card">
+            <h4>Criar Novo Desafio</h4>
+            <input type="text" id="new-task-title" placeholder="Título do desafio">
+            <input type="number" id="new-task-xp" placeholder="Valor em XP">
+            <button class="btn" onclick="criarDesafio()">Publicar Desafio</button>
+        </div>
     </div>
 
     <div id="cert" class="section">
         <div class="card" style="text-align:center">
-            <h3>📜 Certificado</h3>
+            <h3>📄 Certificação Digital</h3>
             <div id="qrcode" style="margin:20px auto; display:inline-block"></div>
-            <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
+            <button class="btn" style="width:100%" onclick="gerarPDF()">Exportar Certificado</button>
         </div>
     </div>
 </div>
 
-<nav class="nav">
-    <div onclick="showTab('home')">🏠</div>
-    <div onclick="showTab('cert')">📜</div>
+<nav id="main-nav" style="display:none">
+    <div class="nav-item active" onclick="navigate('home', this)">🏠</div>
+    <div class="nav-item" onclick="navigate('ranking', this)">🏆</div>
+    <div class="nav-item" id="nav-prof" style="display:none" onclick="navigate('admin', this)">👨‍🏫</div>
+    <div class="nav-item" onclick="navigate('cert', this)">📜</div>
 </nav>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
-    authDomain: "motivaedu-2d472.firebaseapp.com",
-    databaseURL: "https://motivaedu-2d472-default-rtdb.firebaseio.com",
-    projectId: "motivaedu-2d472",
-    storageBucket: "motivaedu-2d472.firebasestorage.app",
-    messagingSenderId: "885043141539",
-    appId: "1:885043141539:web:d9411ffb112e8f71a91816"
-  };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
+        authDomain: "motivaedu-2d472.firebaseapp.com",
+        databaseURL: "https://motivaedu-2d472-default-rtdb.firebaseio.com",
+        projectId: "motivaedu-2d472",
+        storageBucket: "motivaedu-2d472.firebasestorage.app",
+        messagingSenderId: "885043141539",
+        appId: "1:885043141539:web:d9411ffb112e8f71a91816"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  let usuarioAtual = "";
-  let xpAtual = 0;
+    let userData = { nome: "", turma: "", xp: 0, nivel: "Bronze", ime: 0, role: "aluno" };
 
-  // Lógica de Login e persistência no Firebase
-  document.getElementById('btnLogin').onclick = async () => {
-    const nome = document.getElementById('inputNome').value.trim();
-    if (!nome) return alert("Digite seu nome!");
-    
-    document.getElementById('loading-overlay').style.display = 'block';
-    usuarioAtual = nome.replace(/\s+/g, '_'); // Formata nome para o banco
+    // AUTH
+    window.autenticar = async () => {
+        const nome = document.getElementById('login-nome').value.trim();
+        const turma = document.getElementById('login-turma').value;
+        if(!nome) return alert("Digite seu nome!");
 
-    const userRef = ref(db, 'usuarios/' + usuarioAtual);
-    const snapshot = await get(userRef);
+        const userKey = nome.replace(/\s/g, '_').toLowerCase();
+        const userRef = ref(db, 'users/' + userKey);
+        const snap = await get(userRef);
 
-    if (snapshot.exists()) {
-        xpAtual = snapshot.val().xp;
-    } else {
-        xpAtual = 0;
-        await set(userRef, { nome: nome, xp: xpAtual });
+        if(snap.exists()) {
+            userData = snap.val();
+        } else {
+            userData = { nome, turma, xp: 0, nivel: "Bronze", ime: 50, role: userData.role };
+            await set(userRef, userData);
+        }
+
+        iniciarApp();
+    };
+
+    window.toggleRole = () => {
+        userData.role = userData.role === "aluno" ? "professor" : "aluno";
+        document.getElementById('professor-link').innerText = userData.role === "professor" ? "Modo Aluno" : "Acesso Professor";
+    };
+
+    function iniciarApp() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-header').style.display = 'block';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('main-nav').style.display = 'flex';
+        if(userData.role === 'professor') document.getElementById('nav-prof').style.display = 'block';
+        
+        document.getElementById('user-display-name').innerText = userData.nome;
+        updateHUD();
+        syncData();
+        new QRCode(document.getElementById("qrcode"), { text: "MotivaEdu:" + userData.nome, width: 150, height: 150 });
     }
 
-    iniciarApp(nome);
-  };
-
-  function iniciarApp(nome) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('displayNome').innerText = nome;
-    document.getElementById('xpValor').innerText = xpAtual;
-    document.getElementById('userInitials').innerText = nome.substring(0,2).toUpperCase();
-    gerarQR(nome);
-    escutarRanking();
-  }
-
-  // Adicionar XP e Salvar no Firebase
-  window.addXP = (val, btn) => {
-    xpAtual += val;
-    document.getElementById('xpValor').innerText = xpAtual;
-    set(ref(db, 'usuarios/' + usuarioAtual), { nome: usuarioAtual.replace('_', ' '), xp: xpAtual });
-    
-    btn.innerText = "✅";
-    btn.disabled = true;
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-  };
-
-  // Ranking em Tempo Real
-  function escutarRanking() {
-    const usersRef = ref(db, 'usuarios');
-    onValue(usersRef, (snapshot) => {
-        const data = snapshot.val();
-        let lista = [];
-        for (let id in data) { lista.push(data[id]); }
-        lista.sort((a, b) => b.xp - a.xp);
-        
-        let html = "";
-        lista.slice(0, 10).forEach((u, i) => {
-            html += `<div class="rank-item"><span>${i+1}º ${u.nome}</span> <strong>${u.xp} XP</strong></div>`;
+    // SYNC & LOGIC
+    function syncData() {
+        // Desafios
+        onValue(ref(db, 'challenges'), (snap) => {
+            const list = snap.val() || {};
+            let html = "";
+            for(let id in list) {
+                html += `<div class="card" style="display:flex; justify-content:space-between; align-items:center">
+                    <div><strong>${list[id].title}</strong><br><small>${list[id].xp} XP</small></div>
+                    <button class="btn" onclick="solicitarAprovacao('${id}', '${list[id].title}', ${list[id].xp})">Enviar</button>
+                </div>`;
+            }
+            document.getElementById('desafios-lista').innerHTML = html;
         });
-        document.getElementById('listaRanking').innerHTML = html;
-    });
-  }
 
-  // Outras funções globais
-  window.showTab = (id) => {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  };
+        // Pendências (Professor)
+        if(userData.role === 'professor') {
+            onValue(ref(db, 'pending'), (snap) => {
+                const list = snap.val() || {};
+                let html = "";
+                for(let id in list) {
+                    html += `<div class="card">
+                        <p><strong>${list[id].aluno}</strong> enviou <strong>${list[id].task}</strong></p>
+                        <button class="btn" onclick="aprovarXP('${id}', '${list[id].userKey}', ${list[id].xp})">Aprovar +${list[id].xp} XP</button>
+                    </div>`;
+                }
+                document.getElementById('pendencias-lista').innerHTML = html || "Nenhuma atividade pendente.";
+            });
+        }
+    }
 
-  window.gerarPDF = () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l');
-    doc.text("Certificado MotivaEdu", 148, 50, {align:'center'});
-    doc.text(`Aluno: ${usuarioAtual.replace('_',' ')}`, 148, 80, {align:'center'});
-    doc.text(`Total de XP: ${xpAtual}`, 148, 100, {align:'center'});
-    doc.save("Certificado.pdf");
-  };
+    window.solicitarAprovacao = (id, title, xp) => {
+        const userKey = userData.nome.replace(/\s/g, '_').toLowerCase();
+        set(ref(db, 'pending/' + Date.now()), { aluno: userData.nome, userKey, task: title, xp });
+        alert("Enviado para aprovação do professor!");
+    };
 
-  function gerarQR(nome) {
-    new QRCode(document.getElementById("qrcode"), { text: "MotivaEdu:" + nome, width: 120, height: 120 });
-  }
+    window.aprovarXP = async (pendingId, userKey, xpGanho) => {
+        const userRef = ref(db, 'users/' + userKey);
+        const snap = await get(userRef);
+        if(snap.exists()) {
+            const currentData = snap.val();
+            const newXp = currentData.xp + xpGanho;
+            const newIme = Math.min(currentData.ime + 5, 100);
+            update(userRef, { xp: newXp, ime: newIme });
+            update(ref(db, 'pending/' + pendingId), null);
+            alert("Atividade aprovada!");
+        }
+    };
+
+    window.criarDesafio = () => {
+        const title = document.getElementById('new-task-title').value;
+        const xp = parseInt(document.getElementById('new-task-xp').value);
+        if(title && xp) {
+            set(ref(db, 'challenges/' + Date.now()), { title, xp });
+            alert("Desafio criado!");
+        }
+    };
+
+    function updateHUD() {
+        const xp = userData.xp;
+        document.getElementById('user-xp').innerText = xp;
+        document.getElementById('ime-val').innerText = userData.ime;
+        
+        let nivel = "Bronze", color = "var(--bronze)", pct = (xp/200)*100;
+        if(xp >= 1000) { nivel = "Diamante"; color = "var(--diamond)"; pct = 100; }
+        else if(xp >= 500) { nivel = "Ouro"; color = "var(--gold)"; pct = (xp/1000)*100; }
+        else if(xp >= 200) { nivel = "Prata"; color = "var(--silver)"; pct = (xp/500)*100; }
+
+        const badge = document.getElementById('user-level');
+        badge.innerText = nivel;
+        badge.style.background = color;
+        document.getElementById('xp-fill').style.width = pct + '%';
+    }
+
+    window.navigate = (id, el) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+    };
+
+    window.renderRanking = async (type) => {
+        const snap = await get(ref(db, 'users'));
+        const users = snap.val();
+        let list = [];
+        for(let id in users) {
+            if(type === 'global' || users[id].turma === userData.turma) list.push(users[id]);
+        }
+        list.sort((a,b) => b.xp - a.xp);
+        let html = list.map((u, i) => `<div class="rank-item"><span>${i+1}º ${u.nome}</span><strong>${u.xp} XP</strong></div>`).join('');
+        document.getElementById('ranking-container').innerHTML = html;
+    };
+
+    window.gerarPDF = () => {
+        confetti({ particleCount: 150, spread: 70 });
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l');
+        doc.setFontSize(30); doc.text("CERTIFICADO MOTIVAEDU", 148, 50, {align:'center'});
+        doc.setFontSize(20); doc.text(`Certificamos que ${userData.nome}`, 148, 80, {align:'center'});
+        doc.text(`Atingiu o nível ${userData.nivel} com ${userData.xp} pontos.`, 148, 110, {align:'center'});
+        doc.save(`Certificado_${userData.nome}.pdf`);
+    };
+
 </script>
-
 </body>
 </html>
