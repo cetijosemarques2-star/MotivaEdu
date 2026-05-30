@@ -17,157 +17,194 @@
             --cinza-fundo: #F3F4F6;
             --texto: #1F2937;
             --perigo: #EF4444;
+            --sucesso: #22C55E;
             --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: 0.2s; }
         h1, h2, h3 { font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 100px; }
+        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 90px; }
 
-        /* --- CABEÇALHO --- */
-        header { background: var(--azul-escuro); color: var(--branco); padding: 30px 20px; border-radius: 0 0 35px 35px; box-shadow: var(--card-shadow); }
-        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .logo { font-size: 20px; font-weight: bold; border-left: 4px solid var(--ouro); padding-left: 10px; }
+        /* --- HEADER --- */
+        header { 
+            background: var(--azul-escuro); 
+            color: var(--branco); 
+            padding: 30px 20px; 
+            border-radius: 0 0 30px 30px; 
+            box-shadow: var(--card-shadow);
+            position: sticky; top: 0; z-index: 900;
+        }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo { font-size: 22px; font-weight: bold; border-left: 4px solid var(--ouro); padding-left: 10px; }
         
         .profile-card { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--azul-claro); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; position: relative; }
-        .level-badge { position: absolute; bottom: -5px; right: -5px; background: var(--ouro); color: var(--azul-escuro); font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 2px solid var(--azul-escuro); }
+        .avatar-container { position: relative; }
+        .avatar { 
+            width: 65px; height: 65px; border-radius: 50%; 
+            border: 3px solid var(--azul-claro); background: #fff; 
+            display: flex; align-items: center; justify-content: center; font-size: 30px; 
+        }
+        .level-tag { 
+            position: absolute; bottom: -5px; right: -5px; 
+            background: var(--ouro); color: var(--azul-escuro); 
+            font-size: 11px; font-weight: bold; padding: 2px 7px; 
+            border-radius: 10px; border: 2px solid var(--azul-escuro); 
+        }
 
-        .xp-container { background: rgba(255,255,255,0.15); height: 12px; border-radius: 10px; margin-top: 15px; overflow: hidden; }
-        #xp-bar { background: var(--ouro); height: 100%; width: 0%; box-shadow: 0 0 10px var(--ouro); }
+        .xp-group { margin-top: 15px; }
+        .xp-bar-bg { background: rgba(255,255,255,0.2); height: 10px; border-radius: 10px; overflow: hidden; }
+        #xp-bar-fill { background: var(--ouro); height: 100%; width: 0%; box-shadow: 0 0 10px var(--ouro); }
 
-        .stats-row { display: flex; justify-content: space-around; margin-top: 15px; font-size: 13px; font-weight: 600; }
-        .stat-badge { background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat-box { background: rgba(255,255,255,0.1); padding: 8px; border-radius: 15px; text-align: center; font-size: 12px; font-weight: 600; }
 
         /* --- CONTEÚDO --- */
         .container { padding: 20px; max-width: 600px; margin: auto; }
         .section { display: none; }
-        .active { display: block; animation: fadeInUp 0.5s ease forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--branco); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--card-shadow); border: 1px solid #e5e7eb; position: relative; overflow: hidden; }
+        .card { background: var(--branco); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--card-shadow); border: 1px solid #e5e7eb; }
         
-        /* --- MURAL & MISSÕES --- */
-        .mural-post { border-left: 5px solid var(--azul-claro); }
-        .urgente { border-left: 5px solid var(--perigo); background: linear-gradient(to right, #fff, #fffafa); }
-        .timer { font-size: 11px; color: var(--perigo); font-weight: bold; margin-bottom: 5px; display: block; }
-        
-        .emoji-reactions { display: flex; gap: 8px; margin-top: 12px; }
-        .emoji-btn { background: #f3f4f6; border: none; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        
-        .btn-acao { background: var(--azul-claro); color: #fff; border: none; padding: 10px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-acao:disabled { background: #cbd5e1; cursor: not-allowed; }
+        /* --- MURAL & INTERAÇÃO --- */
+        .mural-card { border-left: 6px solid var(--azul-claro); }
+        .tag-mural { color: var(--azul-claro); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .reactions { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-react { background: #f3f4f6; border: none; padding: 7px 12px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .btn-react.clicked { background: var(--ouro); color: var(--azul-escuro); }
 
-        /* --- PÓDIO --- */
-        .podium { display: flex; justify-content: space-around; align-items: flex-end; padding: 20px 0; }
-        .podium-box { text-align: center; width: 30%; font-weight: bold; }
-        .p-1 { background: var(--ouro); height: 80px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 30px; }
-        .p-2 { background: #CBD5E1; height: 60px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .p-3 { background: #94A3B8; height: 40px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        /* --- MISSÕES --- */
+        .mission-item { display: flex; justify-content: space-between; align-items: center; }
+        .urgente { border-left: 6px solid var(--perigo); background: linear-gradient(to right, #fff, #fff8f8); }
+        .badge-timer { color: var(--perigo); font-size: 10px; font-weight: 800; display: block; margin-bottom: 4px; }
 
-        /* --- MENU --- */
-        nav { position: fixed; bottom: 0; width: 100%; background: var(--branco); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #e5e7eb; z-index: 1000; }
-        .nav-item { text-align: center; font-size: 10px; color: #94A3B8; cursor: pointer; flex: 1; }
-        .nav-item.active { color: var(--azul-claro); font-weight: bold; }
-        .nav-item i { display: block; font-size: 22px; margin-bottom: 4px; }
+        .btn-acao { background: var(--azul-claro); color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
+        .btn-acao:active { transform: scale(0.95); }
+
+        /* --- RANKING --- */
+        .podium { display: flex; justify-content: space-around; align-items: flex-end; padding: 20px 0 30px; }
+        .podium-item { text-align: center; width: 30%; font-weight: bold; }
+        .step { border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--azul-escuro); }
+        .p1 { background: var(--ouro); height: 90px; font-size: 35px; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); }
+        .p2 { background: #CBD5E1; height: 65px; }
+        .p3 { background: #94A3B8; height: 45px; }
+
+        /* --- NAVBAR --- */
+        nav { position: fixed; bottom: 0; width: 100%; background: var(--branco); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #e5e7eb; z-index: 1000; }
+        .nav-link { text-align: center; color: #94A3B8; cursor: pointer; flex: 1; text-decoration: none; }
+        .nav-link.active { color: var(--azul-claro); }
+        .nav-link i { display: block; font-size: 22px; margin-bottom: 3px; }
+        .nav-link span { font-size: 10px; font-weight: 600; }
 
         /* --- LOGIN --- */
-        #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: #fff; padding: 30px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #F3F4F6; border-radius: 12px; outline: none; font-size: 16px; }
+        #login-overlay { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: #fff; padding: 35px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
+        .login-input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #F3F4F6; border-radius: 15px; outline: none; font-size: 16px; }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-box">
-        <h2 style="color:var(--azul-escuro)">🚀 MotivaEdu v6.2</h2>
-        <p style="font-size:14px; margin-bottom:20px; color:#6B7280">Aprender, Evoluir e Conquistar.</p>
-        <input type="text" id="login-nome" placeholder="Seu Nome Completo">
-        <select id="login-turma">
+<div id="login-overlay">
+    <div class="login-card">
+        <h2 style="color:var(--azul-escuro); font-size: 28px;">MotivaEdu <span style="color:var(--azul-claro)">v6.2</span></h2>
+        <p style="color:#6B7280; font-size: 14px; margin-bottom: 25px;">Transformando esforço em conquistas.</p>
+        <input type="text" id="log-nome" class="login-input" placeholder="Nome do Aluno">
+        <select id="log-turma" class="login-input">
             <option value="9º Ano A">9º Ano A</option>
             <option value="1º Médio A">1º Médio A</option>
-            <option value="2º Médio A">2º Médio A</option>
-            <option value="3º Médio A">3º Médio A</option>
+            <option value="2º Médio B">2º Médio B</option>
         </select>
-        <button class="btn-acao" style="width:100%; padding:15px; margin-top:10px" onclick="entrar()">Iniciar Jornada</button>
+        <button class="btn-acao" style="width:100%; padding:18px; margin-top:10px" onclick="entrar()">Acessar Plataforma</button>
     </div>
 </div>
 
-<header id="main-header" style="display:none">
+<header id="app-header" style="display:none">
     <div class="nav-top">
         <div class="logo">MotivaEdu</div>
-        <div style="cursor:pointer; font-size:20px">🔔</div>
+        <div style="font-size: 20px;">🔔</div>
     </div>
     <div class="profile-card">
-        <div class="avatar">
-            👤 <div class="level-badge" id="u-lvl-badge">1</div>
+        <div class="avatar-container">
+            <div class="avatar">👤</div>
+            <div class="level-tag" id="u-lvl">1</div>
         </div>
         <div style="flex:1">
-            <h3 id="u-nome">Carregando...</h3>
-            <p id="u-turma" style="font-size:12px; opacity:0.8">Sua Turma</p>
+            <h3 id="u-nome-disp">Aluno</h3>
+            <p id="u-turma-disp" style="font-size:12px; opacity:0.8">Turma</p>
         </div>
     </div>
-    <div class="xp-container"><div id="xp-bar"></div></div>
-    <div class="stats-row">
-        <div class="stat-badge">🔥 <span id="u-streak">1</span> Dias</div>
-        <div class="stat-badge">⭐ <span id="u-coins">0</span> Coins</div>
-        <div class="stat-badge">🎯 <span id="u-xp">0</span> XP</div>
+    <div class="xp-group">
+        <div class="xp-bar-bg"><div id="xp-bar-fill"></div></div>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-box">🔥 <span id="u-streak">1</span> Dias</div>
+        <div class="stat-box">⭐ <span id="u-coins">0</span> EduCoins</div>
+        <div class="stat-box">🎯 <span id="u-xp">0</span> XP</div>
     </div>
 </header>
 
-<div class="container" id="main-content" style="display:none">
+<div class="container" id="app-content" style="display:none">
     
-    <div id="sec-home" class="section active">
-        <div class="card mural-post">
-            <small style="color: var(--azul-claro); font-weight: bold;">📢 MURAL DA ESCOLA</small>
-            <p style="margin-top: 5px; font-size: 14px;">Gincana Cultural confirmada! Participe das missões especiais para ganhar XP em dobro. 🎨</p>
-            <div class="emoji-reactions">
-                <button class="emoji-btn" onclick="reagir(this)">👏 24</button>
-                <button class="emoji-btn" onclick="reagir(this)">🔥 15</button>
-                <button class="emoji-btn" onclick="reagir(this)">🚀 7</button>
+    <div id="tab-home" class="section active">
+        <div class="card mural-card">
+            <span class="tag-mural">📢 Mural da Escola</span>
+            <p style="margin-top: 8px; font-size: 15px; line-height: 1.4;">Preparem-se! A <b>Temporada de Inverno</b> começou. Missões de biblioteca valem o dobro de XP esta semana! ❄️📚</p>
+            <div class="reactions">
+                <button class="btn-react" onclick="reagir(this)">👏 32</button>
+                <button class="btn-react" onclick="reagir(this)">🔥 18</button>
+                <button class="btn-react" onclick="reagir(this)">🚀 12</button>
             </div>
         </div>
 
-        <h3>🎯 Missões de Hoje</h3>
-        <div id="lista-missoes" style="margin-top:10px"></div>
+        <h3 style="margin: 25px 0 15px;">Missões Disponíveis</h3>
+        <div id="feed-missoes"></div>
     </div>
 
-    <div id="sec-ranking" class="section">
+    <div id="tab-rank" class="section">
         <h3>🏆 Hall da Fama</h3>
         <div class="podium">
-            <div class="podium-box"><div id="rank2" style="font-size:10px">...</div><div class="p-2">🥈</div></div>
-            <div class="podium-box"><div id="rank1" style="font-size:12px">...</div><div class="p-1">🥇</div></div>
-            <div class="podium-box"><div id="rank3" style="font-size:10px">...</div><div class="p-3">🥉</div></div>
+            <div class="podium-item">
+                <div id="r-nome2" style="font-size: 11px; margin-bottom: 5px;">...</div>
+                <div class="step p2">🥈</div>
+            </div>
+            <div class="podium-item">
+                <div id="r-nome1" style="font-size: 13px; font-weight: 800; margin-bottom: 5px;">...</div>
+                <div class="step p1">🥇</div>
+            </div>
+            <div class="podium-item">
+                <div id="r-nome3" style="font-size: 11px; margin-bottom: 5px;">...</div>
+                <div class="step p3">🥉</div>
+            </div>
         </div>
-        <div id="ranking-lista"></div>
+        <div id="ranking-lista-full"></div>
     </div>
 
-    <div id="sec-loja" class="section">
-        <h3>🛒 Loja de Recompensas</h3>
+    <div id="tab-shop" class="section">
+        <h3>🎁 Recompensas</h3>
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee">
-                <div><b>Certificado Digital</b><br><small>50 Coins</small></div>
+            <div class="mission-item" style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                <div><b>Certificado de Honra</b><br><small>50 EduCoins</small></div>
                 <button class="btn-acao" onclick="comprar(50)">Resgatar</button>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
-                <div><b>Badge de Ouro no Perfil</b><br><small>200 Coins</small></div>
-                <button class="btn-acao" onclick="comprar(200)">Resgatar</button>
+            <div class="mission-item" style="padding: 10px 0;">
+                <div><b>Passe Livre Intervalo</b><br><small>120 EduCoins</small></div>
+                <button class="btn-acao" onclick="comprar(120)">Resgatar</button>
             </div>
         </div>
     </div>
 
-    <div id="sec-mestre" class="section">
-        <h3>👨‍🏫 Aprovações</h3>
-        <div id="lista-pendentes"></div>
+    <div id="tab-prof" class="section">
+        <h3>👨‍🏫 Painel do Mestre</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Aprove as solicitações para liberar o XP.</p>
+        <div id="prof-aprovacoes"></div>
     </div>
 </div>
 
-<nav id="navbar" style="display:none">
-    <div class="nav-item active" onclick="aba('sec-home', this)"><i>🎯</i><span>Início</span></div>
-    <div class="nav-item" onclick="aba('sec-ranking', this)"><i>🏆</i><span>Ranking</span></div>
-    <div class="nav-item" onclick="aba('sec-loja', this)"><i>🛒</i><span>Loja</span></div>
-    <div class="nav-item" onclick="verificarPIN()"><i>👨‍🏫</i><span>Mestre</span></div>
+<nav id="app-nav" style="display:none">
+    <div class="nav-link active" onclick="navegar('tab-home', this)"><i>🎯</i><span>Início</span></div>
+    <div class="nav-link" onclick="navegar('tab-rank', this)"><i>🏆</i><span>Ranking</span></div>
+    <div class="nav-link" onclick="navegar('tab-shop', this)"><i>🎁</i><span>Loja</span></div>
+    <div class="nav-link" onclick="acessoMestre()"><i>👨‍🏫</i><span>Mestre</span></div>
 </nav>
 
 <script type="module">
@@ -186,135 +223,137 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let uAtivo = null;
+    let user = null;
 
-    const missoesBase = [
-        { t: "Participar da aula", xp: 20, c: 5, urgente: false },
-        { t: "Quiz Rápido de História", xp: 100, c: 20, urgente: true },
-        { t: "Ajudar um colega", xp: 40, c: 15, urgente: false }
+    const missoesTemplate = [
+        { t: "Participação em Aula", xp: 20, c: 5, urg: false },
+        { t: "Desafio de Matemática", xp: 100, c: 25, urg: true },
+        { t: "Tarefa de Casa Completa", xp: 30, c: 10, urg: false }
     ];
 
     window.entrar = async () => {
-        const nome = document.getElementById('login-nome').value.trim();
-        const turma = document.getElementById('login-turma').value;
-        if(!nome) return alert("Digite seu nome!");
+        const nome = document.getElementById('log-nome').value.trim();
+        const turma = document.getElementById('log-turma').value;
+        if(!nome) return alert("Por favor, digite seu nome.");
 
-        const id = nome.replace(/\s/g, '_').toLowerCase();
-        const uRef = ref(db, 'v6_users/' + id);
+        const id = nome.toLowerCase().replace(/\s/g, '_');
+        const uRef = ref(db, 'v62_users/' + id);
         const snap = await get(uRef);
 
-        if(snap.exists()) uAtivo = snap.val();
-        else {
-            uAtivo = { nome, turma, xp: 0, coins: 0, streak: 1 };
-            await set(uRef, uAtivo);
+        if(snap.exists()) {
+            user = snap.val();
+        } else {
+            user = { nome, turma, xp: 0, coins: 0, streak: 1, id };
+            await set(uRef, user);
         }
 
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-header').style.display = 'block';
-        document.getElementById('main-content').style.display = 'block';
-        document.getElementById('navbar').style.display = 'flex';
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('app-header').style.display = 'block';
+        document.getElementById('app-content').style.display = 'block';
+        document.getElementById('app-nav').style.display = 'flex';
         
-        iniciarSync();
+        iniciarFluxo();
     };
 
-    function iniciarSync() {
-        const id = uAtivo.nome.replace(/\s/g, '_').toLowerCase();
-        
-        onValue(ref(db, 'v6_users/' + id), snap => {
+    function iniciarFluxo() {
+        onValue(ref(db, 'v62_users/' + user.id), snap => {
             const d = snap.val();
-            document.getElementById('u-nome').innerText = d.nome;
-            document.getElementById('u-turma').innerText = d.turma;
+            document.getElementById('u-nome-disp').innerText = d.nome;
+            document.getElementById('u-turma-disp').innerText = d.turma;
             document.getElementById('u-xp').innerText = d.xp;
             document.getElementById('u-coins').innerText = d.coins || 0;
             document.getElementById('u-streak').innerText = d.streak || 1;
             
-            const nivel = Math.floor(d.xp / 500) + 1;
-            document.getElementById('u-lvl-badge').innerText = nivel;
-            document.getElementById('xp-bar').style.width = ((d.xp % 500) / 500 * 100) + "%";
+            const lvl = Math.floor(d.xp / 500) + 1;
+            document.getElementById('u-lvl').innerText = lvl;
+            document.getElementById('xp-bar-fill').style.width = ((d.xp % 500) / 500 * 100) + "%";
         });
 
-        renderMissoes();
-        syncRanking();
-        syncPendencias();
+        renderFeed();
+        syncRank();
+        syncAprovacoes();
     }
 
-    function renderMissoes() {
-        document.getElementById('lista-missoes').innerHTML = missoesBase.map(m => `
-            <div class="card ${m.urgente ? 'urgente' : ''}">
-                ${m.urgente ? '<span class="timer">⏱️ EXPIRA EM BREVE</span>' : ''}
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                    <div><b>${m.t}</b><br><small>+${m.xp} XP | +${m.c} Coins</small></div>
-                    <button class="btn-acao" onclick="solicitar('${m.t}', ${m.xp}, ${m.c}, this)">Concluir</button>
+    function renderFeed() {
+        document.getElementById('feed-missoes').innerHTML = missoesTemplate.map(m => `
+            <div class="card ${m.urg ? 'urgente' : ''}">
+                <div class="mission-item">
+                    <div>
+                        ${m.urg ? '<span class="badge-timer">⏱️ EXPIRA EM 4H</span>' : ''}
+                        <b>${m.t}</b><br>
+                        <small style="color:#666">+${m.xp} XP | +${m.c} Coins</small>
+                    </div>
+                    <button class="btn-acao" onclick="pedirAprovacao('${m.t}', ${m.xp}, ${m.c}, this)">Concluir</button>
                 </div>
             </div>
         `).join('');
     }
 
-    window.solicitar = (t, xp, c, btn) => {
-        push(ref(db, 'v6_pendentes'), { aluno: uAtivo.nome, id: uAtivo.nome.replace(/\s/g, '_').toLowerCase(), task: t, xp, coins: c });
+    window.pedirAprovacao = (task, xp, coins, btn) => {
+        push(ref(db, 'v62_pedidos'), { aluno: user.nome, uid: user.id, task, xp, coins, turma: user.turma });
         btn.innerText = "⏳"; btn.disabled = true;
     };
 
-    function syncPendencias() {
-        onValue(ref(db, 'v6_pendentes'), snap => {
-            const p = snap.val();
+    function syncAprovacoes() {
+        onValue(ref(db, 'v62_pedidos'), snap => {
+            const data = snap.val();
             let html = "";
-            for(let k in p) {
+            for(let key in data) {
                 html += `
-                <div class="card" style="display:flex; justify-content:space-between; align-items:center">
-                    <div><b>${p[k].aluno}</b><br>${p[k].task}</div>
-                    <button class="btn-acao" style="background:#22c55e" onclick="aprovar('${k}','${p[k].id}',${p[k].xp},${p[k].coins})">✔</button>
+                <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding: 15px;">
+                    <div style="font-size: 13px;"><b>${data[key].aluno}</b> (${data[key].turma})<br>${data[key].task}</div>
+                    <button class="btn-acao" style="background:var(--sucesso)" onclick="validarPedido('${key}', '${data[key].uid}', ${data[key].xp}, ${data[key].coins})">✔</button>
                 </div>`;
             }
-            document.getElementById('lista-pendentes').innerHTML = html || "Sem pendências.";
+            document.getElementById('prof-aprovacoes').innerHTML = html || "Sem pendências no momento.";
         });
     }
 
-    window.aprovar = async (key, id, xp, c) => {
-        const uRef = ref(db, 'v6_users/' + id);
+    window.validarPedido = async (key, uid, xp, coins) => {
+        const uRef = ref(db, 'v62_users/' + uid);
         const s = await get(uRef);
-        await update(uRef, { xp: s.val().xp + xp, coins: (s.val().coins || 0) + c });
-        await remove(ref(db, 'v6_pendentes/' + key));
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        const cur = s.val();
+        await update(uRef, { xp: cur.xp + xp, coins: (cur.coins || 0) + coins });
+        await remove(ref(db, 'v62_pedidos/' + key));
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
     };
 
-    function syncRanking() {
-        onValue(ref(db, 'v6_users'), snap => {
-            const list = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
-            if(list[0]) document.getElementById('rank1').innerText = list[0].nome.split(' ')[0];
-            if(list[1]) document.getElementById('rank2').innerText = list[1].nome.split(' ')[0];
-            if(list[2]) document.getElementById('rank3').innerText = list[2].nome.split(' ')[0];
+    function syncRank() {
+        onValue(ref(db, 'v62_users'), snap => {
+            const users = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
+            if(users[0]) document.getElementById('r-nome1').innerText = users[0].nome.split(' ')[0];
+            if(users[1]) document.getElementById('r-nome2').innerText = users[1].nome.split(' ')[0];
+            if(users[2]) document.getElementById('r-nome3').innerText = users[2].nome.split(' ')[0];
             
-            document.getElementById('ranking-lista').innerHTML = list.map((u, i) => `
-                <div class="card" style="display:flex; justify-content:space-between; padding:12px 20px">
+            document.getElementById('ranking-lista-full').innerHTML = users.map((u, i) => `
+                <div class="card" style="display:flex; justify-content:space-between; padding: 12px 20px;">
                     <span><b>${i+1}º</b> ${u.nome}</span>
-                    <strong>${u.xp} XP</strong>
+                    <strong style="color:var(--azul-claro)">${u.xp} XP</strong>
                 </div>
             `).join('');
         });
     }
 
     window.reagir = (btn) => {
-        const parts = btn.innerText.split(' ');
-        btn.innerText = parts[0] + " " + (parseInt(parts[1]) + 1);
-        btn.style.background = "#FBBF24";
-        btn.style.color = "#1E3A8A";
+        btn.classList.toggle('clicked');
+        let val = parseInt(btn.innerText.split(' ')[1]);
+        btn.innerText = btn.innerText.split(' ')[0] + " " + (btn.classList.contains('clicked') ? val + 1 : val - 1);
     };
 
-    window.aba = (id, el) => {
+    window.navegar = (id, el) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     };
 
-    window.verificarPIN = () => {
-        if(prompt("PIN do Mestre:") === "1234") aba('sec-mestre', document.querySelectorAll('.nav-item')[3]);
+    window.acessoMestre = () => {
+        if(prompt("Código de Acesso do Mestre:") === "1234") {
+            navegar('tab-prof', document.querySelectorAll('.nav-link')[3]);
+        }
     };
 
-    window.comprar = (valor) => {
-        alert("Resgate solicitado! Fale com seu professor para validar.");
-    }
+    window.comprar = (c) => alert("Solicitação enviada ao Mestre! Prepare o EduCoins.");
 </script>
 </body>
 </html>
