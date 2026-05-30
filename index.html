@@ -3,165 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - Gestão Escolar Gamificada</title>
+    <title>MotivaEdu v6 — Transformando esforço em conquistas</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            --primary: linear-gradient(135deg, #6C63FF, #4F8CFF);
-            --bg: #f8faff;
-            --card: #ffffff;
-            --text: #2d3436;
-            --shadow: 0 10px 25px rgba(0,0,0,0.05);
-            --border: #edf2f7;
+            --azul-escuro: #1E3A8A;
+            --azul-claro: #3B82F6;
+            --ouro: #FBBF24;
+            --branco: #FFFFFF;
+            --cinza-fundo: #F3F4F6;
+            --texto: #1F2937;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .dark-mode {
-            --bg: #1a1a2e;
-            --card: #16213e;
-            --text: #e9ecef;
-            --shadow: 0 10px 25px rgba(0,0,0,0.3);
-            --border: #2d3436;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: 0.3s; }
+        h1, h2, h3, .poppins { font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 100px; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        body { background: var(--bg); color: var(--text); padding-bottom: 90px; }
-
-        /* Estilo Profissional do Header */
-        header { background: var(--primary); color: #fff; padding: 30px 20px; border-radius: 0 0 40px 40px; box-shadow: var(--shadow); }
-        .profile-section { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .avatar-frame { width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); overflow: hidden; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        /* --- HEADER & PERFIL --- */
+        header { background: var(--azul-escuro); color: var(--branco); padding: 30px 20px; border-radius: 0 0 35px 35px; box-shadow: var(--card-shadow); }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .logo { font-size: 20px; font-weight: bold; border-left: 4px solid var(--ouro); padding-left: 10px; }
         
-        .xp-container { background: rgba(255,255,255,0.2); height: 14px; border-radius: 10px; overflow: hidden; position: relative; }
-        #xp-bar { background: #fff; width: 0%; height: 100%; box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        .profile-card { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--azul-claro); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        
+        .xp-container { background: rgba(255,255,255,0.15); height: 12px; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        #xp-bar { background: var(--ouro); height: 100%; width: 0%; box-shadow: 0 0 10px var(--ouro); }
 
-        /* Cards Modernos */
-        .container { padding: 20px; max-width: 500px; margin: auto; }
-        .card { background: var(--card); border-radius: 22px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-        .card:active { transform: scale(0.98); }
+        .stats-row { display: flex; justify-content: space-between; margin-top: 15px; font-size: 13px; font-weight: 600; }
+        .coin-badge { background: var(--ouro); color: var(--azul-escuro); padding: 4px 10px; border-radius: 20px; }
 
-        /* Pódio do Ranking */
-        .podium { display: flex; justify-content: space-around; align-items: flex-end; margin-bottom: 30px; padding-top: 20px; }
-        .podium-item { text-align: center; width: 30%; }
-        .podium-1 { order: 2; } .podium-1 .rank-box { height: 100px; background: #FFD700; }
-        .podium-2 { order: 1; } .podium-2 .rank-box { height: 70px; background: #C0C0C0; }
-        .podium-3 { order: 3; } .podium-3 .rank-box { height: 50px; background: #CD7F32; }
-        .rank-box { border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 24px; }
-
-        /* Sistema de Abas */
+        /* --- CONTEÚDO --- */
+        .container { padding: 20px; max-width: 600px; margin: auto; }
         .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active { display: block; animation: fadeInUp 0.5s ease forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Botões */
-        .btn { border: none; padding: 12px 20px; border-radius: 14px; font-weight: bold; cursor: pointer; color: white; display: flex; align-items: center; gap: 8px; }
-        .btn-primary { background: var(--primary); }
-        .btn-success { background: #2ecc71; }
+        .card { background: var(--branco); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--card-shadow); border: 1px solid #e5e7eb; }
+        .card h3 { margin-bottom: 12px; color: var(--azul-escuro); font-size: 16px; }
 
-        /* Menu de Navegação */
-        nav { position: fixed; bottom: 0; width: 100%; background: var(--card); padding: 15px; display: flex; justify-content: space-around; border-top: 1px solid var(--border); z-index: 1000; }
-        .nav-item { cursor: pointer; opacity: 0.4; font-size: 12px; text-align: center; color: var(--text); text-decoration: none; }
-        .nav-item.active { opacity: 1; color: #6C63FF; }
-        .nav-item i { display: block; font-size: 24px; margin-bottom: 4px; }
+        /* --- MISSÕES E BOTÕES --- */
+        .btn-acao { background: var(--azul-claro); color: #fff; border: none; padding: 10px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-acao:hover { background: var(--azul-escuro); transform: translateY(-2px); }
+        .item-missao { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
 
-        /* Telas de Login e PIN */
-        .overlay { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .login-card { background: var(--card); padding: 35px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: var(--shadow); }
-        input, select { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid var(--border); border-radius: 15px; background: var(--bg); color: var(--text); outline: none; }
+        /* --- RANKING PÓDIO --- */
+        .podium { display: flex; justify-content: space-around; align-items: flex-end; padding: 20px 0; }
+        .podium-box { text-align: center; width: 30%; font-weight: bold; }
+        .p-1 { background: var(--ouro); height: 80px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .p-2 { background: #CBD5E1; height: 60px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .p-3 { background: #94A3B8; height: 40px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
-        /* Notificação */
-        #notificacao { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 12px 25px; border-radius: 50px; z-index: 3000; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        /* --- EDUBOT --- */
+        #edubot-box { position: fixed; bottom: 110px; right: 20px; width: 280px; background: var(--branco); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1001; }
+        .bot-header { background: var(--azul-claro); color: #fff; padding: 10px 15px; border-radius: 20px 20px 0 0; font-weight: bold; }
+        .bot-content { height: 200px; padding: 10px; overflow-y: auto; font-size: 13px; }
+
+        /* --- MENU INFERIOR --- */
+        nav { position: fixed; bottom: 0; width: 100%; background: var(--branco); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #e5e7eb; z-index: 1000; }
+        .nav-item { text-align: center; font-size: 10px; color: #94A3B8; cursor: pointer; flex: 1; }
+        .nav-item.active { color: var(--azul-claro); font-weight: bold; }
+        .nav-item i { display: block; font-size: 22px; margin-bottom: 4px; }
+
+        /* --- LOGIN --- */
+        #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: #fff; padding: 30px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #F3F4F6; border-radius: 12px; outline: none; }
+
+        /* Badges */
+        .badge-list { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .badge-item { background: #eff6ff; border: 1px solid #dbeafe; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; color: var(--azul-escuro); }
     </style>
 </head>
 <body>
 
-<div id="notificacao"></div>
-
-<button onclick="document.body.classList.toggle('dark-mode')" style="position:fixed; top:20px; right:20px; z-index:1500; border:none; background:none; font-size:24px; cursor:pointer;">🌓</button>
-
-<div id="login-screen" class="overlay">
-    <div class="login-card">
-        <h2 style="color:#6C63FF; margin-bottom:10px">MotivaEdu Pro</h2>
-        <p style="margin-bottom:20px; font-size:14px">Sistema de Excelência Estudantil</p>
-        <input type="text" id="login-nome" placeholder="Nome Completo">
+<div id="login-screen">
+    <div class="login-box">
+        <h2 style="color:var(--azul-escuro)">🚀 MotivaEdu v6</h2>
+        <p style="font-size:14px; margin-bottom:20px; color:#6B7280">Bem-vindo à revolução do aprendizado.</p>
+        <input type="text" id="login-nome" placeholder="Seu Nome">
         <select id="login-turma">
-            <option value="9A">9º Ano - Fundamental</option>
-            <option value="1EMA">1º Médio "A"</option>
-            <option value="1EMB">1º Médio "B"</option>
-            <option value="2EMA">2º Médio "A"</option>
-            <option value="2EMB">2º Médio "B"</option>
-            <option value="3EMA">3º Médio "A"</option>
-            <option value="3EMB">3º Médio "B"</option>
+            <option value="9º Ano A">9º Ano A</option>
+            <option value="1º Médio A">1º Médio A</option>
+            <option value="1º Médio B">1º Médio B</option>
+            <option value="2º Médio A">2º Médio A</option>
+            <option value="3º Médio A">3º Médio A</option>
         </select>
-        <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px" onclick="entrar()">Começar Jornada</button>
-    </div>
-</div>
-
-<div id="pin-screen" class="overlay" style="display:none">
-    <div class="login-card">
-        <h3>Painel do Mestre</h3>
-        <p>Digite seu código de acesso</p>
-        <input type="password" id="input-pin" maxlength="4" style="text-align:center; font-size:24px; letter-spacing:10px">
-        <div style="display:flex; gap:10px">
-            <button class="btn btn-primary" style="flex:1" onclick="validarPIN()">Acessar</button>
-            <button class="btn" style="background:#666" onclick="fecharPIN()">Cancelar</button>
-        </div>
+        <button class="btn-acao" style="width:100%; padding:15px; margin-top:10px" onclick="entrar()">Acessar Plataforma</button>
     </div>
 </div>
 
 <header id="main-header" style="display:none">
-    <div class="profile-section">
-        <div class="avatar-frame" id="display-avatar">👤</div>
+    <div class="nav-top">
+        <div class="logo">MotivaEdu <span style="font-weight:normal; font-size:12px">v6</span></div>
+        <div onclick="abrirBot()" style="cursor:pointer; font-size:20px">🤖</div>
+    </div>
+    <div class="profile-card">
+        <div class="avatar">👤</div>
         <div style="flex:1">
-            <h3 id="user-nome">Estudante</h3>
-            <span id="user-nivel" style="font-size:12px; font-weight:bold; text-transform:uppercase; letter-spacing:1px">Bronze</span>
+            <h3 id="u-nome">Aluno</h3>
+            <p id="u-turma" style="font-size:12px; opacity:0.8">Turma</p>
         </div>
         <div style="text-align:right">
-            <span id="user-xp" style="font-size:22px; font-weight:bold">0</span><br><small>PONTOS XP</small>
+            <div id="u-nivel" style="font-weight:bold; color:var(--ouro)">Nível 1</div>
         </div>
     </div>
     <div class="xp-container"><div id="xp-bar"></div></div>
+    <div class="stats-row">
+        <span><span id="u-xp">0</span> / 500 XP</span>
+        <span class="coin-badge">⭐ <span id="u-coins">0</span> EduCoins</span>
+    </div>
 </header>
 
-<div class="container" id="content" style="display:none">
+<div class="container" id="main-content" style="display:none">
     
-    <div id="aba-missoes" class="section active">
-        <div class="card" style="background:var(--primary); color:white">
-            <h4>📢 Mural de Avisos</h4>
-            <p style="font-size:13px; margin-top:5px">Feira de Ciências confirmada para sexta-feira!</p>
+    <div id="sec-home" class="section active">
+        <div class="card" style="background: linear-gradient(to right, #eff6ff, #fff); border-left: 5px solid var(--azul-claro);">
+            <h3>💡 Dica do EduBot</h3>
+            <p id="bot-dica" style="font-size:13px">"Sabia que alunos que ajudam colegas aprendem 40% mais rápido? Tente a missão de hoje!"</p>
         </div>
-        <h3>🎯 Desafios de Hoje</h3>
-        <div id="lista-desafios" style="margin-top:15px"></div>
+
+        <h3>🎯 Missões Diárias</h3>
+        <div id="lista-missoes" style="margin-top:10px"></div>
+
+        <h3 style="margin-top:20px">🏅 Minhas Conquistas</h3>
+        <div class="badge-list">
+            <div class="badge-item">🥇 Ouro Acadêmico</div>
+            <div class="badge-item">🚀 Iniciante</div>
+            <div class="badge-item">📚 Leitor</div>
+        </div>
     </div>
 
-    <div id="aba-ranking" class="section">
-        <h3>🏆 Pódio da Excelência</h3>
-        <div class="podium" id="podio-container">
-            </div>
+    <div id="sec-ranking" class="section">
+        <h3>🏆 Hall da Fama</h3>
+        <div class="podium">
+            <div class="podium-box podium-2"><div id="rank2-nome" style="font-size:10px">...</div><div class="p-2">🥈</div></div>
+            <div class="podium-box podium-1"><div id="rank1-nome" style="font-size:12px">...</div><div class="p-1">🥇</div></div>
+            <div class="podium-box podium-3"><div id="rank3-nome" style="font-size:10px">...</div><div class="p-3">🥉</div></div>
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-bottom:15px">
+            <button class="btn-acao" style="flex:1; font-size:11px" onclick="renderRanking('geral')">Geral</button>
+            <button class="btn-acao" style="flex:1; font-size:11px; background:var(--ouro); color:black" onclick="renderRanking('turma')">Equipes</button>
+        </div>
         <div id="ranking-lista"></div>
     </div>
 
-    <div id="aba-professor" class="section">
-        <h3 style="color:#e74c3c">👨‍🏫 Aprovações Pendentes</h3>
-        <div id="lista-pendentes" style="margin-top:15px"></div>
+    <div id="sec-loja" class="section">
+        <h3>🎁 Recompensas</h3>
+        <div class="card">
+            <div class="item-missao">
+                <div><b>Certificado de Destaque</b><br><small>50 EduCoins</small></div>
+                <button class="btn-acao" onclick="comprar(50)">Resgatar</button>
+            </div>
+            <div class="item-missao">
+                <div><b>Ponto Extra (Global)</b><br><small>200 EduCoins</small></div>
+                <button class="btn-acao" onclick="comprar(200)">Resgatar</button>
+            </div>
+        </div>
     </div>
 
-    <div id="aba-certificacao" class="section">
-        <div class="card" style="text-align:center">
-            <h3>📜 Seu Certificado</h3>
-            <p style="margin:10px 0; font-size:14px">Disponível para alunos nível Ouro ou superior.</p>
-            <button class="btn btn-primary" style="margin:auto" onclick="gerarPDF()">Baixar PDF</button>
-        </div>
+    <div id="sec-mestre" class="section">
+        <h3>👨‍🏫 Painel de Validação</h3>
+        <p style="font-size:12px; margin-bottom:15px">Aprove as missões pendentes dos alunos.</p>
+        <div id="lista-pendentes"></div>
+    </div>
+</div>
+
+<div id="edubot-box">
+    <div class="bot-header">EduBot IA 🤖 <span onclick="fecharBot()" style="float:right; cursor:pointer">×</span></div>
+    <div class="bot-content" id="bot-chat">Olá! Sou o EduBot. Como posso te ajudar hoje?</div>
+    <div style="padding:10px; border-top:1px solid #eee">
+        <input type="text" id="bot-input" placeholder="Pergunte algo..." onkeydown="if(event.key==='Enter') botPerguntar()">
     </div>
 </div>
 
 <nav id="navbar" style="display:none">
-    <div class="nav-item active" onclick="mudarAba('aba-missoes', this)"><i>🎯</i>Missões</div>
-    <div class="nav-item" onclick="mudarAba('aba-ranking', this)"><i>🏆</i>Ranking</div>
-    <div class="nav-item" onclick="abrirPIN()"><i>👨‍🏫</i>Mestre</div>
-    <div class="nav-item" onclick="mudarAba('aba-certificacao', this)"><i>📜</i>Diploma</div>
+    <div class="nav-item active" onclick="aba('sec-home', this)"><i>🎯</i><span>Missões</span></div>
+    <div class="nav-item" onclick="aba('sec-ranking', this)"><i>🏆</i><span>Ranking</span></div>
+    <div class="nav-item" onclick="aba('sec-loja', this)"><i>🛒</i><span>Loja</span></div>
+    <div class="nav-item" onclick="verificarPIN()"><i>👨‍🏫</i><span>Mestre</span></div>
 </nav>
 
 <script type="module">
@@ -180,172 +205,179 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    let uAtivo = null;
 
-    let usuarioAtivo = null;
-    const PIN_PROF = "1234";
-
-    const desafios = [
-        { t: "Fazer perguntas na aula", xp: 15, ico: "🙋‍♂️" },
-        { t: "Ajudar colega na lição", xp: 30, ico: "🤝" },
-        { t: "Caderno nota 10", xp: 40, ico: "📓" },
-        { t: "Frequência Semanal 100%", xp: 100, ico: "📅" }
+    const missaoBase = [
+        { t: "Participar ativamente", xp: 20, c: 5 },
+        { t: "Tarefa entregue no prazo", xp: 30, c: 10 },
+        { t: "Ajudar um colega", xp: 40, c: 15 },
+        { t: "Nota 10 em simulado", xp: 100, c: 50 }
     ];
 
     window.entrar = async () => {
         const nome = document.getElementById('login-nome').value.trim();
         const turma = document.getElementById('login-turma').value;
-        if(!nome) return showNotif("Digite seu nome!");
+        if(!nome) return alert("Digite seu nome!");
 
         const id = nome.replace(/\s/g, '_').toLowerCase();
-        const userRef = ref(db, 'pro_users/' + id);
-        const snap = await get(userRef);
+        const uRef = ref(db, 'v6_users/' + id);
+        const snap = await get(uRef);
 
         if(snap.exists()){
-            usuarioAtivo = snap.val();
+            uAtivo = snap.val();
         } else {
-            usuarioAtivo = { nome, turma, xp: 0, nivel: "Bronze" };
-            await set(userRef, usuarioAtivo);
+            uAtivo = { nome, turma, xp: 0, coins: 0, nivel: 1 };
+            await set(uRef, uAtivo);
         }
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-header').style.display = 'block';
-        document.getElementById('content').style.display = 'block';
+        document.getElementById('main-content').style.display = 'block';
         document.getElementById('navbar').style.display = 'flex';
         
-        iniciarApp();
+        carregarSistema();
     };
 
-    function iniciarApp() {
-        renderDesafios();
-        syncUser();
-        syncRanking();
+    function carregarSistema() {
+        const id = uAtivo.nome.replace(/\s/g, '_').toLowerCase();
+        onValue(ref(db, 'v6_users/' + id), snap => {
+            const d = snap.val();
+            document.getElementById('u-nome').innerText = d.nome;
+            document.getElementById('u-turma').innerText = d.turma;
+            document.getElementById('u-xp').innerText = d.xp;
+            document.getElementById('u-coins').innerText = d.coins || 0;
+            
+            let nivel = Math.floor(d.xp / 500) + 1;
+            document.getElementById('u-nivel').innerText = "Nível " + nivel;
+            document.getElementById('xp-bar').style.width = ((d.xp % 500) / 500 * 100) + "%";
+        });
+
+        renderMissoes();
+        renderRanking('geral');
         syncPendencias();
     }
 
-    function syncUser() {
-        const id = usuarioAtivo.nome.replace(/\s/g, '_').toLowerCase();
-        onValue(ref(db, 'pro_users/' + id), (snap) => {
-            const d = snap.val();
-            document.getElementById('user-nome').innerText = d.nome;
-            document.getElementById('user-xp').innerText = d.xp;
-            
-            let nivel = "Bronze", pct = (d.xp/200)*100;
-            if(d.xp >= 1000) { nivel = "Diamante"; pct = 100; }
-            else if(d.xp >= 500) { nivel = "Ouro"; pct = (d.xp/1000)*100; }
-            else if(d.xp >= 200) { nivel = "Prata"; pct = (d.xp/500)*100; }
-
-            document.getElementById('user-nivel').innerText = nivel;
-            document.getElementById('xp-bar').style.width = Math.min(pct, 100) + "%";
-        });
-    }
-
-    window.pedirValidacao = (titulo, xp) => {
-        push(ref(db, 'pro_pendentes'), {
-            aluno: usuarioAtivo.nome,
-            id: usuarioAtivo.nome.replace(/\s/g, '_').toLowerCase(),
-            task: titulo,
-            xp: xp,
-            turma: usuarioAtivo.turma
-        });
-        showNotif("Enviado para o Professor! ⏳");
-    };
-
-    function syncPendencias() {
-        onValue(ref(db, 'pro_pendentes'), (snap) => {
-            const list = snap.val();
-            const container = document.getElementById('lista-pendentes');
-            let html = "";
-            for(let k in list) {
-                html += `
-                <div class="card">
-                    <div><b>${list[k].aluno}</b> (${list[k].turma})<br>${list[k].task} (+${list[k].xp})</div>
-                    <button class="btn btn-success" onclick="aprovar('${k}', '${list[k].id}', ${list[k].xp})">Validar</button>
-                </div>`;
-            }
-            container.innerHTML = html || "Nenhuma pendência.";
-        });
-    }
-
-    window.aprovar = async (key, uId, xp) => {
-        const uRef = ref(db, 'pro_users/' + uId);
-        const uSnap = await get(uRef);
-        if(uSnap.exists()) {
-            await update(uRef, { xp: uSnap.val().xp + xp });
-            await remove(ref(db, 'pro_pendentes/' + key));
-            confetti({ particleCount: 150, spread: 70 });
-        }
-    };
-
-    function syncRanking() {
-        onValue(ref(db, 'pro_users'), (snap) => {
-            const users = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
-            
-            // Pódio
-            const top3 = users.slice(0, 3);
-            let podioHtml = "";
-            top3.forEach((u, i) => {
-                const pos = i + 1;
-                podioHtml += `
-                    <div class="podium-item podium-${pos}">
-                        <div style="font-size:12px; font-weight:bold">${u.nome.split(' ')[0]}</div>
-                        <div class="rank-box">${pos === 1 ? '🥇' : pos === 2 ? '🥈' : '🥉'}</div>
-                        <div style="font-size:10px">${u.xp} XP</div>
-                    </div>`;
-            });
-            document.getElementById('podio-container').innerHTML = podioHtml;
-
-            // Lista
-            document.getElementById('ranking-lista').innerHTML = users.map((u, i) => `
-                <div class="card" style="padding:12px; display:flex; justify-content:space-between">
-                    <span>${i+1}º ${u.nome} <small>(${u.turma})</small></span>
-                    <strong>${u.xp} XP</strong>
+    function renderMissoes() {
+        document.getElementById('lista-missoes').innerHTML = missaoBase.map(m => `
+            <div class="card">
+                <div class="item-missao">
+                    <div><b>${m.t}</b><br><small>+${m.xp} XP | +${m.c} Coins</small></div>
+                    <button class="btn-acao" onclick="solicitarXP('${m.t}', ${m.xp}, ${m.c}, this)">Concluir</button>
                 </div>
-            `).join('');
-        });
-    }
-
-    window.abrirPIN = () => document.getElementById('pin-screen').style.display = 'flex';
-    window.fecharPIN = () => document.getElementById('pin-screen').style.display = 'none';
-    window.validarPIN = () => {
-        if(document.getElementById('input-pin').value === PIN_PROF) {
-            fecharPIN();
-            mudarAba('aba-professor', document.querySelectorAll('.nav-item')[2]);
-        } else {
-            showNotif("PIN Incorreto! ❌");
-        }
-    };
-
-    function renderDesafios() {
-        document.getElementById('lista-desafios').innerHTML = desafios.map(d => `
-            <div class="card" style="display:flex; justify-content:space-between">
-                <div><span style="font-size:24px">${d.ico}</span> <b>${d.t}</b></div>
-                <button class="btn btn-primary" onclick="pedirValidacao('${d.t}', ${d.xp})">+${d.xp}</button>
             </div>
         `).join('');
     }
 
-    function showNotif(msg) {
-        const n = document.getElementById('notificacao');
-        n.innerText = msg; n.style.display = 'block';
-        setTimeout(() => n.style.display = 'none', 3000);
+    window.solicitarXP = (tit, xp, coin, btn) => {
+        push(ref(db, 'v6_pendentes'), {
+            aluno: uAtivo.nome,
+            id: uAtivo.nome.replace(/\s/g, '_').toLowerCase(),
+            task: tit,
+            xp: xp,
+            coins: coin,
+            turma: uAtivo.turma
+        });
+        btn.innerText = "⏳ Pendente";
+        btn.disabled = true;
+        btn.style.background = "#94A3B8";
+    };
+
+    function syncPendencias() {
+        onValue(ref(db, 'v6_pendentes'), snap => {
+            const pends = snap.val();
+            let html = "";
+            for(let k in pends) {
+                html += `
+                <div class="card">
+                    <div><b>${pends[k].aluno}</b> (${pends[k].turma})<br>${pends[k].task}</div>
+                    <button class="btn-acao" style="background:#22c55e" onclick="aprovar('${k}', '${pends[k].id}', ${pends[k].xp}, ${pends[k].coins})">Aprovar</button>
+                </div>`;
+            }
+            document.getElementById('lista-pendentes').innerHTML = html || "Sem pendências.";
+        });
     }
 
-    window.mudarAba = (id, el) => {
+    window.aprovar = async (key, uId, xp, coin) => {
+        const uRef = ref(db, 'v6_users/' + uId);
+        const snap = await get(uRef);
+        if(snap.exists()) {
+            const d = snap.val();
+            await update(uRef, { xp: d.xp + xp, coins: (d.coins || 0) + coin });
+            await remove(ref(db, 'v6_pendentes/' + key));
+            confetti({ particleCount: 100, spread: 70, colors: ['#3B82F6', '#FBBF24'] });
+        }
+    };
+
+    window.renderRanking = (tipo) => {
+        onValue(ref(db, 'v6_users'), snap => {
+            const users = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
+            
+            // Pódio Geral
+            if(users[0]) document.getElementById('rank1-nome').innerText = users[0].nome.split(' ')[0];
+            if(users[1]) document.getElementById('rank2-nome').innerText = users[1].nome.split(' ')[0];
+            if(users[2]) document.getElementById('rank3-nome').innerText = users[2].nome.split(' ')[0];
+
+            let html = "";
+            if(tipo === 'geral') {
+                html = users.map((u, i) => `
+                    <div class="card" style="padding:12px; display:flex; justify-content:space-between; align-items:center">
+                        <span><b>${i+1}º</b> ${u.nome} <small>(${u.turma})</small></span>
+                        <strong>${u.xp} XP</strong>
+                    </div>
+                `).join('');
+            } else {
+                // Ranking por Equipes (Soma de turmas)
+                const turmas = {};
+                users.forEach(u => {
+                    turmas[u.turma] = (turmas[u.turma] || 0) + u.xp;
+                });
+                const sortedTurmas = Object.entries(turmas).sort((a,b) => b[1] - a[1]);
+                html = sortedTurmas.map((t, i) => `
+                    <div class="card" style="background:#eff6ff">
+                        <div style="display:flex; justify-content:space-between">
+                            <span><b>${i+1}º</b> Equipe ${t[0]}</span>
+                            <strong>${t[1]} Total XP</strong>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('ranking-lista').innerHTML = html;
+        });
+    };
+
+    // --- EDUBOT LOGIC ---
+    window.abrirBot = () => document.getElementById('edubot-box').style.display = 'flex';
+    window.fecharBot = () => document.getElementById('edubot-box').style.display = 'none';
+    window.botPerguntar = () => {
+        const txt = document.getElementById('bot-input').value;
+        const chat = document.getElementById('bot-chat');
+        chat.innerHTML += `<p style="color:blue"><b>Você:</b> ${txt}</p>`;
+        
+        setTimeout(() => {
+            let resp = "Não entendi sua dúvida. Pode repetir?";
+            if(txt.toLowerCase().includes("xp")) resp = "Você ganha XP completando as missões e sendo aprovado pelo mestre!";
+            if(txt.toLowerCase().includes("moedas")) resp = "EduCoins servem para trocar por brindes na Loja!";
+            if(txt.toLowerCase().includes("estudar")) resp = "Minha dica: Use a técnica Pomodoro. 25 min de foco e 5 min de pausa!";
+            chat.innerHTML += `<p><b>EduBot:</b> ${resp}</p>`;
+            chat.scrollTop = chat.scrollHeight;
+        }, 800);
+        document.getElementById('bot-input').value = "";
+    };
+
+    window.verificarPIN = () => {
+        const pin = prompt("Digite o PIN do Mestre:");
+        if(pin === "1234") {
+            aba('sec-mestre', document.querySelectorAll('.nav-item')[3]);
+        } else {
+            alert("Acesso negado!");
+        }
+    };
+
+    window.aba = (id, el) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
-    };
-
-    window.gerarPDF = () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('l');
-        pdf.setFillColor(108, 99, 255); pdf.rect(0, 0, 297, 210, 'F');
-        pdf.setFillColor(255, 255, 255); pdf.roundedRect(10, 10, 277, 190, 5, 5, 'F');
-        pdf.setFontSize(30); pdf.text("CERTIFICADO DE MÉRITO", 148, 50, {align: 'center'});
-        pdf.setFontSize(20); pdf.text(usuarioAtivo.nome, 148, 100, {align: 'center'});
-        pdf.text("Pelo excelente desempenho no MotivaEdu Pro", 148, 130, {align: 'center'});
-        pdf.save("Certificado.pdf");
     };
 
 </script>
