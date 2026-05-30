@@ -3,171 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - Dashboard Edition</title>
+    <title>MotivaEdu - Experiência Completa</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; --accent: #FFD700; }
-        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e0e0e0; }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: var(--text); transition: 0.3s; }
-        
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; position: relative; }
-        .container { padding: 20px; padding-bottom: 100px; max-width: 800px; margin: auto; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* Tela de Login */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .login-card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .login-card input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; outline: none; font-size: 16px; }
+
+        /* App Principal */
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; }
+        .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: auto; }
         .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
 
-        .ime-badge { background: var(--accent); color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; }
-        .nav { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; z-index: 100; }
-        .nav-btn { cursor: pointer; font-size: 20px; filter: grayscale(1); transition: 0.3s; }
-        .nav-btn.active-icon { filter: grayscale(0); transform: scale(1.2); }
+        .btn { border: none; background: var(--primary); color: white; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
+        /* Ranking e Listas */
+        .rank-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .destaque { background: var(--accent); color: #000; padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; margin-bottom: 20px; border: 2px dashed #333; }
+        
+        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
         .section { display: none; }
         .active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .btn { border: none; background: var(--primary); color: white; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
-        .mission-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .dark-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="dark-toggle" onclick="toggleDarkMode()">🌙</div>
-    <div style="display:flex; align-items:center; gap:15px">
-        <div style="width:60px; height:60px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-weight:bold; font-size:24px">GA</div>
-        <div>
-            <h2 id="userName">Carregando...</h2>
-            <span class="ime-badge">IME: <span id="imeVal">87</span>/100</span>
-        </div>
+<div id="login-screen">
+    <div class="login-card">
+        <h2>🚀 Bem-vindo ao MotivaEdu</h2>
+        <p>Para começar, como você se chama?</p>
+        <input type="text" id="inputNome" placeholder="Seu nome completo">
+        <button class="btn" onclick="fazerLogin()">Entrar no Painel</button>
     </div>
-    <div style="margin-top:15px">
-        <p>Progresso do Nível: <span id="xpText">0</span> XP</p>
-        <div style="height:8px; background:rgba(255,255,255,0.3); border-radius:10px; margin-top:5px">
-            <div id="xpBar" style="height:100%; background:#fff; width:0%; border-radius:10px; transition: 0.5s"></div>
+</div>
+
+<header>
+    <div style="display:flex; align-items:center; gap:15px">
+        <div id="userInitials" style="width:50px; height:50px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-weight:bold;">?</div>
+        <div>
+            <h2 id="displayNome">Usuário</h2>
+            <p>Seu progresso: <span id="xpValor">0</span> XP</p>
         </div>
     </div>
 </header>
 
 <div class="container">
+    
     <div id="home" class="section active">
-        <h3>🎯 Missões do Dia</h3>
+        <div class="destaque">⭐ Aluno Destaque do Mês: <br> <span id="nomeDestaque">Ana Clara (520 XP)</span></div>
+        
+        <h3>🎯 Lista de Desafios</h3>
         <div class="card">
-            <div class="mission-item"><span>Check-in Diário (+5 XP)</span><button class="btn" style="width:auto" onclick="addXP(5, this)">Fazer</button></div>
-            <div class="mission-item"><span>Tarefa de Casa (+20 XP)</span><button class="btn" style="width:auto" onclick="addXP(20, this)">Enviar</button></div>
+            <div class="rank-item"><span>📖 Ler 1 capítulo de livro</span> <button onclick="ganharXP(15, this)" style="padding:5px 10px">Fiz!</button></div>
+            <div class="rank-item"><span>🧠 Resolver 5 exercícios</span> <button onclick="ganharXP(25, this)" style="padding:5px 10px">Fiz!</button></div>
+            <div class="rank-item"><span>🤝 Ajudar um colega</span> <button onclick="ganharXP(20, this)" style="padding:5px 10px">Fiz!</button></div>
+            <div class="rank-item"><span>⏰ Chegar no horário</span> <button onclick="ganharXP(10, this)" style="padding:5px 10px">Fiz!</button></div>
+            <div class="rank-item"><span>♻️ Recolher lixo da sala</span> <button onclick="ganharXP(10, this)" style="padding:5px 10px">Fiz!</button></div>
         </div>
-        <h3>📈 Sua Evolução</h3>
-        <div class="card"><canvas id="chartEvolucao"></canvas></div>
     </div>
 
-    <div id="teacher" class="section">
-        <h3>👨‍🏫 Painel de Gestão (Professor)</h3>
-        <div class="card">
-            <p><strong>Turma:</strong> 2º Ano B</p>
-            <p><strong>Média IME da Turma:</strong> 74/100</p>
-            <div style="margin-top:15px">
-                <button class="btn" style="background:var(--secondary); margin-bottom:10px" onclick="createChallenge()">🚀 Criar Desafio Global</button>
-                <button class="btn" style="background:#4caf50" onclick="alert('Relatório exportado para o e-mail da coordenação!')">📊 Gerar Relatório PDF</button>
+    <div id="ranking" class="section">
+        <h3>🏆 Top 10 Alunos</h3>
+        <div class="card" id="listaRanking">
             </div>
-        </div>
     </div>
 
     <div id="cert" class="section">
         <div class="card" style="text-align:center">
-            <h3>📜 Certificado Verificável</h3>
-            <p>Disponível para nível Prata ou superior.</p>
-            <div id="qrcode" style="margin:20px 0"></div>
-            <button class="btn" onclick="gerarCertificado()">Baixar com Validação Digital</button>
+            <h3>📜 Seu Certificado</h3>
+            <p>O nome abaixo será impresso no documento:</p>
+            <h4 id="certNome" style="margin:10px 0; color:var(--primary)"></h4>
+            <div id="qrcode" style="margin:20px auto; display:inline-block"></div>
+            <button class="btn" onclick="gerarPDF()">Baixar PDF Oficial</button>
         </div>
     </div>
+
 </div>
 
 <nav class="nav">
-    <div class="nav-btn active-icon" onclick="show('home', this)">🏠</div>
-    <div class="nav-btn" onclick="show('teacher', this)">👨‍🏫</div>
-    <div class="nav-btn" onclick="show('cert', this)">📜</div>
+    <div onclick="showTab('home')">🏠</div>
+    <div onclick="showTab('ranking')">🏆</div>
+    <div onclick="showTab('cert')">📜</div>
 </nav>
 
 <script>
-    // Inicialização de dados persistentes
-    let xp = parseInt(localStorage.getItem('motiva_xp')) || 250;
-    let nome = "Gusttavo Alves";
+    let xp = 0;
+    let usuarioNome = "";
 
-    function updateUI() {
-        document.getElementById('userName').innerText = nome;
-        document.getElementById('xpText').innerText = xp;
-        document.getElementById('xpBar').style.width = Math.min(xp/10, 100) + '%';
-        localStorage.setItem('motiva_xp', xp);
+    function fazerLogin() {
+        const input = document.getElementById('inputNome').value;
+        if(input.trim().length < 3) {
+            alert("Por favor, digite seu nome completo.");
+            return;
+        }
+        usuarioNome = input;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('displayNome').innerText = usuarioNome;
+        document.getElementById('certNome').innerText = usuarioNome;
+        document.getElementById('userInitials').innerText = usuarioNome.substring(0,2).toUpperCase();
+        
+        montarRanking();
+        gerarQR();
     }
 
-    function show(id, btn) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-icon'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active-icon');
-        if(id === 'home') renderChart(); // Recarrega gráfico ao abrir
-    }
-
-    function addXP(val, btn) {
+    function ganharXP(val, btn) {
         xp += val;
+        document.getElementById('xpValor').innerText = xp;
         btn.innerText = "✅";
         btn.disabled = true;
-        updateUI();
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        montarRanking(); // Atualiza sua posição no ranking
     }
 
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
+    function montarRanking() {
+        const alunos = [
+            {n: "Ana Clara", p: 520},
+            {n: "Lucas Silva", p: 480},
+            {n: "Beatriz Oliveira", p: 410},
+            {n: "Marcos Souza", p: 390},
+            {n: "Mariana Luz", p: 350},
+            {n: "Enzo Gabriel", p: 310},
+            {n: "Julia Costa", p: 290},
+            {n: "Rafael Meira", p: 250},
+            {n: "Sophia Reis", p: 210},
+            {n: usuarioNome + " (Você)", p: xp}
+        ];
+        
+        // Ordena por pontos
+        alunos.sort((a, b) => b.p - a.p);
+        
+        let html = "";
+        alunos.forEach((aluno, i) => {
+            html += `<div class="rank-item"><span>${i+1}º ${aluno.n}</span> <strong>${aluno.p} XP</strong></div>`;
+        });
+        document.getElementById('listaRanking').innerHTML = html;
     }
 
-    // Gráfico de Evolução (Chart.js)
-    function renderChart() {
-        const ctx = document.getElementById('chartEvolucao').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Hoje'],
-                datasets: [{
-                    label: 'Pontos XP',
-                    data: [120, 150, 180, 170, 210, xp],
-                    borderColor: '#6C63FF',
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(108, 99, 255, 0.1)'
-                }]
-            },
-            options: { plugins: { legend: { display: false } } }
+    function showTab(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function gerarQR() {
+        new QRCode(document.getElementById("qrcode"), {
+            text: "Autentico: " + usuarioNome,
+            width: 128, height: 128
         });
     }
 
-    function gerarCertificado() {
-        confetti({ particleCount: 150, spread: 100 });
+    function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l');
-        doc.setFontSize(22);
-        doc.text("Certificado de Mérito Estudantil", 148, 50, {align:'center'});
+        
+        doc.setFillColor(108, 99, 255);
+        doc.rect(0, 0, 297, 210, 'F');
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(10, 10, 277, 190, 5, 5, 'F');
+
+        doc.setFontSize(30);
+        doc.text("CERTIFICADO DE MÉRITO", 148, 50, {align: 'center'});
+        
+        doc.setFontSize(20);
+        doc.text("Certificamos que", 148, 80, {align: 'center'});
+        
+        doc.setFontSize(35);
+        doc.setTextColor(108, 99, 255);
+        doc.text(usuarioNome, 148, 110, {align: 'center'});
+        
         doc.setFontSize(16);
-        doc.text(`O aluno ${nome} atingiu a marca de ${xp} XP`, 148, 80, {align:'center'});
-        doc.text("Código de Validação: " + Math.random().toString(36).toUpperCase().slice(2,10), 148, 120, {align:'center'});
-        doc.save("Certificado_MotivaEdu.pdf");
+        doc.setTextColor(50, 50, 50);
+        doc.text(`Concluiu os desafios do MotivaEdu com total de ${xp} XP.`, 148, 140, {align: 'center'});
+        
+        doc.save(`Certificado_${usuarioNome}.pdf`);
     }
-
-    function createChallenge() {
-        const msg = prompt("Qual o nome do novo desafio para a turma?");
-        if(msg) alert("Desafio '" + msg + "' enviado para todos os alunos!");
-    }
-
-    // Início
-    window.onload = () => {
-        updateUI();
-        renderChart();
-        new QRCode(document.getElementById("qrcode"), { text: "VALID-2026-" + nome, width: 128, height: 128 });
-    };
 </script>
 </body>
 </html>
