@@ -44,11 +44,37 @@
         .btn-acao { background: var(--azul-claro); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .btn-acao:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* --- NAVBAR --- */
-        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; z-index: 1000; }
-        .nav-item { text-align: center; color: #94A3B8; cursor: pointer; font-size: 10px; font-weight: bold; flex: 1; }
+        /* --- NAVBAR CORRIGIDA (ALINHADA) --- */
+        nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            width: 100%; 
+            background: white; 
+            display: flex; 
+            flex-direction: row; 
+            justify-content: space-around; 
+            align-items: center; 
+            padding: 12px 0; 
+            border-top: 1px solid #ddd; 
+            z-index: 1000; 
+        }
+
+        .nav-item { 
+            text-align: center; 
+            color: #94A3B8; 
+            cursor: pointer; 
+            font-size: 11px; 
+            font-weight: bold; 
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
         .nav-item.active { color: var(--azul-claro); }
-        .nav-item i { display: block; font-size: 20px; margin-bottom: 3px; }
+        .nav-item i { font-style: normal; font-size: 22px; }
 
         /* --- LOGIN --- */
         #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -61,7 +87,7 @@
 <div id="login-screen">
     <div class="login-box">
         <h2 style="color: var(--azul-escuro)">🚀 MotivaEdu</h2>
-        <p style="font-size:12px; color:#666; margin-bottom:15px">Gamificação Escolar</p>
+        <p style="font-size:12px; color:#666; margin-bottom:15px">Sistema de Gamificação</p>
         <input type="text" id="log-nome" placeholder="Seu Nome Completo">
         <select id="log-turma">
             <optgroup label="1º Ano">
@@ -77,7 +103,7 @@
                 <option value="3º Ano B">3º Ano B</option>
             </optgroup>
         </select>
-        <button class="btn-acao" style="width:100%; margin-top:10px" onclick="entrar()">Entrar no Sistema</button>
+        <button class="btn-acao" style="width:100%; margin-top:10px" onclick="entrar()">Acessar</button>
     </div>
 </div>
 
@@ -97,14 +123,13 @@
 </header>
 
 <div class="container" id="c-app" style="display:none">
-    
     <div id="tab-missoes" class="section active">
-        <h3 style="margin-bottom: 15px;">🎯 Missões de Hoje</h3>
+        <h3 style="margin-bottom: 15px;">🎯 Missões</h3>
         <div id="lista-missoes"></div>
     </div>
 
     <div id="tab-ranking" class="section">
-        <h3>🏆 Ranking da Escola</h3>
+        <h3>🏆 Ranking</h3>
         <div id="rank-lista" style="margin-top:15px"></div>
     </div>
 
@@ -124,7 +149,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // Configuração do seu Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
         authDomain: "motivaedu-2d472.firebaseapp.com",
@@ -139,20 +163,19 @@
     const db = getDatabase(app);
     let u = null;
 
-    // 6 Missões Conforme Solicitado
     const missoesDisp = [
         { t: "Chegar no horário", xp: 10, c: 2 },
         { t: "Participar da aula", xp: 20, c: 5 },
-        { t: "Lição de Casa Completa", xp: 30, c: 10 },
-        { t: "Ajudar um colega", xp: 40, c: 15 },
+        { t: "Lição de Casa", xp: 30, c: 10 },
+        { t: "Ajudar o Professor", xp: 40, c: 15 },
         { t: "Organizar a sala", xp: 15, c: 5 },
-        { t: "Desafio do Mês", xp: 100, c: 20 }
+        { t: "Desafio Extra", xp: 100, c: 20 }
     ];
 
     window.entrar = async () => {
         const nome = document.getElementById('log-nome').value.trim();
         const turma = document.getElementById('log-turma').value;
-        if(!nome) return alert("Por favor, digite seu nome!");
+        if(!nome) return alert("Digite seu nome!");
 
         const id = nome.toLowerCase().replace(/\s/g, '_');
         const uRef = ref(db, 'v64_users/' + id);
@@ -165,12 +188,8 @@
         }
 
         document.getElementById('login-screen').style.display = 'none';
-        ['h-app','c-app','n-app'].forEach(id => document.getElementById(id).style.display = 'block');
-        
-        // Pedir notificação (Conforme solicitado)
-        if ("Notification" in window) {
-            Notification.requestPermission();
-        }
+        ['h-app','c-app','n-app'].forEach(id => document.getElementById(id).style.display = 'flex');
+        if (id === 'c-app') document.getElementById(id).style.display = 'block';
 
         iniciarApp();
     };
@@ -184,7 +203,6 @@
             document.getElementById('u-lvl').innerText = Math.floor(d.xp / 500) + 1;
             document.getElementById('xp-bar-fill').style.width = (d.xp % 500 / 5) + "%";
             
-            // Lógica do Foguinho (Streak)
             const foguinho = document.getElementById('u-streak');
             foguinho.innerText = d.streak || 0;
             if(d.streak > 0) document.getElementById('streak-fogo').classList.remove('streak-off');
@@ -193,8 +211,8 @@
 
         document.getElementById('lista-missoes').innerHTML = missoesDisp.map(m => `
             <div class="card mission-row">
-                <div><b>${m.t}</b><br><small>+${m.xp} XP | +${m.c} Coins</small></div>
-                <button class="btn-acao" onclick="pedir('${m.t}', ${m.xp}, ${m.c}, this)">Concluir</button>
+                <div><b>${m.t}</b><br><small>+${m.xp} XP</small></div>
+                <button class="btn-acao" onclick="pedir('${m.t}', ${m.xp}, ${m.c}, this)">Fiz!</button>
             </div>
         `).join('');
 
@@ -203,7 +221,7 @@
     }
 
     window.pedir = (t, xp, c, btn) => {
-        push(ref(db, 'v64_pedidos'), { uid: u.id, nome: u.nome, turma: u.turma, t, xp, c });
+        push(ref(db, 'v64_pedidos'), { uid: u.id, nome: u.nome, t, xp, c, turma: u.turma });
         btn.innerText = "⏳"; btn.disabled = true;
     };
 
@@ -213,11 +231,11 @@
             let h = "";
             for(let k in data) {
                 h += `<div class="card mission-row">
-                    <div><b>${data[k].nome}</b> (${data[k].turma})<br>${data[k].t}</div>
-                    <button class="btn-acao" style="background:#22c55e" onclick="aprovar('${k}','${data[k].uid}',${data[k].xp},${data[k].c})">Aprovar</button>
+                    <div><b>${data[k].nome}</b><br>${data[k].t}</div>
+                    <button class="btn-acao" onclick="aprovar('${k}','${data[k].uid}',${data[k].xp},${data[k].c})">✔</button>
                 </div>`;
             }
-            document.getElementById('prof-lista').innerHTML = h || "<p style='text-align:center; color:#999'>Nenhuma pendência.</p>";
+            document.getElementById('prof-lista').innerHTML = h || "Sem pendências.";
         });
     }
 
@@ -226,7 +244,6 @@
         const s = await get(uRef);
         const user = s.val();
 
-        // Lógica de Foguinho (Streak): Sobe se for a primeira aprovação do dia
         const hoje = new Date().toLocaleDateString();
         let novoStreak = user.streak || 0;
         if(user.lastDate !== hoje) {
@@ -247,8 +264,8 @@
         onValue(ref(db, 'v64_users'), snap => {
             const list = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
             document.getElementById('rank-lista').innerHTML = list.map((u,i) => `
-                <div class="card mission-row" style="${i < 3 ? 'border-left: 5px solid var(--ouro)' : ''}">
-                    <span><b>${i+1}º</b> ${u.nome} <br><small>${u.turma}</small></span>
+                <div class="card mission-row">
+                    <span>${i+1}º ${u.nome}</span>
                     <b>${u.xp} XP</b>
                 </div>
             `).join('');
@@ -263,9 +280,7 @@
     };
 
     window.verificarMestre = () => {
-        if(prompt("Digite o PIN do Professor:") === "1234") {
-            aba('tab-prof', document.querySelectorAll('.nav-item')[2]);
-        }
+        if(prompt("PIN:") === "1234") aba('tab-prof', document.querySelectorAll('.nav-item')[2]);
     };
 </script>
 </body>
