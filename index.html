@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu - Versão Final</title>
+    <title>MotivaEdu Pro - v3</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card: #fff; --text: #333; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        /* Variáveis Modo Escuro */
+        body.dark-mode { --bg: #1a1a2e; --card: #16213e; --text: #e9ecef; }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background 0.3s, color 0.3s; }
         body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
         header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 30px 20px; border-radius: 0 0 30px 30px; }
@@ -20,50 +23,67 @@
         .section { display: none; }
         .active { display: block; animation: fadeIn 0.4s; }
         
-        .card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0,0,0,0.03); }
+        .card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
         .btn-xp { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: bold; }
         .badge { padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }
         
+        /* Melhoria: Aluno Destaque */
+        .destaque-card { background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; font-weight: bold; }
+
+        /* Melhoria: Dark Mode Toggle */
+        #dark-toggle { position: fixed; top: 20px; right: 20px; z-index: 1100; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; }
+
         #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; }
+        .login-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; color: #333; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; outline: none; }
         
-        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #eee; }
-        .nav-icon { font-size: 24px; cursor: pointer; opacity: 0.3; transition: 0.3s; }
+        nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #eee; }
+        .nav-icon { font-size: 24px; cursor: pointer; opacity: 0.3; }
         .nav-icon.active { opacity: 1; transform: scale(1.2); }
+
+        .hist-item { font-size: 12px; border-bottom: 1px solid #eee; padding: 5px 0; opacity: 0.8; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+<button id="dark-toggle" onclick="toggleDarkMode()">🌓</button>
+
 <div id="login-screen">
     <div class="login-card">
-        <h2 style="color:var(--primary)">🚀 MotivaEdu</h2>
-        <p>Escolha sua série para começar</p>
+        <h2>🚀 MotivaEdu</h2>
         <input type="text" id="nomeUser" placeholder="Seu nome completo">
         <select id="turmaUser">
             <option value="9A">9º Ano - Fundamental</option>
-            <option value="1EM-A">1º Ano "A" - Ensino Médio</option>
-            <option value="1EM-B">1º Ano "B" - Ensino Médio</option>
-            <option value="2EM-A">2º Ano "A" - Ensino Médio</option>
-            <option value="2EM-B">2º Ano "B" - Ensino Médio</option>
-            <option value="3EM-A">3º Ano "A" - Ensino Médio</option>
-            <option value="3EM-B">3º Ano "B" - Ensino Médio</option>
+            <option value="1EM-A">1º Ano "A" - Médio</option>
+            <option value="1EM-B">1º Ano "B" - Médio</option>
+            <option value="2EM-A">2º Ano "A" - Médio</option>
+            <option value="2EM-B">2º Ano "B" - Médio</option>
+            <option value="3EM-A">3º Ano "A" - Médio</option>
+            <option value="3EM-B">3º Ano "B" - Médio</option>
         </select>
-        <button class="btn-xp" style="width: 100%; margin-top: 10px;" onclick="login()">Entrar no Painel</button>
+        <p style="margin-top:10px">Escolha seu Avatar:</p>
+        <select id="avatarUser">
+            <option value="👤">Padrão</option><option value="🦁">Leão</option>
+            <option value="🦉">Coruja</option><option value="🦊">Raposa</option>
+            <option value="🚀">Foguete</option><option value="💎">Diamante</option>
+        </select>
+        <button class="btn-xp" style="width: 100%; margin-top: 15px;" onclick="login()">Entrar</button>
     </div>
 </div>
 
 <header>
     <div style="display:flex; justify-content:space-between; align-items: center;">
-        <div>
-            <h2 id="displayNome">Carregando...</h2>
-            <div id="displayNivel" class="badge" style="background:#CD7F32; color:white">Bronze</div>
+        <div style="display:flex; gap:10px; align-items:center">
+            <span id="displayAvatar" style="font-size: 40px; background: rgba(255,255,255,0.2); padding: 5px; border-radius: 50%;">👤</span>
+            <div>
+                <h2 id="displayNome">...</h2>
+                <div id="displayNivel" class="badge" style="background:#CD7F32">Bronze</div>
+            </div>
         </div>
         <div style="text-align: right">
-            <span style="font-size: 20px; font-weight: bold;" id="displayXP">0</span><br>
-            <small>PONTOS XP</small>
+            <span style="font-size: 20px; font-weight: bold;" id="displayXP">0</span><br><small>XP</small>
         </div>
     </div>
     <div class="progress-container"><div id="progress-fill"></div></div>
@@ -71,15 +91,17 @@
 
 <div class="container">
     <div id="aba-desafios" class="section active">
-        <h3 style="margin-bottom:15px">🎯 Desafios Disponíveis</h3>
+        <h3>🎯 Missões</h3>
         <div id="lista-desafios"></div>
+        <h3 style="margin-top:20px">📜 Histórico Recente</h3>
+        <div id="historico-conquistas" class="card" style="display:block; font-size:14px">Ainda não há conquistas.</div>
     </div>
 
     <div id="aba-ranking" class="section">
-        <h3 style="margin-bottom:15px">🏆 Ranking dos Alunos</h3>
+        <div id="aluno-destaque" class="destaque-card">🏆 Aluno Destaque: Carregando...</div>
         <div style="display:flex; gap:10px; margin-bottom:15px">
-            <button onclick="carregarRanking('global')" class="btn-xp" style="flex:1; font-size:12px">Ranking Geral</button>
-            <button onclick="carregarRanking('turma')" class="btn-xp" style="flex:1; font-size:12px; background:#4F8CFF">Minha Turma</button>
+            <button onclick="carregarRanking('global')" class="btn-xp" style="flex:1">Global</button>
+            <button onclick="carregarRanking('turma')" class="btn-xp" style="flex:1; background:#4F8CFF">Sua Turma</button>
         </div>
         <div id="lista-ranking"></div>
     </div>
@@ -107,32 +129,22 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let usuario = { nome: "", turma: "", xp: 0 };
-
-    const desafios = [
-        { t: "Participar da aula ativamente", xp: 20 },
-        { t: "Ajudar colega com dúvida", xp: 30 },
-        { t: "Caderno organizado", xp: 15 },
-        { t: "Leitura de 1 capítulo", xp: 25 },
-        { t: "Trabalho entregue no prazo", xp: 40 },
-        { t: "Nota acima da média", xp: 50 },
-        { t: "Manter a sala limpa", xp: 10 }
-    ];
+    let usuario = { nome: "", turma: "", xp: 0, avatar: "👤", historico: [] };
 
     window.login = async () => {
         const nome = document.getElementById('nomeUser').value.trim();
         const turma = document.getElementById('turmaUser').value;
-        if(!nome) return alert("Por favor, digite seu nome.");
+        const avatar = document.getElementById('avatarUser').value;
+        if(!nome) return alert("Digite seu nome!");
 
-        // O segredo para zerar: usamos uma pasta nova 'v2_users'
         const id = nome.replace(/\s/g, '_').toLowerCase();
-        const userRef = ref(db, 'v2_users/' + id);
+        const userRef = ref(db, 'v3_users/' + id); // Novo caminho para zerar
         const snap = await get(userRef);
         
         if(snap.exists()){
             usuario = snap.val();
         } else {
-            usuario = { nome, turma, xp: 0 };
+            usuario = { nome, turma, xp: 0, avatar, historico: [] };
             await set(userRef, usuario);
         }
 
@@ -145,6 +157,7 @@
     function atualizarInterface() {
         document.getElementById('displayNome').innerText = usuario.nome;
         document.getElementById('displayXP').innerText = usuario.xp;
+        document.getElementById('displayAvatar').innerText = usuario.avatar || "👤";
         
         let nivel = "Bronze", cor = "#CD7F32", pct = (usuario.xp/200)*100;
         if(usuario.xp >= 1000) { nivel = "Diamante"; cor = "#B9F2FF"; pct = 100; }
@@ -154,46 +167,64 @@
         const dNivel = document.getElementById('displayNivel');
         dNivel.innerText = nivel;
         dNivel.style.background = cor;
-        dNivel.style.color = (nivel === "Bronze") ? "white" : "black";
         document.getElementById('progress-fill').style.width = Math.min(pct, 100) + "%";
+        
+        // Render Histórico
+        const histDiv = document.getElementById('historico-conquistas');
+        if(usuario.historico && usuario.historico.length > 0) {
+            histDiv.innerHTML = usuario.historico.map(h => `<div class="hist-item">✅ ${h.msg} - <small>${h.data}</small></div>`).join('');
+        }
     }
 
-    window.addXP = (valor, btn) => {
+    window.addXP = (valor, titulo, btn) => {
+        const agora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         usuario.xp += valor;
+        if(!usuario.historico) usuario.historico = [];
+        usuario.historico.unshift({ msg: titulo, data: agora });
+        
         const id = usuario.nome.replace(/\s/g, '_').toLowerCase();
-        update(ref(db, 'v2_users/' + id), { xp: usuario.xp });
+        update(ref(db, 'v3_users/' + id), { xp: usuario.xp, historico: usuario.historico.slice(0,5) });
+        
         atualizarInterface();
         btn.innerText = "✅"; btn.disabled = true;
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 100, spread: 70 });
     };
 
+    window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+
     function renderDesafios() {
-        const list = document.getElementById('lista-desafios');
-        list.innerHTML = desafios.map(d => `
+        const desafios = [
+            { t: "Lição de casa completa", xp: 20 },
+            { t: "Nota 10 em prova", xp: 100 },
+            { t: "Liderar trabalho em grupo", xp: 40 },
+            { t: "Chegar no horário", xp: 10 },
+            { t: "Ler 20 páginas de livro", xp: 30 }
+        ];
+        document.getElementById('lista-desafios').innerHTML = desafios.map(d => `
             <div class="card">
                 <div><strong>${d.t}</strong><br><small>+${d.xp} XP</small></div>
-                <button class="btn-xp" onclick="addXP(${d.xp}, this)">Fiz!</button>
+                <button class="btn-xp" onclick="addXP(${d.xp}, '${d.t}', this)">Fiz!</button>
             </div>
         `).join('');
     }
 
     window.carregarRanking = (tipo) => {
-        onValue(ref(db, 'v2_users'), (snap) => {
+        onValue(ref(db, 'v3_users'), (snap) => {
             let dados = snap.val();
             if(!dados) return;
-            let lista = Object.values(dados);
+            let lista = Object.values(dados).sort((a,b) => b.xp - a.xp);
+
+            // Melhoria: Aluno Destaque (1º lugar global)
+            document.getElementById('aluno-destaque').innerText = `🏆 Aluno Destaque: ${lista[0].avatar} ${lista[0].nome} (${lista[0].xp} XP)`;
+
             if(tipo === 'turma') lista = lista.filter(u => u.turma === usuario.turma);
             
-            lista.sort((a,b) => b.xp - a.xp);
-            document.getElementById('lista-ranking').innerHTML = lista.map((u, i) => {
-                let icon = (i === 0) ? "🥇" : (i === 1) ? "🥈" : (i === 2) ? "🥉" : `${i+1}º`;
-                return `
-                    <div class="card" style="${u.nome === usuario.nome ? 'border: 2px solid var(--primary)' : ''}">
-                        <span>${icon} ${u.nome} <br> <small>${u.turma}</small></span>
-                        <strong>${u.xp} XP</strong>
-                    </div>
-                `;
-            }).join('');
+            document.getElementById('lista-ranking').innerHTML = lista.map((u, i) => `
+                <div class="card" style="${u.nome === usuario.nome ? 'border: 2px solid var(--primary)' : ''}">
+                    <span>${i+1}º ${u.avatar || '👤'} ${u.nome} <br> <small>${u.turma}</small></span>
+                    <strong>${u.xp} XP</strong>
+                </div>
+            `).join('');
         });
     };
 
