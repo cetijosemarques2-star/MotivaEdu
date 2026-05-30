@@ -3,88 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu - Sistema de Validação</title>
+    <title>MotivaEdu Ultra - Startup v5</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card: #fff; --text: #333; }
+        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card: #fff; --text: #333; --gold: #FFD700; }
         body.dark-mode { --bg: #1a1a2e; --card: #16213e; --text: #e9ecef; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 100px; }
 
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 30px 20px; border-radius: 0 0 30px 30px; }
-        .progress-container { background: rgba(255,255,255,0.2); height: 12px; border-radius: 6px; margin-top: 15px; overflow: hidden; }
-        #progress-fill { background: #fff; height: 100%; width: 0%; }
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; }
+        .stats-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 15px; margin-top: 15px; font-size: 14px; }
         
         .container { padding: 20px; max-width: 600px; margin: auto; }
         .section { display: none; }
-        .active { display: block; animation: fadeIn 0.4s; }
+        .active { display: block; animation: slideUp 0.4s ease-out; }
         
         .card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
-        .btn-xp { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: bold; }
-        .btn-validar { background: #2ecc71; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+        .btn-action { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 12px; cursor: pointer; font-weight: bold; }
         
-        #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; color: #333; }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; }
+        nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #eee; z-index: 999; }
+        .nav-icon { font-size: 22px; cursor: pointer; opacity: 0.3; text-align: center; }
+        .nav-icon.active { opacity: 1; color: var(--primary); transform: scale(1.1); }
+        .nav-icon span { display: block; font-size: 10px; margin-top: 3px; }
+
+        #pin-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
         
-        nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #eee; }
-        .nav-icon { font-size: 24px; cursor: pointer; opacity: 0.3; text-align: center; }
-        .nav-icon span { display: block; font-size: 10px; font-weight: bold; }
-        .nav-icon.active { opacity: 1; color: var(--primary); }
-
-        .status-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: #f1c40f; color: #000; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-card">
-        <h2>🚀 MotivaEdu</h2>
-        <input type="text" id="nomeUser" placeholder="Seu nome completo">
-        <select id="turmaUser">
-            <option value="9A">9º Ano - Fundamental</option>
-            <option value="1EM-A">1º Ano "A" - Médio</option>
-            <option value="1EM-B">1º Ano "B" - Médio</option>
-            <option value="2EM-A">2º Ano "A" - Médio</option>
-            <option value="2EM-B">2º Ano "B" - Médio</option>
-            <option value="3EM-A">3º Ano "A" - Médio</option>
-            <option value="3EM-B">3º Ano "B" - Médio</option>
-        </select>
-        <button class="btn-xp" style="width: 100%; margin-top: 15px;" onclick="login()">Entrar</button>
+<div id="pin-screen">
+    <div style="background:white; padding:30px; border-radius:20px; text-align:center;">
+        <h3>Acesso Restrito</h3>
+        <p>Digite o PIN do Professor</p>
+        <input type="password" id="input-pin" maxlength="4" style="font-size:24px; width:100px; text-align:center; margin:20px; border:2px solid #ddd; border-radius:10px;">
+        <br>
+        <button class="btn-action" onclick="validarPIN()">Entrar</button>
+        <button class="btn-action" style="background:#666" onclick="fecharPIN()">Cancelar</button>
     </div>
 </div>
 
 <header>
     <div style="display:flex; justify-content:space-between; align-items: center;">
         <div>
-            <h2 id="displayNome">...</h2>
-            <div id="displayNivel" class="badge" style="padding: 4px 10px; border-radius: 10px; background: #CD7F32; font-size: 12px;">Bronze</div>
+            <h2 id="displayNome">Aluno</h2>
+            <div id="displayNivel" style="font-size:12px; background:var(--gold); color:black; padding:2px 8px; border-radius:10px; display:inline-block; font-weight:bold;">Nível 1</div>
         </div>
-        <div style="text-align: right">
-            <span style="font-size: 20px; font-weight: bold;" id="displayXP">0</span><br><small>XP VALIDADO</small>
+        <div style="text-align:right">
+            <span id="displayXP" style="font-size:24px; font-weight:bold">0</span> XP
         </div>
     </div>
-    <div class="progress-container"><div id="progress-fill"></div></div>
+    <div class="stats-bar">
+        <span>🔥 <b>Streak:</b> <span id="valStreak">1</span> dias</span>
+        <span>💰 <b>Moedas:</b> <span id="valMoedas">0</span></span>
+    </div>
 </header>
 
 <div class="container">
     <div id="aba-desafios" class="section active">
-        <h3>🎯 Suas Missões</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Clique ao terminar. O professor irá validar seu ponto.</p>
+        <h3>🎯 Missões de Hoje</h3>
         <div id="lista-desafios"></div>
     </div>
 
     <div id="aba-ranking" class="section">
-        <h3>🏆 Ranking</h3>
+        <h3>🏆 Top Alunos</h3>
         <div id="lista-ranking"></div>
     </div>
 
+    <div id="aba-loja" class="section">
+        <h3>🛒 Trocar Moedas</h3>
+        <div class="card">
+            <div><b>Sair 5min cedo</b><br><small>Custo: 100 Moedas</small></div>
+            <button class="btn-action" style="background:#e67e22" onclick="comprarItem(100)">Comprar</button>
+        </div>
+        <div class="card">
+            <div><b>Bónus +1 na Média</b><br><small>Custo: 500 Moedas</small></div>
+            <button class="btn-action" style="background:#e67e22" onclick="comprarItem(500)">Comprar</button>
+        </div>
+    </div>
+
     <div id="aba-professor" class="section">
-        <h3 style="color: #e74c3c">👨‍🏫 Painel de Validação</h3>
-        <p style="font-size: 12px; margin-bottom: 15px;">Confira a atividade e clique para dar o ponto.</p>
+        <h3 style="color:#e74c3c">👨‍🏫 Aprovações Pendentes</h3>
         <div id="lista-pendentes"></div>
     </div>
 </div>
@@ -92,7 +93,8 @@
 <nav>
     <div class="nav-icon active" onclick="mudarAba('aba-desafios', this)">🎯<span>Missões</span></div>
     <div class="nav-icon" onclick="mudarAba('aba-ranking', this)">🏆<span>Ranking</span></div>
-    <div class="nav-icon" onclick="mudarAba('aba-professor', this)">👨‍🏫<span>Validar</span></div>
+    <div class="nav-icon" onclick="mudarAba('aba-loja', this)">🛒<span>Loja</span></div>
+    <div class="nav-icon" onclick="abrirPIN()">👨‍🏫<span>Mestre</span></div>
 </nav>
 
 <script type="module">
@@ -111,135 +113,76 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    let usuario = { nome: "Gusttavo", xp: 0, moedas: 0, streak: 1 };
+    const PIN_MESTRE = "1234";
 
-    let usuario = { nome: "", turma: "", xp: 0 };
-
-    window.login = async () => {
-        const nome = document.getElementById('nomeUser').value.trim();
-        const turma = document.getElementById('turmaUser').value;
-        if(!nome) return alert("Digite seu nome!");
-
-        const id = nome.replace(/\s/g, '_').toLowerCase();
-        const userRef = ref(db, 'v4_users/' + id);
-        const snap = await get(userRef);
-        
-        if(snap.exists()){
-            usuario = snap.val();
-        } else {
-            usuario = { nome, turma, xp: 0 };
-            await set(userRef, usuario);
-        }
-
-        document.getElementById('login-screen').style.display = 'none';
-        atualizarInterface();
-        renderDesafios();
-        carregarRanking();
-        escutarPendencias();
-    };
-
-    // ALUNO ENVIA PARA O PROFESSOR
-    window.pedirValidacao = (titulo, valor, btn) => {
-        const pendenteRef = ref(db, 'v4_pendentes');
-        push(pendenteRef, {
-            alunoNome: usuario.nome,
-            alunoId: usuario.nome.replace(/\s/g, '_').toLowerCase(),
-            atividade: titulo,
-            xp: valor,
-            turma: usuario.turma
-        });
-        
-        btn.innerText = "⏳ Enviado";
-        btn.disabled = true;
-        btn.style.background = "#95a5a6";
-        alert("Enviado para o mural do professor!");
-    };
-
-    // PROFESSOR APROVA
-    window.aprovarPonto = async (key, alunoId, xpGanhos) => {
-        const userRef = ref(db, 'v4_users/' + alunoId);
-        const snap = await get(userRef);
-        
-        if(snap.exists()) {
-            const novoXP = snap.val().xp + xpGanhos;
-            await update(userRef, { xp: novoXP });
-            await remove(ref(db, 'v4_pendentes/' + key));
-            confetti({ particleCount: 100, spread: 70 });
-        }
-    };
-
-    function escutarPendencias() {
-        onValue(ref(db, 'v4_pendentes'), (snap) => {
-            const listaDiv = document.getElementById('lista-pendentes');
-            const dados = snap.val();
-            if(!dados) {
-                listaDiv.innerHTML = "<p>Nada para validar agora. 😊</p>";
-                return;
-            }
-            
-            let html = "";
-            for(let key in dados) {
-                const p = dados[key];
-                html += `
-                    <div class="card">
-                        <div>
-                            <strong>${p.alunoNome}</strong> <small>(${p.turma})</small><br>
-                            <span>${p.atividade} (+${p.xp} XP)</span>
-                        </div>
-                        <button class="btn-validar" onclick="aprovarPonto('${key}', '${p.alunoId}', ${p.xp})">Validar ✅</button>
-                    </div>`;
-            }
-            listaDiv.innerHTML = html;
-        });
-    }
-
-    function atualizarInterface() {
-        // Atualiza os dados do usuário atual em tempo real
-        onValue(ref(db, 'v4_users/' + usuario.nome.replace(/\s/g, '_').toLowerCase()), (snap) => {
-            const d = snap.val();
-            if(!d) return;
-            document.getElementById('displayNome').innerText = d.nome;
-            document.getElementById('displayXP').innerText = d.xp;
-            
-            let pct = (d.xp/200)*100;
-            if(d.xp >= 1000) pct = 100;
-            document.getElementById('progress-fill').style.width = Math.min(pct, 100) + "%";
-        });
-    }
-
-    function renderDesafios() {
-        const desafios = [
-            { t: "Fazer lição de casa", xp: 20 },
-            { t: "Ajudar na organização", xp: 15 },
-            { t: "Participar de dinâmica", xp: 30 },
-            { t: "Nota 10 em teste", xp: 100 }
-        ];
-        document.getElementById('lista-desafios').innerHTML = desafios.map(d => `
-            <div class="card">
-                <span>${d.t} <strong>(${d.xp} XP)</strong></span>
-                <button class="btn-xp" onclick="pedirValidacao('${d.t}', ${d.xp}, this)">Fiz!</button>
-            </div>
-        `).join('');
-    }
-
-    function carregarRanking() {
-        onValue(ref(db, 'v4_users'), (snap) => {
-            const lista = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
-            document.getElementById('lista-ranking').innerHTML = lista.map((u, i) => `
-                <div class="card">
-                    <span>${i+1}º ${u.nome} <small>(${u.turma})</small></span>
-                    <strong>${u.xp} XP</strong>
-                </div>
-            `).join('');
-        });
-    }
-
+    // --- LÓGICA DE ABAS ---
     window.mudarAba = (id, el) => {
+        if(id === 'aba-professor') return; // Bloqueado, precisa de PIN
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
+    };
+
+    window.abrirPIN = () => document.getElementById('pin-screen').style.display = 'flex';
+    window.fecharPIN = () => document.getElementById('pin-screen').style.display = 'none';
+    
+    window.validarPIN = () => {
+        if(document.getElementById('input-pin').value === PIN_MESTRE) {
+            fecharPIN();
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('aba-professor').classList.add('active');
+        } else {
+            alert("PIN Incorreto!");
+        }
+    };
+
+    // --- LÓGICA DE NEGÓCIO ---
+    window.pedirValidacao = (tit, xp) => {
+        push(ref(db, 'v5_pendentes'), { aluno: usuario.nome, task: tit, xp: xp });
+        alert("Enviado para o Professor!");
+    };
+
+    window.aprovar = async (key, alunoNome, xp) => {
+        const id = alunoNome.toLowerCase();
+        const userRef = ref(db, 'v5_users/' + id);
+        const snap = await get(userRef);
+        if(snap.exists()){
+            const d = snap.val();
+            update(userRef, { xp: d.xp + xp, moedas: (d.moedas || 0) + (xp/2) });
+            remove(ref(db, 'v5_pendentes/' + key));
+            confetti();
+        }
+    };
+
+    window.comprarItem = (custo) => {
+        if(usuario.moedas >= custo) {
+            usuario.moedas -= custo;
+            alert("Compra realizada! Mostre ao professor.");
+            // Atualizar no Firebase aqui...
+        } else {
+            alert("Moedas insuficientes!");
+        }
+    };
+
+    // Início (Exemplo simplificado para demonstração)
+    function carregarDados() {
+        // Aqui viria a lógica de login que já fizemos
+        document.getElementById('lista-desafios').innerHTML = `
+            <div class="card"><span>Ler capítulo 1</span><button class="btn-action" onclick="pedirValidacao('Leitura', 50)">Fiz!</button></div>
+            <div class="card"><span>Ajudar na Sala</span><button class="btn-action" onclick="pedirValidacao('Ajudar', 30)">Fiz!</button></div>
+        `;
+        
+        onValue(ref(db, 'v5_pendentes'), (snap) => {
+            const list = snap.val();
+            let h = "";
+            for(let k in list) h += `<div class="card"><span><b>${list[k].aluno}</b>: ${list[k].task}</span><button class="btn-action" onclick="aprovar('${k}','${list[k].aluno}',${list[k].xp})">OK</button></div>`;
+            document.getElementById('lista-pendentes').innerHTML = h || "Nada pendente.";
+        });
     }
+
+    carregarDados();
 </script>
 </body>
 </html>
-
