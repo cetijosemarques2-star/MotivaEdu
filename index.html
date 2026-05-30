@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - Níveis e Ranking</title>
+    <title>MotivaEdu - Versão Final</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
@@ -12,73 +12,76 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
-        /* HEADER HUD */
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; }
-        .progress-container { background: rgba(255,255,255,0.2); height: 10px; border-radius: 5px; margin-top: 10px; overflow: hidden; }
-        #progress-fill { background: white; height: 100%; width: 0%; transition: 0.5s; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; margin-top: 5px; }
-        .bronze { background: #CD7F32; } .prata { background: #C0C0C0; color: #333; } .ouro { background: #FFD700; color: #333; } .diamante { background: #B9F2FF; color: #333; }
-
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 30px 20px; border-radius: 0 0 30px 30px; }
+        .progress-container { background: rgba(255,255,255,0.2); height: 12px; border-radius: 6px; margin-top: 15px; overflow: hidden; }
+        #progress-fill { background: #fff; height: 100%; width: 0%; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
         .container { padding: 20px; max-width: 600px; margin: auto; }
         .section { display: none; }
-        .active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* LISTAS E CARDS */
-        .card { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .rank-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
-        .btn-xp { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
-
-        /* NAV */
-        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
-        .nav-icon { font-size: 20px; cursor: pointer; filter: grayscale(1); }
-        .nav-icon.active { filter: grayscale(0); transform: scale(1.2); }
-
-        /* LOGIN */
+        .active { display: block; animation: fadeIn 0.4s; }
+        
+        .card { background: var(--card); border-radius: 18px; padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0,0,0,0.03); }
+        .btn-xp { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }
+        
         #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-card { background: white; padding: 30px; border-radius: 20px; width: 90%; text-align: center; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
+        .login-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; }
+        
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #eee; }
+        .nav-icon { font-size: 24px; cursor: pointer; opacity: 0.3; transition: 0.3s; }
+        .nav-icon.active { opacity: 1; transform: scale(1.2); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-card">
-        <h2>Entrar no MotivaEdu</h2>
-        <input type="text" id="nomeUser" placeholder="Seu nome">
+        <h2 style="color:var(--primary)">🚀 MotivaEdu</h2>
+        <p>Escolha sua série para começar</p>
+        <input type="text" id="nomeUser" placeholder="Seu nome completo">
         <select id="turmaUser">
-            <option value="9A">9º Ano A</option>
-            <option value="9B">9º Ano B</option>
-            <option value="1A">1º Médio A</option>
+            <option value="9A">9º Ano - Fundamental</option>
+            <option value="1EM-A">1º Ano "A" - Ensino Médio</option>
+            <option value="1EM-B">1º Ano "B" - Ensino Médio</option>
+            <option value="2EM-A">2º Ano "A" - Ensino Médio</option>
+            <option value="2EM-B">2º Ano "B" - Ensino Médio</option>
+            <option value="3EM-A">3º Ano "A" - Ensino Médio</option>
+            <option value="3EM-B">3º Ano "B" - Ensino Médio</option>
         </select>
-        <button class="btn-xp" style="width: 100%" onclick="login()">Começar Jornada</button>
+        <button class="btn-xp" style="width: 100%; margin-top: 10px;" onclick="login()">Entrar no Painel</button>
     </div>
 </div>
 
 <header>
-    <div style="display:flex; justify-content:space-between">
-        <h3 id="displayNome">Usuário</h3>
-        <div id="displayNivel" class="badge bronze">Bronze</div>
+    <div style="display:flex; justify-content:space-between; align-items: center;">
+        <div>
+            <h2 id="displayNome">Carregando...</h2>
+            <div id="displayNivel" class="badge" style="background:#CD7F32; color:white">Bronze</div>
+        </div>
+        <div style="text-align: right">
+            <span style="font-size: 20px; font-weight: bold;" id="displayXP">0</span><br>
+            <small>PONTOS XP</small>
+        </div>
     </div>
     <div class="progress-container"><div id="progress-fill"></div></div>
-    <p style="font-size: 12px; margin-top: 5px">XP Total: <span id="displayXP">0</span></p>
 </header>
 
 <div class="container">
     <div id="aba-desafios" class="section active">
-        <h3>🎯 Missões</h3>
+        <h3 style="margin-bottom:15px">🎯 Desafios Disponíveis</h3>
         <div id="lista-desafios"></div>
     </div>
 
     <div id="aba-ranking" class="section">
-        <h3>🏆 Ranking</h3>
-        <div style="display:flex; gap:10px; margin:15px 0">
-            <button onclick="carregarRanking('global')" class="btn-xp" style="font-size:12px">Global</button>
-            <button onclick="carregarRanking('turma')" class="btn-xp" style="font-size:12px; background:#4F8CFF">Minha Turma</button>
+        <h3 style="margin-bottom:15px">🏆 Ranking dos Alunos</h3>
+        <div style="display:flex; gap:10px; margin-bottom:15px">
+            <button onclick="carregarRanking('global')" class="btn-xp" style="flex:1; font-size:12px">Ranking Geral</button>
+            <button onclick="carregarRanking('turma')" class="btn-xp" style="flex:1; font-size:12px; background:#4F8CFF">Minha Turma</button>
         </div>
-        <div class="card" id="lista-ranking" style="display:block">
-            Carregando...
-        </div>
+        <div id="lista-ranking"></div>
     </div>
 </div>
 
@@ -106,27 +109,31 @@
 
     let usuario = { nome: "", turma: "", xp: 0 };
 
-    // 50 Desafios Simplificados
     const desafios = [
-        { t: "Ler 1 livro", xp: 50 }, { t: "Ajudar colega", xp: 30 }, { t: "Tarefa em dia", xp: 20 },
-        { t: "Chegar no horário", xp: 10 }, { t: "Mesa limpa", xp: 5 }, { t: "Fazer perguntas", xp: 15 },
-        { t: "Resumo da aula", xp: 25 }, { t: "Praticar esporte", xp: 20 }, { t: "Beber água", xp: 5 },
-        { t: "Sem celular na aula", xp: 30 } // Adicione mais conforme desejar...
+        { t: "Participar da aula ativamente", xp: 20 },
+        { t: "Ajudar colega com dúvida", xp: 30 },
+        { t: "Caderno organizado", xp: 15 },
+        { t: "Leitura de 1 capítulo", xp: 25 },
+        { t: "Trabalho entregue no prazo", xp: 40 },
+        { t: "Nota acima da média", xp: 50 },
+        { t: "Manter a sala limpa", xp: 10 }
     ];
 
     window.login = async () => {
-        const nome = document.getElementById('nomeUser').value;
+        const nome = document.getElementById('nomeUser').value.trim();
         const turma = document.getElementById('turmaUser').value;
-        if(!nome) return;
+        if(!nome) return alert("Por favor, digite seu nome.");
 
+        // O segredo para zerar: usamos uma pasta nova 'v2_users'
         const id = nome.replace(/\s/g, '_').toLowerCase();
-        const snap = await get(ref(db, 'users/' + id));
+        const userRef = ref(db, 'v2_users/' + id);
+        const snap = await get(userRef);
         
         if(snap.exists()){
             usuario = snap.val();
         } else {
             usuario = { nome, turma, xp: 0 };
-            await set(ref(db, 'users/' + id), usuario);
+            await set(userRef, usuario);
         }
 
         document.getElementById('login-screen').style.display = 'none';
@@ -139,49 +146,54 @@
         document.getElementById('displayNome').innerText = usuario.nome;
         document.getElementById('displayXP').innerText = usuario.xp;
         
-        let nivel = "Bronze", classe = "bronze", pct = (usuario.xp/200)*100;
-        if(usuario.xp > 1000) { nivel = "Diamante"; classe = "diamante"; pct = 100; }
-        else if(usuario.xp > 500) { nivel = "Ouro"; classe = "ouro"; pct = (usuario.xp/1000)*100; }
-        else if(usuario.xp > 200) { nivel = "Prata"; classe = "prata"; pct = (usuario.xp/500)*100; }
+        let nivel = "Bronze", cor = "#CD7F32", pct = (usuario.xp/200)*100;
+        if(usuario.xp >= 1000) { nivel = "Diamante"; cor = "#B9F2FF"; pct = 100; }
+        else if(usuario.xp >= 500) { nivel = "Ouro"; cor = "#FFD700"; pct = (usuario.xp/1000)*100; }
+        else if(usuario.xp >= 200) { nivel = "Prata"; cor = "#C0C0C0"; pct = (usuario.xp/500)*100; }
 
         const dNivel = document.getElementById('displayNivel');
         dNivel.innerText = nivel;
-        dNivel.className = "badge " + classe;
-        document.getElementById('progress-fill').style.width = pct + "%";
+        dNivel.style.background = cor;
+        dNivel.style.color = (nivel === "Bronze") ? "white" : "black";
+        document.getElementById('progress-fill').style.width = Math.min(pct, 100) + "%";
     }
 
     window.addXP = (valor, btn) => {
         usuario.xp += valor;
         const id = usuario.nome.replace(/\s/g, '_').toLowerCase();
-        update(ref(db, 'users/' + id), { xp: usuario.xp });
+        update(ref(db, 'v2_users/' + id), { xp: usuario.xp });
         atualizarInterface();
         btn.innerText = "✅"; btn.disabled = true;
-        confetti({ particleCount: 100, spread: 70 });
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     };
 
     function renderDesafios() {
         const list = document.getElementById('lista-desafios');
         list.innerHTML = desafios.map(d => `
             <div class="card">
-                <span>${d.t}</span>
-                <button class="btn-xp" onclick="addXP(${d.xp}, this)">+${d.xp} XP</button>
+                <div><strong>${d.t}</strong><br><small>+${d.xp} XP</small></div>
+                <button class="btn-xp" onclick="addXP(${d.xp}, this)">Fiz!</button>
             </div>
         `).join('');
     }
 
     window.carregarRanking = (tipo) => {
-        onValue(ref(db, 'users'), (snap) => {
+        onValue(ref(db, 'v2_users'), (snap) => {
             let dados = snap.val();
+            if(!dados) return;
             let lista = Object.values(dados);
             if(tipo === 'turma') lista = lista.filter(u => u.turma === usuario.turma);
             
             lista.sort((a,b) => b.xp - a.xp);
-            document.getElementById('lista-ranking').innerHTML = lista.map((u, i) => `
-                <div class="rank-item">
-                    <span>${i+1}º ${u.nome} <small>(${u.turma})</small></span>
-                    <strong>${u.xp} XP</strong>
-                </div>
-            `).join('');
+            document.getElementById('lista-ranking').innerHTML = lista.map((u, i) => {
+                let icon = (i === 0) ? "🥇" : (i === 1) ? "🥈" : (i === 2) ? "🥉" : `${i+1}º`;
+                return `
+                    <div class="card" style="${u.nome === usuario.nome ? 'border: 2px solid var(--primary)' : ''}">
+                        <span>${icon} ${u.nome} <br> <small>${u.turma}</small></span>
+                        <strong>${u.xp} XP</strong>
+                    </div>
+                `;
+            }).join('');
         });
     };
 
@@ -194,4 +206,3 @@
 </script>
 </body>
 </html>
-
