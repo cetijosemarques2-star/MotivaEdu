@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu - Experiência Completa</title>
+    <title>MotivaEdu Pro - Conectado ao Firebase</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -12,43 +12,36 @@
     <style>
         :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; --accent: #FFD700; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { background: var(--bg); color: var(--text); }
 
-        /* Tela de Login */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-        }
-        .login-card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .login-card input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; outline: none; font-size: 16px; }
+        /* Telas */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; }
+        .login-card input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; }
 
-        /* App Principal */
         header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; }
         .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: auto; }
         .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
 
-        .btn { border: none; background: var(--primary); color: white; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s; }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        /* Ranking e Listas */
+        .btn { border: none; background: var(--primary); color: white; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; }
         .rank-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
-        .destaque { background: var(--accent); color: #000; padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; margin-bottom: 20px; border: 2px dashed #333; }
         
         .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
         .section { display: none; }
-        .active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .active { display: block; }
+        
+        #loading-overlay { display: none; color: white; margin-top: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-card">
-        <h2>🚀 Bem-vindo ao MotivaEdu</h2>
-        <p>Para começar, como você se chama?</p>
-        <input type="text" id="inputNome" placeholder="Seu nome completo">
-        <button class="btn" onclick="fazerLogin()">Entrar no Painel</button>
+        <h2>🚀 MotivaEdu Cloud</h2>
+        <p>Entre com seu nome para carregar seus dados</p>
+        <input type="text" id="inputNome" placeholder="Seu nome">
+        <button class="btn" id="btnLogin">Entrar / Criar Conta</button>
+        <div id="loading-overlay">Conectando ao banco de dados...</div>
     </div>
 </div>
 
@@ -57,140 +50,133 @@
         <div id="userInitials" style="width:50px; height:50px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-weight:bold;">?</div>
         <div>
             <h2 id="displayNome">Usuário</h2>
-            <p>Seu progresso: <span id="xpValor">0</span> XP</p>
+            <p>Pontuação Total: <span id="xpValor">0</span> XP</p>
         </div>
     </div>
 </header>
 
 <div class="container">
-    
     <div id="home" class="section active">
-        <div class="destaque">⭐ Aluno Destaque do Mês: <br> <span id="nomeDestaque">Ana Clara (520 XP)</span></div>
-        
-        <h3>🎯 Lista de Desafios</h3>
+        <h3>🎯 Desafios de Hoje</h3>
         <div class="card">
-            <div class="rank-item"><span>📖 Ler 1 capítulo de livro</span> <button onclick="ganharXP(15, this)" style="padding:5px 10px">Fiz!</button></div>
-            <div class="rank-item"><span>🧠 Resolver 5 exercícios</span> <button onclick="ganharXP(25, this)" style="padding:5px 10px">Fiz!</button></div>
-            <div class="rank-item"><span>🤝 Ajudar um colega</span> <button onclick="ganharXP(20, this)" style="padding:5px 10px">Fiz!</button></div>
-            <div class="rank-item"><span>⏰ Chegar no horário</span> <button onclick="ganharXP(10, this)" style="padding:5px 10px">Fiz!</button></div>
-            <div class="rank-item"><span>♻️ Recolher lixo da sala</span> <button onclick="ganharXP(10, this)" style="padding:5px 10px">Fiz!</button></div>
+            <div class="rank-item"><span>📖 Leitura Diária (+15 XP)</span> <button onclick="addXP(15, this)">Fiz</button></div>
+            <div class="rank-item"><span>🧠 Exercícios (+25 XP)</span> <button onclick="addXP(25, this)">Fiz</button></div>
         </div>
-    </div>
-
-    <div id="ranking" class="section">
-        <h3>🏆 Top 10 Alunos</h3>
-        <div class="card" id="listaRanking">
-            </div>
+        <h3>🏆 Ranking da Escola</h3>
+        <div class="card" id="listaRanking">Carregando ranking...</div>
     </div>
 
     <div id="cert" class="section">
         <div class="card" style="text-align:center">
-            <h3>📜 Seu Certificado</h3>
-            <p>O nome abaixo será impresso no documento:</p>
-            <h4 id="certNome" style="margin:10px 0; color:var(--primary)"></h4>
+            <h3>📜 Certificado</h3>
             <div id="qrcode" style="margin:20px auto; display:inline-block"></div>
-            <button class="btn" onclick="gerarPDF()">Baixar PDF Oficial</button>
+            <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
         </div>
     </div>
-
 </div>
 
 <nav class="nav">
     <div onclick="showTab('home')">🏠</div>
-    <div onclick="showTab('ranking')">🏆</div>
     <div onclick="showTab('cert')">📜</div>
 </nav>
 
-<script>
-    let xp = 0;
-    let usuarioNome = "";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    function fazerLogin() {
-        const input = document.getElementById('inputNome').value;
-        if(input.trim().length < 3) {
-            alert("Por favor, digite seu nome completo.");
-            return;
-        }
-        usuarioNome = input;
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('displayNome').innerText = usuarioNome;
-        document.getElementById('certNome').innerText = usuarioNome;
-        document.getElementById('userInitials').innerText = usuarioNome.substring(0,2).toUpperCase();
-        
-        montarRanking();
-        gerarQR();
+  const firebaseConfig = {
+    apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
+    authDomain: "motivaedu-2d472.firebaseapp.com",
+    databaseURL: "https://motivaedu-2d472-default-rtdb.firebaseio.com",
+    projectId: "motivaedu-2d472",
+    storageBucket: "motivaedu-2d472.firebasestorage.app",
+    messagingSenderId: "885043141539",
+    appId: "1:885043141539:web:d9411ffb112e8f71a91816"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  let usuarioAtual = "";
+  let xpAtual = 0;
+
+  // Lógica de Login e persistência no Firebase
+  document.getElementById('btnLogin').onclick = async () => {
+    const nome = document.getElementById('inputNome').value.trim();
+    if (!nome) return alert("Digite seu nome!");
+    
+    document.getElementById('loading-overlay').style.display = 'block';
+    usuarioAtual = nome.replace(/\s+/g, '_'); // Formata nome para o banco
+
+    const userRef = ref(db, 'usuarios/' + usuarioAtual);
+    const snapshot = await get(userRef);
+
+    if (snapshot.exists()) {
+        xpAtual = snapshot.val().xp;
+    } else {
+        xpAtual = 0;
+        await set(userRef, { nome: nome, xp: xpAtual });
     }
 
-    function ganharXP(val, btn) {
-        xp += val;
-        document.getElementById('xpValor').innerText = xp;
-        btn.innerText = "✅";
-        btn.disabled = true;
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-        montarRanking(); // Atualiza sua posição no ranking
-    }
+    iniciarApp(nome);
+  };
 
-    function montarRanking() {
-        const alunos = [
-            {n: "Ana Clara", p: 520},
-            {n: "Lucas Silva", p: 480},
-            {n: "Beatriz Oliveira", p: 410},
-            {n: "Marcos Souza", p: 390},
-            {n: "Mariana Luz", p: 350},
-            {n: "Enzo Gabriel", p: 310},
-            {n: "Julia Costa", p: 290},
-            {n: "Rafael Meira", p: 250},
-            {n: "Sophia Reis", p: 210},
-            {n: usuarioNome + " (Você)", p: xp}
-        ];
-        
-        // Ordena por pontos
-        alunos.sort((a, b) => b.p - a.p);
+  function iniciarApp(nome) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('displayNome').innerText = nome;
+    document.getElementById('xpValor').innerText = xpAtual;
+    document.getElementById('userInitials').innerText = nome.substring(0,2).toUpperCase();
+    gerarQR(nome);
+    escutarRanking();
+  }
+
+  // Adicionar XP e Salvar no Firebase
+  window.addXP = (val, btn) => {
+    xpAtual += val;
+    document.getElementById('xpValor').innerText = xpAtual;
+    set(ref(db, 'usuarios/' + usuarioAtual), { nome: usuarioAtual.replace('_', ' '), xp: xpAtual });
+    
+    btn.innerText = "✅";
+    btn.disabled = true;
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
+  // Ranking em Tempo Real
+  function escutarRanking() {
+    const usersRef = ref(db, 'usuarios');
+    onValue(usersRef, (snapshot) => {
+        const data = snapshot.val();
+        let lista = [];
+        for (let id in data) { lista.push(data[id]); }
+        lista.sort((a, b) => b.xp - a.xp);
         
         let html = "";
-        alunos.forEach((aluno, i) => {
-            html += `<div class="rank-item"><span>${i+1}º ${aluno.n}</span> <strong>${aluno.p} XP</strong></div>`;
+        lista.slice(0, 10).forEach((u, i) => {
+            html += `<div class="rank-item"><span>${i+1}º ${u.nome}</span> <strong>${u.xp} XP</strong></div>`;
         });
         document.getElementById('listaRanking').innerHTML = html;
-    }
+    });
+  }
 
-    function showTab(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
+  // Outras funções globais
+  window.showTab = (id) => {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  };
 
-    function gerarQR() {
-        new QRCode(document.getElementById("qrcode"), {
-            text: "Autentico: " + usuarioNome,
-            width: 128, height: 128
-        });
-    }
+  window.gerarPDF = () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l');
+    doc.text("Certificado MotivaEdu", 148, 50, {align:'center'});
+    doc.text(`Aluno: ${usuarioAtual.replace('_',' ')}`, 148, 80, {align:'center'});
+    doc.text(`Total de XP: ${xpAtual}`, 148, 100, {align:'center'});
+    doc.save("Certificado.pdf");
+  };
 
-    function gerarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l');
-        
-        doc.setFillColor(108, 99, 255);
-        doc.rect(0, 0, 297, 210, 'F');
-        doc.setFillColor(255, 255, 255);
-        doc.roundedRect(10, 10, 277, 190, 5, 5, 'F');
-
-        doc.setFontSize(30);
-        doc.text("CERTIFICADO DE MÉRITO", 148, 50, {align: 'center'});
-        
-        doc.setFontSize(20);
-        doc.text("Certificamos que", 148, 80, {align: 'center'});
-        
-        doc.setFontSize(35);
-        doc.setTextColor(108, 99, 255);
-        doc.text(usuarioNome, 148, 110, {align: 'center'});
-        
-        doc.setFontSize(16);
-        doc.setTextColor(50, 50, 50);
-        doc.text(`Concluiu os desafios do MotivaEdu com total de ${xp} XP.`, 148, 140, {align: 'center'});
-        
-        doc.save(`Certificado_${usuarioNome}.pdf`);
-    }
+  function gerarQR(nome) {
+    new QRCode(document.getElementById("qrcode"), { text: "MotivaEdu:" + nome, width: 120, height: 120 });
+  }
 </script>
+
 </body>
 </html>
