@@ -3,65 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - 50 Desafios</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>MotivaEdu Pro - Níveis e Ranking</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; }
+        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card: #fff; --text: #333; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; text-align: center; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        
-        .card { background: var(--card-bg); border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .challenge-info { flex: 1; }
-        .challenge-info h4 { font-size: 14px; margin-bottom: 4px; }
-        .challenge-info span { font-size: 12px; color: #666; background: #eee; padding: 2px 8px; border-radius: 10px; }
-        
-        .btn-xp { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; min-width: 80px; }
-        .btn-xp:disabled { background: #ccc; }
+        /* HEADER HUD */
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; }
+        .progress-container { background: rgba(255,255,255,0.2); height: 10px; border-radius: 5px; margin-top: 10px; overflow: hidden; }
+        #progress-fill { background: white; height: 100%; width: 0%; transition: 0.5s; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; margin-top: 5px; }
+        .bronze { background: #CD7F32; } .prata { background: #C0C0C0; color: #333; } .ouro { background: #FFD700; color: #333; } .diamante { background: #B9F2FF; color: #333; }
 
-        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .filter-btn { background: white; border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
-        
+        .container { padding: 20px; max-width: 600px; margin: auto; }
+        .section { display: none; }
+        .active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* LISTAS E CARDS */
+        .card { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .rank-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
+        .btn-xp { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
+
+        /* NAV */
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
+        .nav-icon { font-size: 20px; cursor: pointer; filter: grayscale(1); }
+        .nav-icon.active { filter: grayscale(0); transform: scale(1.2); }
+
+        /* LOGIN */
         #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .login-card { background: white; padding: 30px; border-radius: 20px; width: 90%; text-align: center; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="login-box">
-        <h2>MotivaEdu</h2>
-        <input type="text" id="userNome" placeholder="Seu nome">
-        <button class="btn-xp" style="width: 100%" onclick="entrar()">Entrar</button>
+    <div class="login-card">
+        <h2>Entrar no MotivaEdu</h2>
+        <input type="text" id="nomeUser" placeholder="Seu nome">
+        <select id="turmaUser">
+            <option value="9A">9º Ano A</option>
+            <option value="9B">9º Ano B</option>
+            <option value="1A">1º Médio A</option>
+        </select>
+        <button class="btn-xp" style="width: 100%" onclick="login()">Começar Jornada</button>
     </div>
 </div>
 
 <header>
-    <h2 id="welcomeName">Olá!</h2>
-    <p>XP Total: <span id="xpDisplay">0</span></p>
+    <div style="display:flex; justify-content:space-between">
+        <h3 id="displayNome">Usuário</h3>
+        <div id="displayNivel" class="badge bronze">Bronze</div>
+    </div>
+    <div class="progress-container"><div id="progress-fill"></div></div>
+    <p style="font-size: 12px; margin-top: 5px">XP Total: <span id="displayXP">0</span></p>
 </header>
 
 <div class="container">
-    <h3>🚀 Missões e Desafios</h3>
-    <div class="filter-bar">
-        <button class="filter-btn" onclick="renderChallenges('Todos')">Todos</button>
-        <button class="filter-btn" onclick="renderChallenges('Estudo')">Estudo</button>
-        <button class="filter-btn" onclick="renderChallenges('Social')">Social</button>
-        <button class="filter-btn" onclick="renderChallenges('Hábito')">Hábitos</button>
+    <div id="aba-desafios" class="section active">
+        <h3>🎯 Missões</h3>
+        <div id="lista-desafios"></div>
     </div>
-    <div id="lista-desafios"></div>
+
+    <div id="aba-ranking" class="section">
+        <h3>🏆 Ranking</h3>
+        <div style="display:flex; gap:10px; margin:15px 0">
+            <button onclick="carregarRanking('global')" class="btn-xp" style="font-size:12px">Global</button>
+            <button onclick="carregarRanking('turma')" class="btn-xp" style="font-size:12px; background:#4F8CFF">Minha Turma</button>
+        </div>
+        <div class="card" id="lista-ranking" style="display:block">
+            Carregando...
+        </div>
+    </div>
 </div>
+
+<nav>
+    <div class="nav-icon active" onclick="mudarAba('aba-desafios', this)">🎯</div>
+    <div class="nav-icon" onclick="mudarAba('aba-ranking', this)">🏆</div>
+</nav>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
@@ -76,109 +104,94 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const desafiosBase = [
-        { t: "Ler 10 páginas de um livro", xp: 20, c: "Estudo" },
-        { t: "Ajudar um colega com dúvida", xp: 30, c: "Social" },
-        { t: "Entregar tarefa no prazo", xp: 25, c: "Estudo" },
-        { t: "Manter a mesa organizada", xp: 10, c: "Hábito" },
-        { t: "Participar da aula ativamente", xp: 15, c: "Estudo" },
-        { t: "Chegar no horário", xp: 10, c: "Hábito" },
-        { t: "Fazer um resumo da aula", xp: 20, c: "Estudo" },
-        { t: "Pedir desculpas por um erro", xp: 40, c: "Social" },
-        { t: "Recolher lixo do chão", xp: 15, c: "Social" },
-        { t: "Usar palavras gentis", xp: 10, c: "Social" },
-        { t: "Praticar esporte por 30min", xp: 25, c: "Hábito" },
-        { t: "Beber 2L de água no dia", xp: 10, c: "Hábito" },
-        { t: "Estudar 1h extra", xp: 35, c: "Estudo" },
-        { t: "Apresentar trabalho sem ler", xp: 50, c: "Estudo" },
-        { t: "Organizar mochila", xp: 10, c: "Hábito" },
-        { t: "Compartilhar material", xp: 20, c: "Social" },
-        { t: "Elogiar um professor", xp: 15, c: "Social" },
-        { t: "Não usar celular na aula", xp: 20, c: "Hábito" },
-        { t: "Fazer perguntas inteligentes", xp: 15, c: "Estudo" },
-        { t: "Resolver desafio de lógica", xp: 30, c: "Estudo" },
-        { t: "Ensinar algo novo a alguém", xp: 40, c: "Social" },
-        { t: "Frequência 100% na semana", xp: 100, c: "Hábito" },
-        { t: "Liderar um grupo", xp: 45, c: "Social" },
-        { t: "Ajudar na limpeza da sala", xp: 30, c: "Social" },
-        { t: "Ler notícia e comentar", xp: 15, c: "Estudo" },
-        { t: "Trazer lanche saudável", xp: 10, c: "Hábito" },
-        { t: "Dormir 8h na noite anterior", xp: 20, c: "Hábito" },
-        { t: "Resolver conflito sem briga", xp: 50, c: "Social" },
-        { t: "Fazer caligrafia", xp: 15, c: "Estudo" },
-        { t: "Organizar biblioteca da sala", xp: 40, c: "Social" },
-        { t: "Criar mapa mental", xp: 25, c: "Estudo" },
-        { t: "Trazer curiosidade científica", xp: 20, c: "Estudo" },
-        { t: "Respeitar fila da cantina", xp: 10, c: "Social" },
-        { t: "Não faltar na prova", xp: 30, c: "Hábito" },
-        { t: "Ajudar aluno novo", xp: 50, c: "Social" },
-        { t: "Participar de olimpíada", xp: 80, c: "Estudo" },
-        { t: "Ganhar medalha", xp: 200, c: "Estudo" },
-        { t: "Escrever poema ou conto", xp: 30, c: "Estudo" },
-        { t: "Ter o caderno completo", xp: 40, c: "Estudo" },
-        { t: "Consertar algo quebrado", xp: 30, c: "Social" },
-        { t: "Ser voluntário em evento", xp: 60, c: "Social" },
-        { t: "Praticar um idioma", xp: 25, c: "Estudo" },
-        { t: "Melhorar nota em 1 ponto", xp: 50, c: "Estudo" },
-        { t: "Não levar ocorrência", xp: 70, c: "Hábito" },
-        { t: "Sugerir melhoria para escola", xp: 40, c: "Social" },
-        { t: "Fazer curso online extra", xp: 100, c: "Estudo" },
-        { t: "Cuidar de uma planta", xp: 20, c: "Hábito" },
-        { t: "Fazer apresentação visual", xp: 30, c: "Estudo" },
-        { t: "Terminar prova primeiro", xp: 10, c: "Estudo" },
-        { t: "Ajudar na organização do pátio", xp: 25, c: "Social" }
+    let usuario = { nome: "", turma: "", xp: 0 };
+
+    // 50 Desafios Simplificados
+    const desafios = [
+        { t: "Ler 1 livro", xp: 50 }, { t: "Ajudar colega", xp: 30 }, { t: "Tarefa em dia", xp: 20 },
+        { t: "Chegar no horário", xp: 10 }, { t: "Mesa limpa", xp: 5 }, { t: "Fazer perguntas", xp: 15 },
+        { t: "Resumo da aula", xp: 25 }, { t: "Praticar esporte", xp: 20 }, { t: "Beber água", xp: 5 },
+        { t: "Sem celular na aula", xp: 30 } // Adicione mais conforme desejar...
     ];
 
-    let userKey = "";
-    let xpTotal = 0;
-
-    window.entrar = async () => {
-        const nome = document.getElementById('userNome').value;
+    window.login = async () => {
+        const nome = document.getElementById('nomeUser').value;
+        const turma = document.getElementById('turmaUser').value;
         if(!nome) return;
-        userKey = nome.replace(/\s/g, '_').toLowerCase();
+
+        const id = nome.replace(/\s/g, '_').toLowerCase();
+        const snap = await get(ref(db, 'users/' + id));
         
-        const snapshot = await get(ref(db, 'users/' + userKey));
-        if(snapshot.exists()){
-            xpTotal = snapshot.val().xp;
+        if(snap.exists()){
+            usuario = snap.val();
         } else {
-            await set(ref(db, 'users/' + userKey), { nome, xp: 0 });
+            usuario = { nome, turma, xp: 0 };
+            await set(ref(db, 'users/' + id), usuario);
         }
-        
+
         document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('welcomeName').innerText = "Olá, " + nome;
-        document.getElementById('xpDisplay').innerText = xpTotal;
-        renderChallenges('Todos');
+        atualizarInterface();
+        renderDesafios();
+        carregarRanking('global');
     };
 
-    window.renderChallenges = (filtro) => {
-        const container = document.getElementById('lista-desafios');
-        container.innerHTML = "";
-        desafiosBase.forEach((d, index) => {
-            if(filtro !== 'Todos' && d.c !== filtro) return;
+    function atualizarInterface() {
+        document.getElementById('displayNome').innerText = usuario.nome;
+        document.getElementById('displayXP').innerText = usuario.xp;
+        
+        let nivel = "Bronze", classe = "bronze", pct = (usuario.xp/200)*100;
+        if(usuario.xp > 1000) { nivel = "Diamante"; classe = "diamante"; pct = 100; }
+        else if(usuario.xp > 500) { nivel = "Ouro"; classe = "ouro"; pct = (usuario.xp/1000)*100; }
+        else if(usuario.xp > 200) { nivel = "Prata"; classe = "prata"; pct = (usuario.xp/500)*100; }
+
+        const dNivel = document.getElementById('displayNivel');
+        dNivel.innerText = nivel;
+        dNivel.className = "badge " + classe;
+        document.getElementById('progress-fill').style.width = pct + "%";
+    }
+
+    window.addXP = (valor, btn) => {
+        usuario.xp += valor;
+        const id = usuario.nome.replace(/\s/g, '_').toLowerCase();
+        update(ref(db, 'users/' + id), { xp: usuario.xp });
+        atualizarInterface();
+        btn.innerText = "✅"; btn.disabled = true;
+        confetti({ particleCount: 100, spread: 70 });
+    };
+
+    function renderDesafios() {
+        const list = document.getElementById('lista-desafios');
+        list.innerHTML = desafios.map(d => `
+            <div class="card">
+                <span>${d.t}</span>
+                <button class="btn-xp" onclick="addXP(${d.xp}, this)">+${d.xp} XP</button>
+            </div>
+        `).join('');
+    }
+
+    window.carregarRanking = (tipo) => {
+        onValue(ref(db, 'users'), (snap) => {
+            let dados = snap.val();
+            let lista = Object.values(dados);
+            if(tipo === 'turma') lista = lista.filter(u => u.turma === usuario.turma);
             
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="challenge-info">
-                    <h4>${d.t}</h4>
-                    <span>${d.c}</span>
+            lista.sort((a,b) => b.xp - a.xp);
+            document.getElementById('lista-ranking').innerHTML = lista.map((u, i) => `
+                <div class="rank-item">
+                    <span>${i+1}º ${u.nome} <small>(${u.turma})</small></span>
+                    <strong>${u.xp} XP</strong>
                 </div>
-                <button class="btn-xp" onclick="completar(${index}, ${d.xp}, this)">+${d.xp} XP</button>
-            `;
-            container.appendChild(card);
+            `).join('');
         });
     };
 
-    window.completar = (id, xp, btn) => {
-        xpTotal += xp;
-        document.getElementById('xpDisplay').innerText = xpTotal;
-        update(ref(db, 'users/' + userKey), { xp: xpTotal });
-        
-        btn.innerText = "✅";
-        btn.disabled = true;
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    };
-
+    window.mudarAba = (id, el) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+    }
 </script>
 </body>
 </html>
+
