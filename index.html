@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu v6.1 — Transformando esforço em conquistas</title>
+    <title>MotivaEdu v6.2 — Pro Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -16,6 +16,7 @@
             --branco: #FFFFFF;
             --cinza-fundo: #F3F4F6;
             --texto: #1F2937;
+            --perigo: #EF4444;
             --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
@@ -29,13 +30,14 @@
         .logo { font-size: 20px; font-weight: bold; border-left: 4px solid var(--ouro); padding-left: 10px; }
         
         .profile-card { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--azul-claro); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; }
-        
+        .avatar { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--azul-claro); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; position: relative; }
+        .level-badge { position: absolute; bottom: -5px; right: -5px; background: var(--ouro); color: var(--azul-escuro); font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 2px solid var(--azul-escuro); }
+
         .xp-container { background: rgba(255,255,255,0.15); height: 12px; border-radius: 10px; margin-top: 15px; overflow: hidden; }
         #xp-bar { background: var(--ouro); height: 100%; width: 0%; box-shadow: 0 0 10px var(--ouro); }
 
         .stats-row { display: flex; justify-content: space-around; margin-top: 15px; font-size: 13px; font-weight: 600; }
-        .stat-badge { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+        .stat-badge { background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
 
         /* --- CONTEÚDO --- */
         .container { padding: 20px; max-width: 600px; margin: auto; }
@@ -43,27 +45,27 @@
         .active { display: block; animation: fadeInUp 0.5s ease forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--branco); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--card-shadow); border: 1px solid #e5e7eb; }
+        .card { background: var(--branco); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--card-shadow); border: 1px solid #e5e7eb; position: relative; overflow: hidden; }
         
-        /* --- MURAL --- */
+        /* --- MURAL & MISSÕES --- */
         .mural-post { border-left: 5px solid var(--azul-claro); }
+        .urgente { border-left: 5px solid var(--perigo); background: linear-gradient(to right, #fff, #fffafa); }
+        .timer { font-size: 11px; color: var(--perigo); font-weight: bold; margin-bottom: 5px; display: block; }
+        
         .emoji-reactions { display: flex; gap: 8px; margin-top: 12px; }
         .emoji-btn { background: #f3f4f6; border: none; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .emoji-btn:active { transform: scale(0.9); background: var(--ouro); }
-
-        /* --- BOTÕES E MISSÕES --- */
+        
         .btn-acao { background: var(--azul-claro); color: #fff; border: none; padding: 10px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-acao:hover { background: var(--azul-escuro); transform: translateY(-2px); }
-        .item-missao { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+        .btn-acao:disabled { background: #cbd5e1; cursor: not-allowed; }
 
-        /* --- RANKING PÓDIO --- */
+        /* --- PÓDIO --- */
         .podium { display: flex; justify-content: space-around; align-items: flex-end; padding: 20px 0; }
         .podium-box { text-align: center; width: 30%; font-weight: bold; }
         .p-1 { background: var(--ouro); height: 80px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 30px; }
         .p-2 { background: #CBD5E1; height: 60px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .p-3 { background: #94A3B8; height: 40px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
-        /* --- MENU INFERIOR --- */
+        /* --- MENU --- */
         nav { position: fixed; bottom: 0; width: 100%; background: var(--branco); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #e5e7eb; z-index: 1000; }
         .nav-item { text-align: center; font-size: 10px; color: #94A3B8; cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--azul-claro); font-weight: bold; }
@@ -72,23 +74,23 @@
         /* --- LOGIN --- */
         #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-box { background: #fff; padding: 30px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #F3F4F6; border-radius: 12px; outline: none; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #F3F4F6; border-radius: 12px; outline: none; font-size: 16px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-box">
-        <h2 style="color:var(--azul-escuro)">🚀 MotivaEdu v6.1</h2>
-        <p style="font-size:14px; margin-bottom:20px; color:#6B7280">Sua jornada de aprendizado começa aqui.</p>
-        <input type="text" id="login-nome" placeholder="Nome Completo">
+        <h2 style="color:var(--azul-escuro)">🚀 MotivaEdu v6.2</h2>
+        <p style="font-size:14px; margin-bottom:20px; color:#6B7280">Aprender, Evoluir e Conquistar.</p>
+        <input type="text" id="login-nome" placeholder="Seu Nome Completo">
         <select id="login-turma">
             <option value="9º Ano A">9º Ano A</option>
             <option value="1º Médio A">1º Médio A</option>
-            <option value="1º Médio B">1º Médio B</option>
             <option value="2º Médio A">2º Médio A</option>
+            <option value="3º Médio A">3º Médio A</option>
         </select>
-        <button class="btn-acao" style="width:100%; padding:15px; margin-top:10px" onclick="entrar()">Entrar no Painel</button>
+        <button class="btn-acao" style="width:100%; padding:15px; margin-top:10px" onclick="entrar()">Iniciar Jornada</button>
     </div>
 </div>
 
@@ -98,13 +100,12 @@
         <div style="cursor:pointer; font-size:20px">🔔</div>
     </div>
     <div class="profile-card">
-        <div class="avatar">👤</div>
-        <div style="flex:1">
-            <h3 id="u-nome">Aluno</h3>
-            <p id="u-turma" style="font-size:12px; opacity:0.8">Turma</p>
+        <div class="avatar">
+            👤 <div class="level-badge" id="u-lvl-badge">1</div>
         </div>
-        <div style="text-align:right">
-            <div id="u-nivel" style="font-weight:bold; color:var(--ouro)">Nível 1</div>
+        <div style="flex:1">
+            <h3 id="u-nome">Carregando...</h3>
+            <p id="u-turma" style="font-size:12px; opacity:0.8">Sua Turma</p>
         </div>
     </div>
     <div class="xp-container"><div id="xp-bar"></div></div>
@@ -119,22 +120,17 @@
     
     <div id="sec-home" class="section active">
         <div class="card mural-post">
-            <small style="color: var(--azul-claro); font-weight: bold;">📢 AVISO DO DIA</small>
-            <p style="margin-top: 5px; font-size: 14px;">Não esqueçam: amanhã teremos bônus de XP para quem trouxer os livros da biblioteca! 📚</p>
+            <small style="color: var(--azul-claro); font-weight: bold;">📢 MURAL DA ESCOLA</small>
+            <p style="margin-top: 5px; font-size: 14px;">Gincana Cultural confirmada! Participe das missões especiais para ganhar XP em dobro. 🎨</p>
             <div class="emoji-reactions">
-                <button class="emoji-btn" onclick="this.innerText='👏 13'">👏 12</button>
-                <button class="emoji-btn" onclick="this.innerText='🔥 9'">🔥 8</button>
+                <button class="emoji-btn" onclick="reagir(this)">👏 24</button>
+                <button class="emoji-btn" onclick="reagir(this)">🔥 15</button>
+                <button class="emoji-btn" onclick="reagir(this)">🚀 7</button>
             </div>
         </div>
 
-        <h3>🎯 Desafios de Hoje</h3>
+        <h3>🎯 Missões de Hoje</h3>
         <div id="lista-missoes" style="margin-top:10px"></div>
-
-        <h3 style="margin-top:20px">🏅 Medalhas</h3>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
-            <div style="border: 2px solid var(--ouro); padding:5px 10px; border-radius:8px; font-size:11px; font-weight:bold; color:var(--ouro)">🏆 DESTAQUE</div>
-            <div style="border: 2px solid #94A3B8; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:bold; color:#94A3B8">🤝 PARCEIRO</div>
-        </div>
     </div>
 
     <div id="sec-ranking" class="section">
@@ -148,21 +144,21 @@
     </div>
 
     <div id="sec-loja" class="section">
-        <h3>🛒 Trocar Coins</h3>
+        <h3>🛒 Loja de Recompensas</h3>
         <div class="card">
-            <div class="item-missao">
-                <div><b>Certificado de Mérito</b><br><small>50 EduCoins</small></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee">
+                <div><b>Certificado Digital</b><br><small>50 Coins</small></div>
                 <button class="btn-acao" onclick="comprar(50)">Resgatar</button>
             </div>
-            <div class="item-missao">
-                <div><b>Sair 5min Cedo</b><br><small>150 EduCoins</small></div>
-                <button class="btn-acao" onclick="comprar(150)">Resgatar</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
+                <div><b>Badge de Ouro no Perfil</b><br><small>200 Coins</small></div>
+                <button class="btn-acao" onclick="comprar(200)">Resgatar</button>
             </div>
         </div>
     </div>
 
     <div id="sec-mestre" class="section">
-        <h3>👨‍🏫 Painel de Validação</h3>
+        <h3>👨‍🏫 Aprovações</h3>
         <div id="lista-pendentes"></div>
     </div>
 </div>
@@ -171,14 +167,13 @@
     <div class="nav-item active" onclick="aba('sec-home', this)"><i>🎯</i><span>Início</span></div>
     <div class="nav-item" onclick="aba('sec-ranking', this)"><i>🏆</i><span>Ranking</span></div>
     <div class="nav-item" onclick="aba('sec-loja', this)"><i>🛒</i><span>Loja</span></div>
-    <div class="nav-item" onclick="verificarPIN()"><i>👨‍🏫</i><span>Professor</span></div>
+    <div class="nav-item" onclick="verificarPIN()"><i>👨‍🏫</i><span>Mestre</span></div>
 </nav>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // CONFIGURAÇÃO FIREBASE (Substitua se necessário)
     const firebaseConfig = {
         apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
         authDomain: "motivaedu-2d472.firebaseapp.com",
@@ -193,10 +188,10 @@
     const db = getDatabase(app);
     let uAtivo = null;
 
-    const missoes = [
-        { t: "Participar da aula", xp: 20, c: 5 },
-        { t: "Entregar lição de casa", xp: 30, c: 10 },
-        { t: "Ajudar colega na dúvida", xp: 40, c: 15 }
+    const missoesBase = [
+        { t: "Participar da aula", xp: 20, c: 5, urgente: false },
+        { t: "Quiz Rápido de História", xp: 100, c: 20, urgente: true },
+        { t: "Ajudar um colega", xp: 40, c: 15, urgente: false }
     ];
 
     window.entrar = async () => {
@@ -208,9 +203,8 @@
         const uRef = ref(db, 'v6_users/' + id);
         const snap = await get(uRef);
 
-        if(snap.exists()) {
-            uAtivo = snap.val();
-        } else {
+        if(snap.exists()) uAtivo = snap.val();
+        else {
             uAtivo = { nome, turma, xp: 0, coins: 0, streak: 1 };
             await set(uRef, uAtivo);
         }
@@ -220,13 +214,12 @@
         document.getElementById('main-content').style.display = 'block';
         document.getElementById('navbar').style.display = 'flex';
         
-        iniciarApp();
+        iniciarSync();
     };
 
-    function iniciarApp() {
+    function iniciarSync() {
         const id = uAtivo.nome.replace(/\s/g, '_').toLowerCase();
         
-        // Listener de dados do usuário
         onValue(ref(db, 'v6_users/' + id), snap => {
             const d = snap.val();
             document.getElementById('u-nome').innerText = d.nome;
@@ -234,30 +227,31 @@
             document.getElementById('u-xp').innerText = d.xp;
             document.getElementById('u-coins').innerText = d.coins || 0;
             document.getElementById('u-streak').innerText = d.streak || 1;
+            
+            const nivel = Math.floor(d.xp / 500) + 1;
+            document.getElementById('u-lvl-badge').innerText = nivel;
             document.getElementById('xp-bar').style.width = ((d.xp % 500) / 500 * 100) + "%";
-            document.getElementById('u-nivel').innerText = "Nível " + (Math.floor(d.xp / 500) + 1);
         });
 
-        // Renderizar Missões
-        document.getElementById('lista-missoes').innerHTML = missoes.map(m => `
-            <div class="card"><div class="item-missao">
-                <div><b>${m.t}</b><br><small>+${m.xp} XP | +${m.c} Coins</small></div>
-                <button class="btn-acao" onclick="solicitar('${m.t}', ${m.xp}, ${m.c}, this)">Fiz!</button>
-            </div></div>
-        `).join('');
-
+        renderMissoes();
         syncRanking();
         syncPendencias();
     }
 
+    function renderMissoes() {
+        document.getElementById('lista-missoes').innerHTML = missoesBase.map(m => `
+            <div class="card ${m.urgente ? 'urgente' : ''}">
+                ${m.urgente ? '<span class="timer">⏱️ EXPIRA EM BREVE</span>' : ''}
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <div><b>${m.t}</b><br><small>+${m.xp} XP | +${m.c} Coins</small></div>
+                    <button class="btn-acao" onclick="solicitar('${m.t}', ${m.xp}, ${m.c}, this)">Concluir</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
     window.solicitar = (t, xp, c, btn) => {
-        push(ref(db, 'v6_pendentes'), { 
-            aluno: uAtivo.nome, 
-            id: uAtivo.nome.replace(/\s/g, '_').toLowerCase(), 
-            task: t, 
-            xp, 
-            coins: c 
-        });
+        push(ref(db, 'v6_pendentes'), { aluno: uAtivo.nome, id: uAtivo.nome.replace(/\s/g, '_').toLowerCase(), task: t, xp, coins: c });
         btn.innerText = "⏳"; btn.disabled = true;
     };
 
@@ -269,14 +263,14 @@
                 html += `
                 <div class="card" style="display:flex; justify-content:space-between; align-items:center">
                     <div><b>${p[k].aluno}</b><br>${p[k].task}</div>
-                    <button class="btn-acao" style="background:#22c55e" onclick="validar('${k}','${p[k].id}',${p[k].xp},${p[k].coins})">Aprovar</button>
+                    <button class="btn-acao" style="background:#22c55e" onclick="aprovar('${k}','${p[k].id}',${p[k].xp},${p[k].coins})">✔</button>
                 </div>`;
             }
-            document.getElementById('lista-pendentes').innerHTML = html || "Nenhuma tarefa aguardando aprovação.";
+            document.getElementById('lista-pendentes').innerHTML = html || "Sem pendências.";
         });
     }
 
-    window.validar = async (key, id, xp, c) => {
+    window.aprovar = async (key, id, xp, c) => {
         const uRef = ref(db, 'v6_users/' + id);
         const s = await get(uRef);
         await update(uRef, { xp: s.val().xp + xp, coins: (s.val().coins || 0) + c });
@@ -292,13 +286,20 @@
             if(list[2]) document.getElementById('rank3').innerText = list[2].nome.split(' ')[0];
             
             document.getElementById('ranking-lista').innerHTML = list.map((u, i) => `
-                <div class="card" style="display:flex; justify-content:space-between">
+                <div class="card" style="display:flex; justify-content:space-between; padding:12px 20px">
                     <span><b>${i+1}º</b> ${u.nome}</span>
                     <strong>${u.xp} XP</strong>
                 </div>
             `).join('');
         });
     }
+
+    window.reagir = (btn) => {
+        const parts = btn.innerText.split(' ');
+        btn.innerText = parts[0] + " " + (parseInt(parts[1]) + 1);
+        btn.style.background = "#FBBF24";
+        btn.style.color = "#1E3A8A";
+    };
 
     window.aba = (id, el) => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -308,16 +309,11 @@
     };
 
     window.verificarPIN = () => {
-        if(prompt("Digite o PIN do Professor:") === "1234") {
-            aba('sec-mestre', document.querySelectorAll('.nav-item')[3]);
-        } else {
-            alert("PIN Incorreto!");
-        }
+        if(prompt("PIN do Mestre:") === "1234") aba('sec-mestre', document.querySelectorAll('.nav-item')[3]);
     };
 
     window.comprar = (valor) => {
-        // Lógica simples de compra (Pode ser expandida no Firebase)
-        alert("Resgate solicitado! Mostre esta tela ao professor.");
+        alert("Resgate solicitado! Fale com seu professor para validar.");
     }
 </script>
 </body>
