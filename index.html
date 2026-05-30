@@ -2,399 +2,275 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotivaEdu V7 — Ultimate Platform</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>MotivaEdu v6.3 — Performance & Streak</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            --primary: #1E3A8A;
-            --accent: #3B82F6;
-            --gold: #FBBF24;
-            --bg: #F3F4F6;
-            --white: #FFFFFF;
-            --text: #1F2937;
-            --glass: rgba(255, 255, 255, 0.7);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
-
-        [data-theme="dark"] {
-            --bg: #111827;
-            --white: #1F2937;
-            --text: #F9FAFB;
-            --glass: rgba(31, 41, 55, 0.7);
+            --azul-escuro: #1E3A8A;
+            --azul-claro: #3B82F6;
+            --ouro: #FBBF24;
+            --fogo: #FF4500;
+            --branco: #FFFFFF;
+            --cinza-fundo: #F3F4F6;
+            --texto: #1F2937;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; transition: 0.3s; }
-        h1, h2, h3, .poppins { font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 100px; }
 
-        /* Glassmorphism Utility */
-        .glass {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-        }
+        /* --- HEADER & STREAK --- */
+        header { background: var(--azul-escuro); color: white; padding: 25px 20px; border-radius: 0 0 30px 30px; position: sticky; top: 0; z-index: 1000; }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .streak-container { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-weight: bold; color: var(--ouro); }
+        .streak-off { filter: grayscale(1); opacity: 0.5; }
 
-        /* --- LOGIN & AUTH --- */
-        #auth-screen {
-            position: fixed; inset: 0; z-index: 5000;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex; align-items: center; justify-content: center;
-        }
-        .login-card {
-            width: 90%; max-width: 400px; padding: 40px;
-            text-align: center; color: white;
-        }
-        input, select {
-            width: 100%; padding: 12px; margin: 10px 0;
-            border-radius: 12px; border: none; outline: none;
-        }
-        .btn-main {
-            background: var(--gold); color: var(--primary);
-            padding: 14px 28px; border: none; border-radius: 12px;
-            font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px;
-        }
+        .xp-bar-bg { background: rgba(255,255,255,0.2); height: 8px; border-radius: 10px; margin-top: 15px; }
+        #xp-bar-fill { background: var(--ouro); height: 100%; width: 0%; border-radius: 10px; transition: 1s; }
 
-        /* --- LAYOUT PRINCIPAL --- */
-        header {
-            padding: 20px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .main-container { padding: 20px; max-width: 1200px; margin: auto; margin-bottom: 100px; }
+        /* --- CARDS --- */
+        .container { padding: 20px; max-width: 600px; margin: auto; }
+        .section { display: none; }
+        .active { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Grid de Dashboards */
-        .dashboard-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
-        }
-
-        /* Status Cards */
-        .status-card { padding: 20px; position: relative; overflow: hidden; }
-        .team-banner {
-            position: absolute; top: 0; right: 0; padding: 5px 15px;
-            font-size: 10px; font-weight: bold; border-radius: 0 0 0 15px;
-        }
-        .team-dragao { background: #EF4444; color: white; }
-        .team-lobo { background: #6B7280; color: white; }
-        .team-aguia { background: #3B82F6; color: white; }
-        .team-leao { background: #F59E0B; color: white; }
-
-        /* Barra de Progresso */
-        .progress-container { background: rgba(0,0,0,0.1); height: 10px; border-radius: 10px; margin: 15px 0; }
-        .progress-fill { 
-            background: linear-gradient(90deg, var(--gold), #fbbf24); 
-            height: 100%; border-radius: 10px; width: 45%; 
-            transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* Streak & Fogo */
-        .streak-fire {
-            font-size: 24px; display: flex; align-items: center; gap: 5px;
-            color: #FF4500; font-weight: bold;
-        }
-
-        /* --- COMPONENTES --- */
-        .card { padding: 20px; margin-bottom: 20px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: var(--card-shadow); border: 1px solid #eee; }
+        .mission-row { display: flex; justify-content: space-between; align-items: center; }
         
-        .badge-icon {
-            width: 60px; height: 60px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 25px; background: rgba(0,0,0,0.05); margin: auto;
-        }
+        .btn-acao { background: var(--azul-claro); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-acao:disabled { background: #ccc; }
 
-        /* Nav Inferior Estilo SaaS */
-        nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 500px; height: 70px;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 0 20px; z-index: 2000;
-        }
-        .nav-item { text-align: center; cursor: pointer; color: #94A3B8; font-size: 10px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 24px; display: block; }
+        /* --- BADGES (NOVA ABA) --- */
+        .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .badge-item { text-align: center; padding: 15px; background: #f8fafc; border-radius: 15px; border: 2px border: 2px dashed #cbd5e1; }
+        .badge-unlocked { border: 2px solid var(--ouro); background: white; }
 
-        /* Edubot IA Floating */
-        #edubot-trigger {
-            position: fixed; right: 20px; bottom: 100px;
-            width: 60px; height: 60px; border-radius: 50%;
-            background: var(--primary); color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            z-index: 1500;
-        }
+        /* --- NAV --- */
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
+        .nav-item { text-align: center; color: #94A3B8; cursor: pointer; font-size: 10px; font-weight: bold; }
+        .nav-item.active { color: var(--azul-claro); }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 3px; }
 
-        /* Modais */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            display: none; align-items: center; justify-content: center; z-index: 3000;
-        }
-        .modal-content { width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; padding: 30px; }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-        }
+        #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 380px; text-align: center; }
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
-<div id="auth-screen">
-    <div class="login-card glass">
-        <h1 class="poppins">MOTIVAEDU V7</h1>
-        <p>A nova era da educação</p>
-        <div id="login-fields">
-            <input type="email" id="email" placeholder="E-mail escolar">
-            <input type="password" id="password" placeholder="Senha">
-            <select id="user-role">
-                <option value="aluno">Sou Aluno</option>
-                <option value="professor">Sou Professor</option>
-                <option value="admin">Administração</option>
-            </select>
-            <button class="btn-main" onclick="handleAuth()">Entrar no Sistema</button>
-            <p style="margin-top:15px; font-size:12px; cursor:pointer" onclick="alert('Recuperação enviada ao e-mail cadastrado!')">Esqueci minha senha</p>
-        </div>
+<div id="login-screen">
+    <div class="login-box">
+        <h2>🚀 MotivaEdu</h2>
+        <p style="font-size:12px; color:#666; margin-bottom:15px">Acesse sua conta escolar</p>
+        <input type="text" id="log-nome" placeholder="Seu Nome">
+        <select id="log-turma">
+            <option value="1º Ano A">1º Ano A</option> <option value="1º Ano B">1º Ano B</option>
+            <option value="2º Ano A">2º Ano A</option> <option value="2º Ano B">2º Ano B</option>
+            <option value="3º Ano A">3º Ano A</option> <option value="3º Ano B">3º Ano B</option>
+        </select>
+        <button class="btn-acao" style="width:100%; margin-top:10px" onclick="entrar()">Entrar</button>
     </div>
 </div>
 
-<header class="glass" id="main-header" style="display:none">
-    <div class="logo poppins" style="color:var(--primary)">M7</div>
-    <div class="streak-fire">🔥 <span id="streak-val">0</span></div>
-    <div style="display:flex; gap:15px; align-items:center">
-        <span onclick="toggleTheme()" style="cursor:pointer">🌓</span>
-        <div class="avatar-mini" style="width:40px; height:40px; border-radius:50%; background:#ddd; overflow:hidden">
-            <img id="profile-img-mini" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="avatar">
+<header id="h-app" style="display:none">
+    <div class="nav-top">
+        <span id="disp-nome" style="font-weight:bold">Aluno</span>
+        <div id="streak-fogo" class="streak-container streak-off">
+            🔥 <span id="u-streak">0</span>
         </div>
+    </div>
+    <div style="font-size:12px; opacity:0.8">Progresso do Nível <span id="u-lvl">1</span></div>
+    <div class="xp-bar-bg"><div id="xp-bar-fill"></div></div>
+    <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px">
+        <span>⭐ <span id="u-coins">0</span> EduCoins</span>
+        <span>🎯 <span id="u-xp">0</span> XP</span>
     </div>
 </header>
 
-<main class="main-container" id="aluno-dash" style="display:none">
-    <div class="dashboard-grid">
-        <div class="status-card glass">
-            <div id="team-tag" class="team-banner team-dragao">EQUIPE DRAGÃO</div>
-            <h2 id="user-name" class="poppins">Carregando...</h2>
-            <p id="user-info">1º Ano Médio B</p>
-            
-            <div class="xp-stats" style="margin-top:20px">
-                <div style="display:flex; justify-content:space-between">
-                    <span>Nível <b id="lvl-val">1</b></span>
-                    <span><b id="xp-val">0</b> / 1000 XP</span>
-                </div>
-                <div class="progress-container"><div class="progress-fill" id="xp-bar"></div></div>
-            </div>
+<div class="container" id="c-app" style="display:none">
+    
+    <div id="tab-missoes" class="section active">
+        <h3>🎯 Missões do Dia</h3>
+        <div id="lista-missoes" style="margin-top:10px"></div>
+    </div>
 
-            <div class="grid-2" style="margin-top:10px">
-                <div class="glass" style="padding:10px; text-align:center">
-                    <small>EduCoins</small><br><b id="coin-val">0</b> ⭐
-                </div>
-                <div class="glass" style="padding:10px; text-align:center">
-                    <small>Ranking</small><br><b>#4</b>
-                </div>
-            </div>
-        </div>
-
-        <div class="card glass">
-            <h3 class="poppins">📢 Mural Escolar</h3>
-            <div id="mural-content" style="margin-top:10px; font-size:14px">
-                <div style="padding:10px; border-bottom:1px solid #ddd">
-                    <b>Festa Junina:</b> Missões liberadas! Acumule pipocas virtuais.
-                </div>
-                <div style="padding:10px">
-                    <b>Olimpíada de Mat:</b> Inscrições abertas na aba eventos.
-                </div>
-            </div>
+    <div id="tab-conquistas" class="section">
+        <h3>🏅 Suas Medalhas</h3>
+        <div class="badge-grid" style="margin-top:15px">
+            <div class="badge-item badge-unlocked">🏆<br><b>Primeiro Passo</b><br><small>Entrou no App</small></div>
+            <div class="badge-item" id="badge-streak">🔥<br><b>Em Chamas</b><br><small>3 dias seguidos</small></div>
+            <div class="badge-item">📚<br><b>Cientista</b><br><small>10 lições feitas</small></div>
+            <div class="badge-item">🤝<br><b>Monitor</b><br><small>Ajudou um colega</small></div>
         </div>
     </div>
 
-    <h3 class="poppins" style="margin:25px 0 15px">🎯 Missões Ativas</h3>
-    <div class="grid-2" id="missions-list">
-        </div>
-
-    <div class="card glass" style="margin-top:20px">
-        <h3 class="poppins">📈 Sua Evolução</h3>
-        <canvas id="evolutionChart" height="150"></canvas>
+    <div id="tab-ranking" class="section">
+        <h3>🏆 Top Alunos</h3>
+        <div id="rank-lista" style="margin-top:15px"></div>
     </div>
-</main>
 
-<main class="main-container" id="admin-dash" style="display:none">
-    <h2 class="poppins">Painel de Gestão</h2>
-    <div class="grid-2">
-        <div class="card glass">
-            <h3>Aprovar Atividades</h3>
-            <div id="pending-list">
-                <p>Nenhuma pendência.</p>
-            </div>
-        </div>
-        <div class="card glass">
-            <h3>Desempenho por Equipe</h3>
-            <canvas id="teamChart"></canvas>
-        </div>
-    </div>
-    <button class="btn-main" onclick="generateReport()">Gerar Relatório Geral (PDF)</button>
-</main>
-
-<div id="edubot-trigger" onclick="toggleEdubot()">🤖</div>
-<div id="edubot-panel" class="modal">
-    <div class="modal-content glass">
-        <h2 class="poppins">EduBot IA 🧠</h2>
-        <div id="chat-box" style="height:300px; overflow-y:auto; margin:20px 0; padding:10px; background:rgba(0,0,0,0.05); border-radius:10px">
-            <p><b>Bot:</b> Olá! Em que posso ajudar nos seus estudos hoje?</p>
-        </div>
-        <input type="text" id="ia-input" placeholder="Pergunte algo (Ex: Resumo de Fotossíntese)">
-        <button class="btn-main" onclick="askIA()">Perguntar à IA</button>
-        <button class="btn-main" style="background:#666; color:white" onclick="toggleEdubot()">Fechar</button>
+    <div id="tab-prof" class="section">
+        <h3>👨‍🏫 Validações</h3>
+        <div id="prof-lista"></div>
     </div>
 </div>
 
-<nav class="glass" id="bottom-nav" style="display:none">
-    <div class="nav-item active" onclick="showSection('dash')"><i>🏠</i><span>Dash</span></div>
-    <div class="nav-item" onclick="showSection('loja')"><i>🛒</i><span>Loja</span></div>
-    <div class="nav-item" onclick="showSection('conquistas')"><i>🏆</i><span>Ranking</span></div>
-    <div class="nav-item" onclick="showSection('calendario')"><i>📅</i><span>Eventos</span></div>
-    <div class="nav-item" onclick="handleLogout()"><i>🚪</i><span>Sair</span></div>
+<nav id="n-app" style="display:none">
+    <div class="nav-item active" onclick="aba('tab-missoes', this)"><i>🎯</i><span>Missões</span></div>
+    <div class="nav-item" onclick="aba('tab-conquistas', this)"><i>🏅</i><span>Medalhas</span></div>
+    <div class="nav-item" onclick="aba('tab-ranking', this)"><i>🏆</i><span>Ranking</span></div>
+    <div class="nav-item" onclick="verificarMestre()"><i>👨‍🏫</i><span>Mestre</span></div>
 </nav>
 
 <script type="module">
-    // Firebase Config (Simulado - Substitua pelas suas chaves se quiser persistência real)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSy-SUA-CHAVE",
-        authDomain: "motivaedu-v7.firebaseapp.com",
-        databaseURL: "https://motivaedu-v7.firebaseio.com",
-        projectId: "motivaedu-v7"
+        apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
+        authDomain: "motivaedu-2d472.firebaseapp.com",
+        databaseURL: "https://motivaedu-2d472-default-rtdb.firebaseio.com",
+        projectId: "motivaedu-2d472",
+        storageBucket: "motivaedu-2d472.firebasestorage.app",
+        messagingSenderId: "885043141539",
+        appId: "1:885043141539:web:d9411ffb112e8f71a91816"
     };
 
-    // Estado Global
-    let currentUser = null;
-    const missions = [
-        { id: 1, title: "Frequência Total", xp: 50, icon: "📅", type: "diaria" },
-        { id: 2, title: "Tarefa de Casa", xp: 100, icon: "📚", type: "semanal" },
-        { id: 3, title: "Participação Junina", xp: 200, icon: "🌽", type: "especial" }
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let u = null;
+
+    const missoesDisp = [
+        { t: "Chegar no horário", xp: 10, c: 2 },
+        { t: "Participar da aula", xp: 20, c: 5 },
+        { t: "Lição de Casa", xp: 30, c: 10 },
+        { t: "Ajudar o Professor", xp: 40, c: 15 },
+        { t: "Organizar a sala", xp: 15, c: 5 },
+        { t: "Desafio Extra", xp: 100, c: 20 }
     ];
 
-    // Simulação de Autenticação
-    window.handleAuth = () => {
-        const role = document.getElementById('user-role').value;
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-header').style.display = 'flex';
-        document.getElementById('bottom-nav').style.display = 'flex';
-        
-        if(role === 'aluno') {
-            document.getElementById('aluno-dash').style.display = 'block';
-            initAlunoDash();
-        } else {
-            document.getElementById('admin-dash').style.display = 'block';
-            initAdminDash();
+    window.entrar = async () => {
+        const nome = document.getElementById('log-nome').value.trim();
+        const turma = document.getElementById('log-turma').value;
+        if(!nome) return alert("Nome vazio!");
+
+        const id = nome.toLowerCase().replace(/\s/g, '_');
+        const uRef = ref(db, 'v63_users/' + id);
+        const snap = await get(uRef);
+
+        if(snap.exists()) u = snap.val();
+        else {
+            u = { id, nome, turma, xp: 0, coins: 0, streak: 0, lastDate: "" };
+            await set(uRef, u);
         }
+
+        document.getElementById('login-screen').style.display = 'none';
+        ['h-app','c-app','n-app'].forEach(id => document.getElementById(id).style.display = 'block');
+        
+        // Notificação de Boas-vindas
+        if (Notification.permission === "granted") {
+            new Notification("MotivaEdu", { body: `Olá ${u.nome}! Suas missões esperam por você.` });
+        } else {
+            Notification.requestPermission();
+        }
+
+        iniciarApp();
+    };
+
+    function iniciarApp() {
+        onValue(ref(db, 'v63_users/' + u.id), snap => {
+            const d = snap.val();
+            document.getElementById('disp-nome').innerText = d.nome + " (" + d.turma + ")";
+            document.getElementById('u-xp').innerText = d.xp;
+            document.getElementById('u-coins').innerText = d.coins || 0;
+            document.getElementById('u-lvl').innerText = Math.floor(d.xp / 500) + 1;
+            document.getElementById('xp-bar-fill').style.width = (d.xp % 500 / 5) + "%";
+            
+            // Lógica do Foguinho (Streak)
+            document.getElementById('u-streak').innerText = d.streak || 0;
+            if(d.streak > 0) document.getElementById('streak-fogo').classList.remove('streak-off');
+            if(d.streak >= 3) document.getElementById('badge-streak').classList.add('badge-unlocked');
+        });
+
+        document.getElementById('lista-missoes').innerHTML = missoesDisp.map(m => `
+            <div class="card mission-row">
+                <div><b>${m.t}</b><br><small>+${m.xp} XP</small></div>
+                <button class="btn-acao" onclick="pedir('${m.t}', ${m.xp}, ${m.c}, this)">Fiz!</button>
+            </div>
+        `).join('');
+
+        syncRanking();
+        syncMestre();
+    }
+
+    window.pedir = (t, xp, c, btn) => {
+        push(ref(db, 'v63_pedidos'), { uid: u.id, nome: u.nome, t, xp, c });
+        btn.innerText = "⏳"; btn.disabled = true;
+    };
+
+    function syncMestre() {
+        onValue(ref(db, 'v63_pedidos'), snap => {
+            const data = snap.val();
+            let h = "";
+            for(let k in data) {
+                h += `<div class="card mission-row">
+                    <div><b>${data[k].nome}</b><br>${data[k].t}</div>
+                    <button class="btn-acao" onclick="aprovar('${k}','${data[k].uid}',${data[k].xp},${data[k].c})">✔</button>
+                </div>`;
+            }
+            document.getElementById('prof-lista').innerHTML = h || "Tudo limpo!";
+        });
+    }
+
+    window.aprovar = async (key, uid, xp, c) => {
+        const uRef = ref(db, 'v63_users/' + uid);
+        const s = await get(uRef);
+        const user = s.val();
+
+        // Lógica de Atualizar Streak ao Aprovar primeira missão do dia
+        const hoje = new Date().toLocaleDateString();
+        let novoStreak = user.streak || 0;
+        if(user.lastDate !== hoje) {
+            novoStreak++;
+        }
+
+        await update(uRef, { 
+            xp: user.xp + xp, 
+            coins: (user.coins || 0) + c,
+            streak: novoStreak,
+            lastDate: hoje
+        });
+        await remove(ref(db, 'v63_pedidos/' + key));
         confetti();
     };
 
-    // Inicializar Aluno
-    function initAlunoDash() {
-        document.getElementById('user-name').innerText = "Gabriel Silva";
-        renderMissions();
-        initCharts();
-    }
-
-    function renderMissions() {
-        const container = document.getElementById('missions-list');
-        container.innerHTML = missions.map(m => `
-            <div class="card glass mission-item" style="display:flex; align-items:center; gap:15px">
-                <div style="font-size:30px">${m.icon}</div>
-                <div style="flex:1">
-                    <b>${m.title}</b><br>
-                    <small>+${m.xp} XP</small>
+    function syncRanking() {
+        onValue(ref(db, 'v63_users'), snap => {
+            const list = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
+            document.getElementById('rank-lista').innerHTML = list.map((u,i) => `
+                <div class="card mission-row">
+                    <span>${i+1}º ${u.nome}</span>
+                    <b>${u.xp} XP</b>
                 </div>
-                <button class="btn-main" style="width:auto; padding:8px 15px" onclick="claimXP(${m.xp})">Fiz!</button>
-            </div>
-        `).join('');
-    }
-
-    // Sistema de XP
-    window.claimXP = (amt) => {
-        let currentXP = parseInt(document.getElementById('xp-val').innerText);
-        currentXP += amt;
-        document.getElementById('xp-val').innerText = currentXP;
-        document.getElementById('xp-bar').style.width = (currentXP % 1000 / 10) + "%";
-        confetti({ particleCount: 50, spread: 60 });
-    };
-
-    // Gráficos
-    function initCharts() {
-        const ctx = document.getElementById('evolutionChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
-                datasets: [{
-                    label: 'XP Ganhos',
-                    data: [120, 190, 300, 250, 400],
-                    borderColor: '#3B82F6',
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)'
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            `).join('');
         });
     }
 
-    // EduBot IA (Simulação de Resposta)
-    window.askIA = () => {
-        const input = document.getElementById('ia-input');
-        const chat = document.getElementById('chat-box');
-        if(!input.value) return;
-
-        chat.innerHTML += `<p style="text-align:right"><b>Você:</b> ${input.value}</p>`;
-        setTimeout(() => {
-            chat.innerHTML += `<p><b>Bot:</b> Com base nos conteúdos da semana, o tema "${input.value}" é fundamental para sua próxima avaliação. Aqui está um resumo: [Conteúdo gerado via MotivaEdu AI].</p>`;
-            chat.scrollTop = chat.scrollHeight;
-        }, 1000);
-        input.value = "";
+    window.aba = (id, el) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
     };
 
-    window.toggleEdubot = () => {
-        const modal = document.getElementById('edubot-panel');
-        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+    window.verificarMestre = () => {
+        if(prompt("PIN:") === "1234") aba('tab-prof', document.querySelectorAll('.nav-item')[3]);
     };
 
-    // Relatórios PDF
-    window.generateReport = () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(20);
-        doc.text("Relatório MotivaEdu V7", 20, 20);
-        doc.setFontSize(12);
-        doc.text("Turma: 1º Ano B", 20, 40);
-        doc.text("Engajamento: 94%", 20, 50);
-        doc.text("Equipe Líder: Águia", 20, 60);
-        doc.save("relatorio_motivaedu.pdf");
-    };
-
-    // Tema Dark/Light
-    window.toggleTheme = () => {
-        const body = document.body;
-        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-    };
-
-    window.handleLogout = () => location.reload();
-
-    // PWA - Registro do Service Worker (Offline Support)
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch(err => console.log('PWA Off: ', err));
-        });
-    }
 </script>
-
 </body>
 </html>
