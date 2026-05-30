@@ -3,134 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu Pro - Sistema Integrado</title>
+    <title>MotivaEdu Pro - 50 Desafios</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32; --diamond: #B9F2FF; }
+        :root { --primary: #6C63FF; --secondary: #4F8CFF; --bg: #f5f7ff; --card-bg: #ffffff; --text: #333; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: var(--text); }
+        body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
-        /* Telas de Acesso */
-        #auth-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-        .auth-card { background: white; padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; font-size: 16px; }
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; text-align: center; }
+        .container { padding: 20px; max-width: 800px; margin: auto; }
+        
+        .card { background: var(--card-bg); border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .challenge-info { flex: 1; }
+        .challenge-info h4 { font-size: 14px; margin-bottom: 4px; }
+        .challenge-info span { font-size: 12px; color: #666; background: #eee; padding: 2px 8px; border-radius: 10px; }
+        
+        .btn-xp { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; min-width: 80px; }
+        .btn-xp:disabled { background: #ccc; }
 
-        /* Header e HUD */
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 25px; border-radius: 0 0 30px 30px; position: sticky; top: 0; z-index: 100; }
-        .hud-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .xp-bar-container { background: rgba(255,255,255,0.2); height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
-        #xp-fill { background: white; height: 100%; width: 0%; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-        /* Conteúdo */
-        .container { padding: 20px 15px 100px 15px; max-width: 800px; margin: auto; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.02); }
-        .section { display: none; }
-        .active { display: block; animation: fadeIn 0.5s ease; }
-
-        /* Elementos Específicos */
-        .ime-tag { background: #E3F2FD; color: #1976D2; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 12px; }
-        .level-badge { padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
-        .btn { border: none; background: var(--primary); color: white; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn:active { transform: scale(0.95); }
-        .mural-item { border-left: 4px solid var(--primary); background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 4px; }
-
-        /* Navegação */
-        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; z-index: 1000; }
-        .nav-item { font-size: 24px; cursor: pointer; opacity: 0.4; transition: 0.3s; }
-        .nav-item.active { opacity: 1; transform: scale(1.2); color: var(--primary); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-btn { background: white; border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
+        
+        #login-screen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen">
-    <div class="auth-card">
-        <h2 style="color: var(--primary)">MotivaEdu Pro</h2>
-        <p style="margin-bottom: 20px">Plataforma Educacional Inteligente</p>
-        <input type="text" id="login-nome" placeholder="Nome completo">
-        <select id="login-turma">
-            <option value="A">Turma A</option>
-            <option value="B">Turma B</option>
-            <option value="C">Turma C</option>
-        </select>
-        <button class="btn" style="width: 100%" onclick="autenticar()">Entrar</button>
-        <p id="professor-link" style="margin-top:15px; font-size:12px; cursor:pointer; color: #666" onclick="toggleRole()">Acesso Professor</p>
+<div id="login-screen">
+    <div class="login-box">
+        <h2>MotivaEdu</h2>
+        <input type="text" id="userNome" placeholder="Seu nome">
+        <button class="btn-xp" style="width: 100%" onclick="entrar()">Entrar</button>
     </div>
 </div>
 
-<header id="main-header" style="display:none">
-    <div class="hud-info">
-        <div>
-            <h3 id="user-display-name">Nome Usuário</h3>
-            <span id="user-level" class="level-badge">Bronze</span>
-        </div>
-        <div style="text-align: right">
-            <span class="ime-tag">IME: <span id="ime-val">0</span>%</span>
-            <p style="font-size: 12px; margin-top:5px"><span id="user-xp">0</span> XP</p>
-        </div>
-    </div>
-    <div class="xp-bar-container"><div id="xp-fill"></div></div>
+<header>
+    <h2 id="welcomeName">Olá!</h2>
+    <p>XP Total: <span id="xpDisplay">0</span></p>
 </header>
 
-<div class="container" id="main-content" style="display:none">
-    
-    <div id="home" class="section active">
-        <div class="card">
-            <h4>📢 Mural Escolar</h4>
-            <div id="mural-container">
-                <div class="mural-item">Bem-vindo ao novo semestre!</div>
-            </div>
-        </div>
-
-        <h3>🎯 Desafios Disponíveis</h3>
-        <div id="desafios-lista">
-            </div>
+<div class="container">
+    <h3>🚀 Missões e Desafios</h3>
+    <div class="filter-bar">
+        <button class="filter-btn" onclick="renderChallenges('Todos')">Todos</button>
+        <button class="filter-btn" onclick="renderChallenges('Estudo')">Estudo</button>
+        <button class="filter-btn" onclick="renderChallenges('Social')">Social</button>
+        <button class="filter-btn" onclick="renderChallenges('Hábito')">Hábitos</button>
     </div>
-
-    <div id="ranking" class="section">
-        <div class="card">
-            <div style="display:flex; justify-content: space-around; margin-bottom:15px">
-                <button class="btn" style="background:none; color:var(--text)" onclick="renderRanking('global')">Geral</button>
-                <button class="btn" style="background:none; color:var(--text)" onclick="renderRanking('turma')">Minha Turma</button>
-            </div>
-            <div id="ranking-container"></div>
-        </div>
-    </div>
-
-    <div id="admin" class="section">
-        <h3>👨‍🏫 Gestão Pedagógica</h3>
-        <div class="card">
-            <h4>Aprovar Atividades</h4>
-            <div id="pendencias-lista">Nenhuma atividade pendente.</div>
-        </div>
-        <div class="card">
-            <h4>Criar Novo Desafio</h4>
-            <input type="text" id="new-task-title" placeholder="Título do desafio">
-            <input type="number" id="new-task-xp" placeholder="Valor em XP">
-            <button class="btn" onclick="criarDesafio()">Publicar Desafio</button>
-        </div>
-    </div>
-
-    <div id="cert" class="section">
-        <div class="card" style="text-align:center">
-            <h3>📄 Certificação Digital</h3>
-            <div id="qrcode" style="margin:20px auto; display:inline-block"></div>
-            <button class="btn" style="width:100%" onclick="gerarPDF()">Exportar Certificado</button>
-        </div>
-    </div>
+    <div id="lista-desafios"></div>
 </div>
-
-<nav id="main-nav" style="display:none">
-    <div class="nav-item active" onclick="navigate('home', this)">🏠</div>
-    <div class="nav-item" onclick="navigate('ranking', this)">🏆</div>
-    <div class="nav-item" id="nav-prof" style="display:none" onclick="navigate('admin', this)">👨‍🏫</div>
-    <div class="nav-item" onclick="navigate('cert', this)">📜</div>
-</nav>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -149,148 +76,107 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let userData = { nome: "", turma: "", xp: 0, nivel: "Bronze", ime: 0, role: "aluno" };
+    const desafiosBase = [
+        { t: "Ler 10 páginas de um livro", xp: 20, c: "Estudo" },
+        { t: "Ajudar um colega com dúvida", xp: 30, c: "Social" },
+        { t: "Entregar tarefa no prazo", xp: 25, c: "Estudo" },
+        { t: "Manter a mesa organizada", xp: 10, c: "Hábito" },
+        { t: "Participar da aula ativamente", xp: 15, c: "Estudo" },
+        { t: "Chegar no horário", xp: 10, c: "Hábito" },
+        { t: "Fazer um resumo da aula", xp: 20, c: "Estudo" },
+        { t: "Pedir desculpas por um erro", xp: 40, c: "Social" },
+        { t: "Recolher lixo do chão", xp: 15, c: "Social" },
+        { t: "Usar palavras gentis", xp: 10, c: "Social" },
+        { t: "Praticar esporte por 30min", xp: 25, c: "Hábito" },
+        { t: "Beber 2L de água no dia", xp: 10, c: "Hábito" },
+        { t: "Estudar 1h extra", xp: 35, c: "Estudo" },
+        { t: "Apresentar trabalho sem ler", xp: 50, c: "Estudo" },
+        { t: "Organizar mochila", xp: 10, c: "Hábito" },
+        { t: "Compartilhar material", xp: 20, c: "Social" },
+        { t: "Elogiar um professor", xp: 15, c: "Social" },
+        { t: "Não usar celular na aula", xp: 20, c: "Hábito" },
+        { t: "Fazer perguntas inteligentes", xp: 15, c: "Estudo" },
+        { t: "Resolver desafio de lógica", xp: 30, c: "Estudo" },
+        { t: "Ensinar algo novo a alguém", xp: 40, c: "Social" },
+        { t: "Frequência 100% na semana", xp: 100, c: "Hábito" },
+        { t: "Liderar um grupo", xp: 45, c: "Social" },
+        { t: "Ajudar na limpeza da sala", xp: 30, c: "Social" },
+        { t: "Ler notícia e comentar", xp: 15, c: "Estudo" },
+        { t: "Trazer lanche saudável", xp: 10, c: "Hábito" },
+        { t: "Dormir 8h na noite anterior", xp: 20, c: "Hábito" },
+        { t: "Resolver conflito sem briga", xp: 50, c: "Social" },
+        { t: "Fazer caligrafia", xp: 15, c: "Estudo" },
+        { t: "Organizar biblioteca da sala", xp: 40, c: "Social" },
+        { t: "Criar mapa mental", xp: 25, c: "Estudo" },
+        { t: "Trazer curiosidade científica", xp: 20, c: "Estudo" },
+        { t: "Respeitar fila da cantina", xp: 10, c: "Social" },
+        { t: "Não faltar na prova", xp: 30, c: "Hábito" },
+        { t: "Ajudar aluno novo", xp: 50, c: "Social" },
+        { t: "Participar de olimpíada", xp: 80, c: "Estudo" },
+        { t: "Ganhar medalha", xp: 200, c: "Estudo" },
+        { t: "Escrever poema ou conto", xp: 30, c: "Estudo" },
+        { t: "Ter o caderno completo", xp: 40, c: "Estudo" },
+        { t: "Consertar algo quebrado", xp: 30, c: "Social" },
+        { t: "Ser voluntário em evento", xp: 60, c: "Social" },
+        { t: "Praticar um idioma", xp: 25, c: "Estudo" },
+        { t: "Melhorar nota em 1 ponto", xp: 50, c: "Estudo" },
+        { t: "Não levar ocorrência", xp: 70, c: "Hábito" },
+        { t: "Sugerir melhoria para escola", xp: 40, c: "Social" },
+        { t: "Fazer curso online extra", xp: 100, c: "Estudo" },
+        { t: "Cuidar de uma planta", xp: 20, c: "Hábito" },
+        { t: "Fazer apresentação visual", xp: 30, c: "Estudo" },
+        { t: "Terminar prova primeiro", xp: 10, c: "Estudo" },
+        { t: "Ajudar na organização do pátio", xp: 25, c: "Social" }
+    ];
 
-    // AUTH
-    window.autenticar = async () => {
-        const nome = document.getElementById('login-nome').value.trim();
-        const turma = document.getElementById('login-turma').value;
-        if(!nome) return alert("Digite seu nome!");
+    let userKey = "";
+    let xpTotal = 0;
 
-        const userKey = nome.replace(/\s/g, '_').toLowerCase();
-        const userRef = ref(db, 'users/' + userKey);
-        const snap = await get(userRef);
-
-        if(snap.exists()) {
-            userData = snap.val();
+    window.entrar = async () => {
+        const nome = document.getElementById('userNome').value;
+        if(!nome) return;
+        userKey = nome.replace(/\s/g, '_').toLowerCase();
+        
+        const snapshot = await get(ref(db, 'users/' + userKey));
+        if(snapshot.exists()){
+            xpTotal = snapshot.val().xp;
         } else {
-            userData = { nome, turma, xp: 0, nivel: "Bronze", ime: 50, role: userData.role };
-            await set(userRef, userData);
+            await set(ref(db, 'users/' + userKey), { nome, xp: 0 });
         }
-
-        iniciarApp();
-    };
-
-    window.toggleRole = () => {
-        userData.role = userData.role === "aluno" ? "professor" : "aluno";
-        document.getElementById('professor-link').innerText = userData.role === "professor" ? "Modo Aluno" : "Acesso Professor";
-    };
-
-    function iniciarApp() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-header').style.display = 'block';
-        document.getElementById('main-content').style.display = 'block';
-        document.getElementById('main-nav').style.display = 'flex';
-        if(userData.role === 'professor') document.getElementById('nav-prof').style.display = 'block';
         
-        document.getElementById('user-display-name').innerText = userData.nome;
-        updateHUD();
-        syncData();
-        new QRCode(document.getElementById("qrcode"), { text: "MotivaEdu:" + userData.nome, width: 150, height: 150 });
-    }
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('welcomeName').innerText = "Olá, " + nome;
+        document.getElementById('xpDisplay').innerText = xpTotal;
+        renderChallenges('Todos');
+    };
 
-    // SYNC & LOGIC
-    function syncData() {
-        // Desafios
-        onValue(ref(db, 'challenges'), (snap) => {
-            const list = snap.val() || {};
-            let html = "";
-            for(let id in list) {
-                html += `<div class="card" style="display:flex; justify-content:space-between; align-items:center">
-                    <div><strong>${list[id].title}</strong><br><small>${list[id].xp} XP</small></div>
-                    <button class="btn" onclick="solicitarAprovacao('${id}', '${list[id].title}', ${list[id].xp})">Enviar</button>
-                </div>`;
-            }
-            document.getElementById('desafios-lista').innerHTML = html;
+    window.renderChallenges = (filtro) => {
+        const container = document.getElementById('lista-desafios');
+        container.innerHTML = "";
+        desafiosBase.forEach((d, index) => {
+            if(filtro !== 'Todos' && d.c !== filtro) return;
+            
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="challenge-info">
+                    <h4>${d.t}</h4>
+                    <span>${d.c}</span>
+                </div>
+                <button class="btn-xp" onclick="completar(${index}, ${d.xp}, this)">+${d.xp} XP</button>
+            `;
+            container.appendChild(card);
         });
-
-        // Pendências (Professor)
-        if(userData.role === 'professor') {
-            onValue(ref(db, 'pending'), (snap) => {
-                const list = snap.val() || {};
-                let html = "";
-                for(let id in list) {
-                    html += `<div class="card">
-                        <p><strong>${list[id].aluno}</strong> enviou <strong>${list[id].task}</strong></p>
-                        <button class="btn" onclick="aprovarXP('${id}', '${list[id].userKey}', ${list[id].xp})">Aprovar +${list[id].xp} XP</button>
-                    </div>`;
-                }
-                document.getElementById('pendencias-lista').innerHTML = html || "Nenhuma atividade pendente.";
-            });
-        }
-    }
-
-    window.solicitarAprovacao = (id, title, xp) => {
-        const userKey = userData.nome.replace(/\s/g, '_').toLowerCase();
-        set(ref(db, 'pending/' + Date.now()), { aluno: userData.nome, userKey, task: title, xp });
-        alert("Enviado para aprovação do professor!");
     };
 
-    window.aprovarXP = async (pendingId, userKey, xpGanho) => {
-        const userRef = ref(db, 'users/' + userKey);
-        const snap = await get(userRef);
-        if(snap.exists()) {
-            const currentData = snap.val();
-            const newXp = currentData.xp + xpGanho;
-            const newIme = Math.min(currentData.ime + 5, 100);
-            update(userRef, { xp: newXp, ime: newIme });
-            update(ref(db, 'pending/' + pendingId), null);
-            alert("Atividade aprovada!");
-        }
-    };
-
-    window.criarDesafio = () => {
-        const title = document.getElementById('new-task-title').value;
-        const xp = parseInt(document.getElementById('new-task-xp').value);
-        if(title && xp) {
-            set(ref(db, 'challenges/' + Date.now()), { title, xp });
-            alert("Desafio criado!");
-        }
-    };
-
-    function updateHUD() {
-        const xp = userData.xp;
-        document.getElementById('user-xp').innerText = xp;
-        document.getElementById('ime-val').innerText = userData.ime;
+    window.completar = (id, xp, btn) => {
+        xpTotal += xp;
+        document.getElementById('xpDisplay').innerText = xpTotal;
+        update(ref(db, 'users/' + userKey), { xp: xpTotal });
         
-        let nivel = "Bronze", color = "var(--bronze)", pct = (xp/200)*100;
-        if(xp >= 1000) { nivel = "Diamante"; color = "var(--diamond)"; pct = 100; }
-        else if(xp >= 500) { nivel = "Ouro"; color = "var(--gold)"; pct = (xp/1000)*100; }
-        else if(xp >= 200) { nivel = "Prata"; color = "var(--silver)"; pct = (xp/500)*100; }
-
-        const badge = document.getElementById('user-level');
-        badge.innerText = nivel;
-        badge.style.background = color;
-        document.getElementById('xp-fill').style.width = pct + '%';
-    }
-
-    window.navigate = (id, el) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
-    };
-
-    window.renderRanking = async (type) => {
-        const snap = await get(ref(db, 'users'));
-        const users = snap.val();
-        let list = [];
-        for(let id in users) {
-            if(type === 'global' || users[id].turma === userData.turma) list.push(users[id]);
-        }
-        list.sort((a,b) => b.xp - a.xp);
-        let html = list.map((u, i) => `<div class="rank-item"><span>${i+1}º ${u.nome}</span><strong>${u.xp} XP</strong></div>`).join('');
-        document.getElementById('ranking-container').innerHTML = html;
-    };
-
-    window.gerarPDF = () => {
-        confetti({ particleCount: 150, spread: 70 });
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l');
-        doc.setFontSize(30); doc.text("CERTIFICADO MOTIVAEDU", 148, 50, {align:'center'});
-        doc.setFontSize(20); doc.text(`Certificamos que ${userData.nome}`, 148, 80, {align:'center'});
-        doc.text(`Atingiu o nível ${userData.nivel} com ${userData.xp} pontos.`, 148, 110, {align:'center'});
-        doc.save(`Certificado_${userData.nome}.pdf`);
+        btn.innerText = "✅";
+        btn.disabled = true;
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     };
 
 </script>
