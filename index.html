@@ -1,287 +1,1676 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>MotivaEdu v6.4 — Oficial</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="docTitle">Escravo, Nem Pensar!</title>
+  <style>
+    :root {
+      --fundo: #F4E7C8;
+      --fundo-claro: #FFF7E6;
+      --branco: #FFFFFF;
+      --terracota: #B94E2E;
+      --terracota-escuro: #963B24;
+      --laranja-terra: #D87532;
+      --azul-marinho: #142B3D;
+      --azul-marinho-claro: #1D3A4D;
+      --bege: #F5DDA5;
+      --bege-claro: #FFF1CC;
+      --texto: #142B3D;
+      --texto-secundario: #5C4635;
+      --ocre: #C58A35;
+      --amarelo-sol: #E6A83B;
+      --vermelho: #A63D2F;
+      --card-border: rgba(185, 78, 46, 0.2);
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 70px;
+      --header-height: 60px;
+    }
 
-    <style>
-        :root {
-            --azul-escuro: #1E3A8A;
-            --azul-claro: #3B82F6;
-            --ouro: #FBBF24;
-            --fogo: #FF4500;
-            --branco: #FFFFFF;
-            --cinza-fundo: #F3F4F6;
-            --texto: #1F2937;
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
+    [data-theme="dark"] {
+      --fundo: #111820;
+      --fundo-claro: #18232C;
+      --branco: #FFFFFF;
+      --terracota: #D66A43;
+      --terracota-escuro: #B84E30;
+      --laranja-terra: #D98A45;
+      --azul-marinho: #E7D3A5;
+      --azul-marinho-claro: #F1DFC0;
+      --bege: #FFFFFF;
+      --bege-claro: #FFFFFF;
+      --texto: #FFFFFF;
+      --texto-secundario: #D8C9B5;
+      --ocre: #D49A43;
+      --amarelo-sol: #E5AE4A;
+      --card-border: rgba(214, 106, 67, 0.3);
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--cinza-fundo); color: var(--texto); padding-bottom: 100px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+    }
 
-        /* --- HEADER --- */
-        header { background: var(--azul-escuro); color: white; padding: 25px 20px; border-radius: 0 0 30px 30px; position: sticky; top: 0; z-index: 1000; }
-        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .streak-container { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-weight: bold; color: var(--ouro); }
-        .streak-off { filter: grayscale(1); opacity: 0.5; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--fundo-claro);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+    }
 
-        .xp-bar-bg { background: rgba(255,255,255,0.2); height: 8px; border-radius: 10px; margin-top: 15px; }
-        #xp-bar-fill { background: var(--ouro); height: 100%; width: 0%; border-radius: 10px; transition: 1s; }
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background-color: var(--terracota);
+      color: var(--bege-claro);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      z-index: 100;
+    }
 
-        /* --- CONTEÚDO --- */
-        .container { padding: 20px; max-width: 600px; margin: auto; }
-        .section { display: none; }
-        .active { display: block; animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
 
-        .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: var(--card-shadow); border: 1px solid #eee; }
-        .mission-row { display: flex; justify-content: space-between; align-items: center; }
-        
-        .btn-acao { background: var(--azul-claro); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-acao:disabled { background: #ccc; cursor: not-allowed; }
+    .header-logos {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-        /* --- NAVBAR CORRIGIDA (ALINHADA) --- */
-        nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0;
-            width: 100%; 
-            background: white; 
-            display: flex; 
-            flex-direction: row; 
-            justify-content: space-around; 
-            align-items: center; 
-            padding: 12px 0; 
-            border-top: 1px solid #ddd; 
-            z-index: 1000; 
-        }
+    .header-logo {
+      height: 38px;
+      max-width: 100px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
 
-        .nav-item { 
-            text-align: center; 
-            color: #94A3B8; 
-            cursor: pointer; 
-            font-size: 11px; 
-            font-weight: bold; 
-            flex: 1; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--bege-claro);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem;
+      border-radius: 4px;
+    }
 
-        .nav-item.active { color: var(--azul-claro); }
-        .nav-item i { font-style: normal; font-size: 22px; }
+    .icon-btn:hover, .icon-btn:focus-visible {
+      background-color: var(--terracota-escuro);
+      outline: 2px solid var(--bege-claro);
+    }
 
-        /* --- LOGIN --- */
-        #login-screen { position: fixed; inset: 0; background: var(--azul-escuro); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 380px; text-align: center; }
-        select, input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; outline: none; }
-    </style>
+    .header-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .theme-btn {
+      background-color: var(--azul-marinho);
+      color: var(--bege-claro);
+      border: 1px solid var(--laranja-terra);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* SIDEBAR & OVERLAY */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 85;
+      display: none;
+    }
+
+    aside {
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--azul-marinho);
+      color: var(--bege-claro);
+      z-index: 90;
+      transition: width 0.25s ease, transform 0.25s ease;
+      overflow-y: auto;
+    }
+
+    body.sidebar-collapsed aside {
+      width: var(--sidebar-collapsed-width);
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      padding-top: 1rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.25rem;
+      color: var(--bege-claro);
+      text-decoration: none;
+      cursor: pointer;
+      gap: 1rem;
+      white-space: nowrap;
+      border-left: 4px solid transparent;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: var(--azul-marinho-claro);
+      border-left-color: var(--laranja-terra);
+    }
+
+    body.sidebar-collapsed .nav-text {
+      display: none;
+    }
+
+    /* MAIN */
+    main {
+      margin-top: var(--header-height);
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      width: 100%;
+      transition: margin-left 0.25s ease;
+    }
+
+    body.sidebar-collapsed main {
+      margin-left: var(--sidebar-collapsed-width);
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .hero-banner {
+      background-color: var(--fundo);
+      border: 1px solid var(--card-border);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-banner h1 {
+      color: var(--terracota);
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* CARDS COMO JANELAS DE CONTEÚDO (MELHORIA RESPONSIVA) */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .window-card {
+      background-color: var(--fundo);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+    }
+
+    .window-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--terracota);
+    }
+
+    .window-header {
+      background-color: var(--azul-marinho);
+      color: var(--bege-claro);
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Layout Horizontal no Computador e Vertical no Celular para os Cards */
+    .card-content-wrapper {
+      display: flex;
+      flex-direction: column; /* Padrão Mobile: Vertical */
+      flex-grow: 1;
+    }
+
+    .card-cover-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    @media (min-width: 769px) {
+      .card-content-wrapper {
+        flex-direction: row; /* Computador: Horizontal (Imagem lado esquerdo, texto lado direito) */
+      }
+      .card-cover-img {
+        width: 140px;
+        height: auto;
+        min-height: 100%;
+        border-bottom: none;
+        border-right: 1px solid var(--card-border);
+      }
+    }
+
+    .window-body {
+      padding: 1.25rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .window-title {
+      color: var(--terracota);
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .window-desc {
+      color: var(--texto-secundario);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .meta-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      background-color: var(--laranja-terra);
+      color: #fff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      align-self: flex-start;
+    }
+
+    /* ÁREA DE EXIBIÇÃO DE CONTEÚDO ENRIQUECIDO */
+    .content-area {
+      background-color: var(--fundo);
+      border: 1px solid var(--card-border);
+      padding: 2rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .content-area img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin: 1rem 0;
+      display: block;
+    }
+
+    .btn-action {
+      background-color: var(--terracota);
+      color: var(--bege-claro);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-action:hover {
+      background-color: var(--terracota-escuro);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--terracota);
+      color: var(--texto);
+    }
+
+    /* EDITOR VISUAL DE TEXTO (WYSIWYG) */
+    .editor-container {
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: var(--fundo-claro);
+    }
+
+    .editor-toolbar {
+      background-color: var(--fundo);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.5rem;
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .editor-toolbar button, .editor-toolbar select {
+      background: var(--fundo-claro);
+      border: 1px solid var(--card-border);
+      color: var(--texto);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+
+    .editor-toolbar button:hover {
+      background-color: var(--terracota);
+      color: var(--bege-claro);
+    }
+
+    .editor-content {
+      min-height: 200px;
+      padding: 1rem;
+      outline: none;
+      color: var(--texto);
+    }
+
+    /* ADMIN & TABELAS */
+    .admin-card {
+      background-color: var(--fundo);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--card-border);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--card-border);
+      background-color: var(--fundo-claro);
+      color: var(--texto);
+      font-family: inherit;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--fundo);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .admin-table th, .admin-table td {
+      padding: 0.8rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .admin-table th {
+      background-color: var(--azul-marinho);
+      color: var(--bege-claro);
+    }
+
+    .stats-container {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-box {
+      background-color: var(--fundo);
+      border: 1px solid var(--card-border);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      flex: 1;
+    }
+
+    .stat-box span {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--texto-secundario);
+    }
+
+    .stat-box strong {
+      font-size: 1.5rem;
+      color: var(--terracota);
+    }
+
+    .tabs-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--card-border);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      background: none;
+      border: none;
+      font-weight: 600;
+      color: var(--texto-secundario);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      color: var(--terracota);
+      border-bottom-color: var(--terracota);
+    }
+
+    /* MOBILE ADJUSTMENTS */
+    @media (max-width: 768px) {
+      aside {
+        transform: translateX(-100%);
+        width: var(--sidebar-width) !important;
+      }
+      body.sidebar-open aside { transform: translateX(0); }
+      body.sidebar-open .overlay { display: block; }
+      main { margin-left: 0 !important; }
+      .stats-container { flex-direction: column; gap: 0.75rem; }
+      .header-logo { height: 30px; }
+      .header-title { font-size: 1rem; }
+    }
+  </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-box">
-        <h2 style="color: var(--azul-escuro)">🚀 MotivaEdu</h2>
-        <p style="font-size:12px; color:#666; margin-bottom:15px">Sistema de Gamificação</p>
-        <input type="text" id="log-nome" placeholder="Seu Nome Completo">
-        <select id="log-turma">
-            <optgroup label="1º Ano">
-                <option value="1º Ano A">1º Ano A</option>
-                <option value="1º Ano B">1º Ano B</option>
-            </optgroup>
-            <optgroup label="2º Ano">
-                <option value="2º Ano A">2º Ano A</option>
-                <option value="2º Ano B">2º Ano B</option>
-            </optgroup>
-            <optgroup label="3º Ano">
-                <option value="3º Ano A">3º Ano A</option>
-                <option value="3º Ano B">3º Ano B</option>
-            </optgroup>
-        </select>
-        <button class="btn-acao" style="width:100%; margin-top:10px" onclick="entrar()">Acessar</button>
-    </div>
-</div>
+  <div class="overlay" id="overlay"></div>
 
-<header id="h-app" style="display:none">
-    <div class="nav-top">
-        <span id="disp-nome" style="font-weight:bold">Aluno</span>
-        <div id="streak-fogo" class="streak-container streak-off">
-            🔥 <span id="u-streak">0</span>
+  <header>
+    <div class="header-left">
+      <button class="icon-btn" id="btnToggleSidebar" aria-label="Abrir ou recolher menu lateral">☰</button>
+      <div class="header-logos">
+        <img src="Logo.png" alt="Logo Plataforma" class="header-logo" id="platformLogo" onerror="this.style.display='none'">
+        <img src="EscolaLogo.png" alt="Logo Escola" class="header-logo" id="schoolLogo" onerror="this.style.display='none'">
+      </div>
+      <div class="header-title" id="headerTitleText">Escravo, Nem Pensar!</div>
+    </div>
+    <button class="theme-btn" id="btnToggleTheme" aria-label="Alternar tema">Modo Escuro</button>
+  </header>
+
+  <aside aria-label="Menu principal">
+    <nav>
+      <a class="nav-item active" data-target="home">
+        <span>🏠</span>
+        <span class="nav-text">Início</span>
+      </a>
+      <a class="nav-item" data-target="about">
+        <span>📖</span>
+        <span class="nav-text">Sobre o projeto</span>
+      </a>
+      <a class="nav-item" data-target="activities">
+        <span>🎯</span>
+        <span class="nav-text">Atividades</span>
+      </a>
+      <a class="nav-item" data-target="practice">
+        <span>📸</span>
+        <span class="nav-text">Projeto na Prática</span>
+      </a>
+      <a class="nav-item" data-target="materials">
+        <span>📚</span>
+        <span class="nav-text">Materiais</span>
+      </a>
+      <a class="nav-item" data-target="admin">
+        <span>🔐</span>
+        <span class="nav-text">Administração</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- PÁGINA INICIAL -->
+    <section id="home" class="page active">
+      <div class="hero-banner">
+        <h1 id="heroTitleText">Projeto Escravo, Nem Pensar!</h1>
+        <p style="color: var(--texto-secundario);">
+          Plataforma de conteúdos educativos e informativos para a prevenção ao trabalho escravo e promoção dos direitos humanos.
+        </p>
+      </div>
+      <h2>Módulos e Atividades em Destaque</h2>
+      <br>
+      <div class="form-group" style="max-width: 320px;">
+        <input type="text" id="searchInput" placeholder="🔍 Buscar por título ou palavra-chave...">
+      </div>
+      <br>
+      <div class="cards-grid" id="cardsContainer"></div>
+    </section>
+
+    <!-- SOBRE O PROJETO -->
+    <section id="about" class="page">
+      <h1>Sobre o projeto</h1>
+      <div class="content-area" id="aboutPageContent">
+        <p>O <strong>Escravo, Nem Pensar!</strong> é um programa de educação dedicado à prevenção do trabalho escravo no Brasil.</p>
+        <br>
+        <p>Esta plataforma foi desenvolvida de forma modular para organizar e disponibilizar atividades, textos de apoio, fotos e materiais interativos sobre direitos humanos e trabalho digno.</p>
+      </div>
+    </section>
+
+    <!-- ATIVIDADES -->
+    <section id="activities" class="page">
+      <h1>🎯 Atividades Pedagógicas</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Explore o acervo completo de atividades educativas.</p>
+      <div class="cards-grid" id="activitiesContainer"></div>
+    </section>
+
+    <!-- PROJETO NA PRÁTICA -->
+    <section id="practice" class="page">
+      <h1>📸 Projeto na Prática</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Registros das ações, culminâncias, apresentações e trabalhos realizados pelos estudantes.</p>
+      
+      <div class="tabs-header">
+        <button class="tab-btn active" onclick="App.filterPractice('Todos', this)">Todos</button>
+        <button class="tab-btn" onclick="App.filterPractice('Culminância', this)">Culminância</button>
+        <button class="tab-btn" onclick="App.filterPractice('Galeria de Fotos', this)">Fotos</button>
+        <button class="tab-btn" onclick="App.filterPractice('Apresentações', this)">Apresentações</button>
+        <button class="tab-btn" onclick="App.filterPractice('Relatos dos estudantes', this)">Relatos</button>
+        <button class="tab-btn" onclick="App.filterPractice('Trabalhos produzidos', this)">Trabalhos</button>
+      </div>
+
+      <div class="cards-grid" id="practiceContainer"></div>
+    </section>
+
+    <!-- MATERIAIS DE APOIO -->
+    <section id="materials" class="page">
+      <h1>📚 Materiais de Apoio</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Guias pedagógicos, cartilhas, imagens e links de referência disponíveis para acesso.</p>
+      <div class="cards-grid" id="materialsContainer"></div>
+    </section>
+
+    <!-- VISUALIZADOR DE CONTEÚDO -->
+    <section id="contentView" class="page">
+      <button class="btn-action btn-secondary" onclick="App.navigateTo('home')">← Voltar</button>
+      <h1 id="viewTitle" style="margin-top: 1rem; color: var(--terracota);"></h1>
+      <div id="viewMetaInfo" style="margin-top: 0.5rem; color: var(--texto-secundario);"></div>
+      <div id="viewCoverContainer"></div>
+      <div class="content-area" id="viewBody"></div>
+    </section>
+
+    <!-- ÁREA DO ADMINISTRADOR -->
+    <section id="admin" class="page">
+      <h1>🔐 Área do Administrador</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Gerencie o conteúdo do site e os registros das atividades na prática.</p>
+
+      <!-- PAINEL DE LOGIN -->
+      <div id="adminLoginBox" class="admin-card" style="max-width: 400px;">
+        <h3>Acesso Restrito</h3>
+        <br>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="inputPassword">Senha de Acesso</label>
+            <input type="password" id="inputPassword" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-action">Entrar</button>
+        </form>
+      </div>
+
+      <!-- PAINEL ADMINISTRATIVO -->
+      <div id="adminPanel" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <span>Sessão ativa como <strong>Administrador</strong></span>
+          <button class="btn-action btn-secondary" onclick="App.logoutAdmin()">Sair</button>
         </div>
-    </div>
-    <div style="font-size:12px; opacity:0.8">Nível <span id="u-lvl">1</span></div>
-    <div class="xp-bar-bg"><div id="xp-bar-fill"></div></div>
-    <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px">
-        <span>⭐ <span id="u-coins">0</span> EduCoins</span>
-        <span>🎯 <span id="u-xp">0</span> XP</span>
-    </div>
-</header>
 
-<div class="container" id="c-app" style="display:none">
-    <div id="tab-missoes" class="section active">
-        <h3 style="margin-bottom: 15px;">🎯 Missões</h3>
-        <div id="lista-missoes"></div>
-    </div>
+        <div class="stats-container">
+          <div class="stat-box">
+            <span>Total de Atividades</span>
+            <strong id="statTotal">0</strong>
+          </div>
+          <div class="stat-box">
+            <span>Registros na Prática</span>
+            <strong id="statPractice">0</strong>
+          </div>
+          <div class="stat-box">
+            <span>Materiais de Apoio</span>
+            <strong id="statMaterials">0</strong>
+          </div>
+        </div>
 
-    <div id="tab-ranking" class="section">
-        <h3>🏆 Ranking</h3>
-        <div id="rank-lista" style="margin-top:15px"></div>
-    </div>
+        <!-- CONFIGURAÇÕES GERAIS / TEXTO E LOGO -->
+        <div class="admin-card">
+          <h3>⚙️ Configurações Gerais da Plataforma</h3>
+          <br>
+          <form id="settingsForm">
+            <div class="form-group">
+              <label for="inputHeaderTitle">Nome da Plataforma (Título Superior)</label>
+              <input type="text" id="inputHeaderTitle" required placeholder="Ex: Escravo, Nem Pensar!">
+            </div>
 
-    <div id="tab-prof" class="section">
-        <h3>👨‍🏫 Painel do Professor</h3>
-        <div id="prof-lista" style="margin-top:15px"></div>
-    </div>
-</div>
+            <div class="form-group">
+              <label for="inputSchoolLogo">Logo da Escola (Enviar Imagem)</label>
+              <input type="file" id="inputSchoolLogo" accept="image/*">
+              <input type="hidden" id="currentSchoolLogoUrl">
+              <div id="schoolLogoPreview" style="margin-top: 0.5rem;"></div>
+            </div>
 
-<nav id="n-app" style="display:none">
-    <div class="nav-item active" onclick="aba('tab-missoes', this)"><i>🎯</i><span>Missões</span></div>
-    <div class="nav-item" onclick="aba('tab-ranking', this)"><i>🏆</i><span>Ranking</span></div>
-    <div class="nav-item" onclick="verificarMestre()"><i>👨‍🏫</i><span>Mestre</span></div>
-</nav>
+            <div class="form-group">
+              <label>Texto da Página "Sobre o Projeto" (Editor Visual)</label>
+              <div class="editor-container">
+                <div class="editor-toolbar">
+                  <!-- Fontes -->
+                  <select onchange="App.execAboutCmd('fontName', this.value)">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                  </select>
+                  <!-- Tamanho -->
+                  <select onchange="App.execAboutCmd('fontSize', this.value)">
+                    <option value="1">Pequena (Muito pequena)</option>
+                    <option value="2">Pequena</option>
+                    <option value="3" selected>Normal</option>
+                    <option value="4">Média</option>
+                    <option value="5">Grande</option>
+                    <option value="6">Muito Grande</option>
+                  </select>
+                  <button type="button" onclick="App.execAboutCmd('bold')" title="Negrito">B</button>
+                  <button type="button" onclick="App.execAboutCmd('italic')" title="Itálico">I</button>
+                  <button type="button" onclick="App.execAboutCmd('underline')" title="Sublinhado">U</button>
+                  <button type="button" onclick="App.execAboutCmd('strikeThrough')" title="Tachado">S</button>
+                  <button type="button" onclick="App.execAboutCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                </div>
+                <div id="aboutEditorContent" class="editor-content" contenteditable="true"></div>
+              </div>
+            </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+            <button type="submit" class="btn-action">Salvar Configurações Gerais</button>
+          </form>
+        </div>
+
+        <!-- FORMULÁRIO 1: ATIVIDADES -->
+        <div class="admin-card">
+          <h3 id="formTitle">➕ Criar Nova Atividade</h3>
+          <br>
+          <form id="contentForm">
+            <input type="hidden" id="editId">
+            <input type="hidden" id="currentCoverUrl">
+
+            <div class="form-group">
+              <label for="inputTitle">Título da Atividade</label>
+              <input type="text" id="inputTitle" required placeholder="Ex: Atividade 01 — Trabalho Digno">
+            </div>
+            
+            <div class="form-group">
+              <label for="inputDesc">Descrição Curta</label>
+              <input type="text" id="inputDesc" required placeholder="Ex: Aprenda a reconhecer situações de exploração.">
+            </div>
+
+            <div class="form-group">
+              <label for="inputStatus">Status</label>
+              <select id="inputStatus">
+                <option value="Publicado">Publicado</option>
+                <option value="Rascunho">Rascunho</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="inputCover">Imagem de Capa</label>
+              <input type="file" id="inputCover" accept="image/*">
+              <div id="coverPreview" style="margin-top: 0.5rem;"></div>
+            </div>
+
+            <div class="form-group">
+              <label>Conteúdo Detalhado (Editor Visual WYSIWYG)</label>
+              <div class="editor-container">
+                <div class="editor-toolbar">
+                  <!-- Fontes -->
+                  <select onchange="App.execCmd('fontName', this.value)">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                  </select>
+                  <!-- Tamanho -->
+                  <select onchange="App.execCmd('fontSize', this.value)">
+                    <option value="1">Pequena (Muito pequena)</option>
+                    <option value="2">Pequena</option>
+                    <option value="3" selected>Normal</option>
+                    <option value="4">Média</option>
+                    <option value="5">Grande</option>
+                    <option value="6">Muito Grande</option>
+                  </select>
+                  <button type="button" onclick="App.execCmd('bold')" title="Negrito">B</button>
+                  <button type="button" onclick="App.execCmd('italic')" title="Itálico">I</button>
+                  <button type="button" onclick="App.execCmd('underline')" title="Sublinhado">U</button>
+                  <button type="button" onclick="App.execCmd('strikeThrough')" title="Tachado">S</button>
+                  <button type="button" onclick="App.execCmd('formatBlock', '<h2>')" title="Título">H2</button>
+                  <button type="button" onclick="App.execCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                  <button type="button" onclick="App.triggerImageUpload()" title="Inserir Imagem">📷 Imagem</button>
+                  <input type="file" id="editorImgInput" accept="image/*" style="display:none;" onchange="App.insertEditorImage(this)">
+                </div>
+                <div id="editorContent" class="editor-content" contenteditable="true"></div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="submit" class="btn-action">Salvar Atividade</button>
+              <button type="button" class="btn-action btn-secondary" onclick="App.resetForm()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>📋 Atividades Cadastradas</h3>
+          <br>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- FORMULÁRIO 2: PROJETO NA PRÁTICA -->
+        <div class="admin-card">
+          <h3 id="practiceFormTitle">📸 Adicionar Registro: Projeto na Prática</h3>
+          <br>
+          <form id="practiceForm">
+            <input type="hidden" id="editPracticeId">
+            <input type="hidden" id="currentPracticeCoverUrl">
+
+            <div class="form-group">
+              <label for="inputPracticeTitle">Título do Registro</label>
+              <input type="text" id="inputPracticeTitle" required placeholder="Ex: Feira Cultural sobre Direitos Humanos">
+            </div>
+
+            <div class="form-group">
+              <label for="inputPracticeCategory">Categoria</label>
+              <select id="inputPracticeCategory" required>
+                <option value="Culminância">Culminância</option>
+                <option value="Galeria de Fotos">Galeria de Fotos</option>
+                <option value="Apresentações">Apresentações</option>
+                <option value="Relatos dos estudantes">Relatos dos estudantes</option>
+                <option value="Trabalhos produzidos">Trabalhos produzidos</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="inputPracticeDesc">Descrição Resumida</label>
+              <input type="text" id="inputPracticeDesc" required placeholder="Ex: Fotos das maquetes criadas pelas turmas do 9º ano.">
+            </div>
+
+            <div class="form-group">
+              <label for="inputPracticeCover">Imagem Principal / Capa</label>
+              <input type="file" id="inputPracticeCover" accept="image/*">
+              <div id="practiceCoverPreview" style="margin-top: 0.5rem;"></div>
+            </div>
+
+            <div class="form-group">
+              <label>Relato / Conteúdo Completo (Editor Visual)</label>
+              <div class="editor-container">
+                <div class="editor-toolbar">
+                  <!-- Fontes -->
+                  <select onchange="App.execPracticeCmd('fontName', this.value)">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                  </select>
+                  <!-- Tamanho -->
+                  <select onchange="App.execPracticeCmd('fontSize', this.value)">
+                    <option value="1">Pequena (Muito pequena)</option>
+                    <option value="2">Pequena</option>
+                    <option value="3" selected>Normal</option>
+                    <option value="4">Média</option>
+                    <option value="5">Grande</option>
+                    <option value="6">Muito Grande</option>
+                  </select>
+                  <button type="button" onclick="App.execPracticeCmd('bold')" title="Negrito">B</button>
+                  <button type="button" onclick="App.execPracticeCmd('italic')" title="Itálico">I</button>
+                  <button type="button" onclick="App.execPracticeCmd('underline')" title="Sublinhado">U</button>
+                  <button type="button" onclick="App.execPracticeCmd('strikeThrough')" title="Tachado">S</button>
+                  <button type="button" onclick="App.execPracticeCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                  <button type="button" onclick="App.triggerPracticeImageUpload()" title="Inserir Imagem">📷 Imagem</button>
+                  <input type="file" id="practiceEditorImgInput" accept="image/*" style="display:none;" onchange="App.insertPracticeEditorImage(this)">
+                </div>
+                <div id="practiceEditorContent" class="editor-content" contenteditable="true"></div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="submit" class="btn-action">Salvar Registro na Prática</button>
+              <button type="button" class="btn-action btn-secondary" onclick="App.resetPracticeForm()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>📋 Registros do "Projeto na Prática"</h3>
+          <br>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Categoria</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="practiceAdminTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- FORMULÁRIO 3: CADASTRAR MATERIAIS DE APOIO -->
+        <div class="admin-card">
+          <h3 id="materialFormTitle">📚 Adicionar Material de Apoio</h3>
+          <br>
+          <form id="materialForm">
+            <input type="hidden" id="editMaterialId">
+            <input type="hidden" id="currentMaterialFileUrl">
+
+            <div class="form-group">
+              <label for="inputMaterialTitle">Título do Material</label>
+              <input type="text" id="inputMaterialTitle" required placeholder="Ex: Cartilha sobre Trabalho Escravo Contemporâneo">
+            </div>
+
+            <div class="form-group">
+              <label for="inputMaterialType">Tipo de Material</label>
+              <select id="inputMaterialType" onchange="App.toggleMaterialFields()">
+                <option value="link">Link Externo</option>
+                <option value="pdf">Arquivo PDF</option>
+                <option value="imagem">Imagem</option>
+              </select>
+            </div>
+
+            <!-- Campo Link -->
+            <div class="form-group" id="materialLinkGroup">
+              <label for="inputMaterialUrl">URL do Link</label>
+              <input type="url" id="inputMaterialUrl" placeholder="https://exemplo.com/cartilha">
+            </div>
+
+            <!-- Campo Arquivo (PDF / Imagem) -->
+            <div class="form-group" id="materialFileGroup" style="display: none;">
+              <label for="inputMaterialFile">Selecione o Arquivo</label>
+              <input type="file" id="inputMaterialFile" accept=".pdf">
+              <div id="materialFilePreview" style="margin-top: 0.5rem;"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="inputMaterialDesc">Descrição Curta</label>
+              <input type="text" id="inputMaterialDesc" required placeholder="Ex: Material explicativo produzido pelo programa.">
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="submit" class="btn-action">Salvar Material</button>
+              <button type="button" class="btn-action btn-secondary" onclick="App.resetMaterialForm()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>📋 Materiais Cadastrados</h3>
+          <br>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Tipo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="materialAdminTableBody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FIREBASE IMPORTS & APLICAÇÃO INTEGRADA -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyDbgGlHjrLc1mHUgJqX3MHLDv3EyZ4mtww",
-        authDomain: "motivaedu-2d472.firebaseapp.com",
-        databaseURL: "https://motivaedu-2d472-default-rtdb.firebaseio.com",
-        projectId: "motivaedu-2d472",
-        storageBucket: "motivaedu-2d472.firebasestorage.app",
-        messagingSenderId: "885043141539",
-        appId: "1:885043141539:web:d9411ffb112e8f71a91816"
+      apiKey: "AIzaSyB6GV-yNCPWl6GlRLNgkj_r4YIsiiJF1L0",
+      authDomain: "escravonempensar-368fc.firebaseapp.com",
+      databaseURL: "https://escravonempensar-368fc-default-rtdb.firebaseio.com",
+      projectId: "escravonempensar-368fc",
+      storageBucket: "escravonempensar-368fc.firebasestorage.app",
+      messagingSenderId: "548498679964",
+      appId: "1:548498679964:web:e00d10173293dddf8de559"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let u = null;
 
-    const missoesDisp = [
-        { t: "Chegar no horário", xp: 10, c: 2 },
-        { t: "Participar da aula", xp: 20, c: 5 },
-        { t: "Lição de Casa", xp: 30, c: 10 },
-        { t: "Ajudar o Professor", xp: 40, c: 15 },
-        { t: "Organizar a sala", xp: 15, c: 5 },
-        { t: "Desafio Extra", xp: 100, c: 20 }
-    ];
+    const App = {
+      state: {
+        activities: [],
+        practiceItems: [],
+        materials: [],
+        settings: {
+          headerTitle: 'Escravo, Nem Pensar!',
+          schoolLogo: '',
+          aboutText: '<p>O <strong>Escravo, Nem Pensar!</strong> é um programa de educação dedicado à prevenção do trabalho escravo no Brasil.</p><br><p>Esta plataforma foi desenvolvida de forma modular para organizar e disponibilizar atividades, textos de apoio, fotos e materiais interativos sobre direitos humanos e trabalho digno.</p>'
+        },
+        isAdmin: false,
+        activePage: 'home',
+        practiceFilter: 'Todos'
+      },
 
-    window.entrar = async () => {
-        const nome = document.getElementById('log-nome').value.trim();
-        const turma = document.getElementById('log-turma').value;
-        if(!nome) return alert("Digite seu nome!");
+      init() {
+        this.bindFirebaseListeners();
+        this.bindEvents();
+      },
 
-        const id = nome.toLowerCase().replace(/\s/g, '_');
-        const uRef = ref(db, 'v64_users/' + id);
-        const snap = await get(uRef);
-
-        if(snap.exists()) u = snap.val();
-        else {
-            u = { id, nome, turma, xp: 0, coins: 0, streak: 0, lastDate: "" };
-            await set(uRef, u);
-        }
-
-        document.getElementById('login-screen').style.display = 'none';
-        ['h-app','c-app','n-app'].forEach(id => document.getElementById(id).style.display = 'flex');
-        if (id === 'c-app') document.getElementById(id).style.display = 'block';
-
-        iniciarApp();
-    };
-
-    function iniciarApp() {
-        onValue(ref(db, 'v64_users/' + u.id), snap => {
-            const d = snap.val();
-            document.getElementById('disp-nome').innerText = d.nome;
-            document.getElementById('u-xp').innerText = d.xp;
-            document.getElementById('u-coins').innerText = d.coins || 0;
-            document.getElementById('u-lvl').innerText = Math.floor(d.xp / 500) + 1;
-            document.getElementById('xp-bar-fill').style.width = (d.xp % 500 / 5) + "%";
-            
-            const foguinho = document.getElementById('u-streak');
-            foguinho.innerText = d.streak || 0;
-            if(d.streak > 0) document.getElementById('streak-fogo').classList.remove('streak-off');
-            else document.getElementById('streak-fogo').classList.add('streak-off');
+      bindFirebaseListeners() {
+        const actRef = ref(db, 'activities');
+        onValue(actRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            this.state.activities = Object.keys(data).map(key => ({
+              id: key,
+              ...data[key]
+            }));
+          } else {
+            this.state.activities = [];
+          }
+          this.renderAll();
         });
 
-        document.getElementById('lista-missoes').innerHTML = missoesDisp.map(m => `
-            <div class="card mission-row">
-                <div><b>${m.t}</b><br><small>+${m.xp} XP</small></div>
-                <button class="btn-acao" onclick="pedir('${m.t}', ${m.xp}, ${m.c}, this)">Fiz!</button>
-            </div>
-        `).join('');
+        const pracRef = ref(db, 'practice');
+        onValue(pracRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            this.state.practiceItems = Object.keys(data).map(key => ({
+              id: key,
+              ...data[key]
+            }));
+          } else {
+            this.state.practiceItems = [];
+          }
+          this.renderAll();
+        });
 
-        syncRanking();
-        syncMestre();
-    }
+        const matRef = ref(db, 'materials');
+        onValue(matRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            this.state.materials = Object.keys(data).map(key => ({
+              id: key,
+              ...data[key]
+            }));
+          } else {
+            this.state.materials = [];
+          }
+          this.renderAll();
+        });
 
-    window.pedir = (t, xp, c, btn) => {
-        push(ref(db, 'v64_pedidos'), { uid: u.id, nome: u.nome, t, xp, c, turma: u.turma });
-        btn.innerText = "⏳"; btn.disabled = true;
-    };
+        const setRef = ref(db, 'settings');
+        onValue(setRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            this.state.settings = { ...this.state.settings, ...data };
+          }
+          this.applySettings();
+        });
+      },
 
-    function syncMestre() {
-        onValue(ref(db, 'v64_pedidos'), snap => {
-            const data = snap.val();
-            let h = "";
-            for(let k in data) {
-                h += `<div class="card mission-row">
-                    <div><b>${data[k].nome}</b><br>${data[k].t}</div>
-                    <button class="btn-acao" onclick="aprovar('${k}','${data[k].uid}',${data[k].xp},${data[k].c})">✔</button>
-                </div>`;
+      bindEvents() {
+        document.getElementById('btnToggleTheme').addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          document.getElementById('btnToggleTheme').textContent = nextTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+        });
+
+        const toggleBtn = document.getElementById('btnToggleSidebar');
+        const overlay = document.getElementById('overlay');
+        
+        toggleBtn.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            document.body.classList.toggle('sidebar-open');
+          } else {
+            document.body.classList.toggle('sidebar-collapsed');
+          }
+        });
+
+        overlay.addEventListener('click', () => {
+          document.body.classList.remove('sidebar-open');
+        });
+
+        document.querySelectorAll('nav .nav-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const target = item.getAttribute('data-target');
+            this.navigateTo(target);
+            if (window.innerWidth <= 768) {
+              document.body.classList.remove('sidebar-open');
             }
-            document.getElementById('prof-lista').innerHTML = h || "Sem pendências.";
+          });
         });
-    }
 
-    window.aprovar = async (key, uid, xp, c) => {
-        const uRef = ref(db, 'v64_users/' + uid);
-        const s = await get(uRef);
-        const user = s.val();
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+          this.renderCards(e.target.value);
+        });
 
-        const hoje = new Date().toLocaleDateString();
-        let novoStreak = user.streak || 0;
-        if(user.lastDate !== hoje) {
-            novoStreak++;
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const pass = document.getElementById('inputPassword').value;
+          if (pass === 'admin123') {
+            this.state.isAdmin = true;
+            document.getElementById('adminLoginBox').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            this.populateSettingsForm();
+            this.renderAdminTables();
+          } else {
+            alert('Senha incorreta!');
+          }
+        });
+
+        document.getElementById('settingsForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const headerTitle = document.getElementById('inputHeaderTitle').value;
+          const aboutText = document.getElementById('aboutEditorContent').innerHTML;
+          const schoolLogoFile = document.getElementById('inputSchoolLogo').files[0];
+
+          const saveSettingsFirebase = (logoUrl) => {
+            const updatedSettings = {
+              headerTitle,
+              aboutText,
+              schoolLogo: logoUrl !== undefined ? logoUrl : (this.state.settings.schoolLogo || '')
+            };
+            set(ref(db, 'settings'), updatedSettings)
+              .then(() => alert('Configurações salvas no Firebase!'))
+              .catch(err => alert('Erro ao salvar configurações: ' + err.message));
+          };
+
+          if (schoolLogoFile) {
+            const reader = new FileReader();
+            reader.onload = (evt) => saveSettingsFirebase(evt.target.result);
+            reader.readAsDataURL(schoolLogoFile);
+          } else {
+            saveSettingsFirebase();
+          }
+        });
+
+        document.getElementById('contentForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const editId = document.getElementById('editId').value;
+          const title = document.getElementById('inputTitle').value;
+          const desc = document.getElementById('inputDesc').value;
+          const status = document.getElementById('inputStatus').value;
+          const content = document.getElementById('editorContent').innerHTML;
+          const coverFile = document.getElementById('inputCover').files[0];
+
+          const processSave = (coverUrl) => {
+            const activityData = {
+              title, desc, status, content,
+              cover: coverUrl || ''
+            };
+
+            if (editId) {
+              update(ref(db, `activities/${editId}`), activityData)
+                .then(() => {
+                  alert('Atividade atualizada!');
+                  this.resetForm();
+                });
+            } else {
+              push(ref(db, 'activities'), activityData)
+                .then(() => {
+                  alert('Atividade criada!');
+                  this.resetForm();
+                });
+            }
+          };
+
+          if (coverFile) {
+            const reader = new FileReader();
+            reader.onload = (evt) => processSave(evt.tatarget.result);
+            reader.readAsDataURL(coverFile);
+          } else {
+            processSave(document.getElementById('currentCoverUrl').value);
+          }
+        });
+
+        document.getElementById('practiceForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const editId = document.getElementById('editPracticeId').value;
+          const title = document.getElementById('inputPracticeTitle').value;
+          const category = document.getElementById('inputPracticeCategory').value;
+          const desc = document.getElementById('inputPracticeDesc').value;
+          const content = document.getElementById('practiceEditorContent').innerHTML;
+          const coverFile = document.getElementById('inputPracticeCover').files[0];
+
+          const processSave = (coverUrl) => {
+            const practiceData = {
+              title, category, desc, content,
+              cover: coverUrl || ''
+            };
+
+            if (editId) {
+              update(ref(db, `practice/${editId}`), practiceData)
+                .then(() => {
+                  alert('Registro atualizado!');
+                  this.resetPracticeForm();
+                });
+            } else {
+              push(ref(db, 'practice'), practiceData)
+                .then(() => {
+                  alert('Registro inserido com sucesso!');
+                  this.resetPracticeForm();
+                });
+            }
+          };
+
+          if (coverFile) {
+            const reader = new FileReader();
+            reader.onload = (evt) => processSave(evt.target.result);
+            reader.readAsDataURL(coverFile);
+          } else {
+            processSave(document.getElementById('currentPracticeCoverUrl').value);
+          }
+        });
+
+        document.getElementById('materialForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const editId = document.getElementById('editMaterialId').value;
+          const title = document.getElementById('inputMaterialTitle').value;
+          const type = document.getElementById('inputMaterialType').value;
+          const desc = document.getElementById('inputMaterialDesc').value;
+          const urlInput = document.getElementById('inputMaterialUrl').value;
+          const fileInput = document.getElementById('inputMaterialFile').files[0];
+
+          const processSave = (fileOrUrl) => {
+            const materialData = {
+              title, type, desc,
+              fileUrl: fileOrUrl || ''
+            };
+
+            if (editId) {
+              update(ref(db, `materials/${editId}`), materialData)
+                .then(() => {
+                  alert('Material atualizado!');
+                  this.resetMaterialForm();
+                });
+            } else {
+              push(ref(db, 'materials'), materialData)
+                .then(() => {
+                  alert('Material cadastrado!');
+                  this.resetMaterialForm();
+                });
+            }
+          };
+
+          if (type === 'link') {
+            processSave(urlInput);
+          } else if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = (evt) => processSave(evt.target.result);
+            reader.readAsDataURL(fileInput);
+          } else {
+            processSave(document.getElementById('currentMaterialFileUrl').value);
+          }
+        });
+      },
+
+      navigateTo(pageId) {
+        this.state.activePage = pageId;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('nav .nav-item').forEach(n => n.classList.remove('active'));
+
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) targetPage.classList.add('active');
+
+        const navLink = document.querySelector(`nav .nav-item[data-target="${pageId}"]`);
+        if (navLink) navLink.classList.add('active');
+      },
+
+      applySettings() {
+        document.getElementById('docTitle').textContent = this.state.settings.headerTitle || 'Escravo, Nem Pensar!';
+        document.getElementById('headerTitleText').textContent = this.state.settings.headerTitle || 'Escravo, Nem Pensar!';
+        document.getElementById('heroTitleText').textContent = `Projeto ${this.state.settings.headerTitle || 'Escravo, Nem Pensar!'}`;
+        document.getElementById('aboutPageContent').innerHTML = this.state.settings.aboutText || '';
+
+        const schoolImg = document.getElementById('schoolLogo');
+        if (this.state.settings.schoolLogo) {
+          schoolImg.src = this.state.settings.schoolLogo;
+          schoolImg.style.display = 'block';
+        } else {
+          schoolImg.style.display = 'none';
+        }
+      },
+
+      populateSettingsForm() {
+        document.getElementById('inputHeaderTitle').value = this.state.settings.headerTitle || '';
+        document.getElementById('aboutEditorContent').innerHTML = this.state.settings.aboutText || '';
+      },
+
+      renderAll() {
+        this.applySettings();
+        this.renderCards();
+        this.renderActivitiesPage();
+        this.renderPracticeCards();
+        this.renderMaterialsPage();
+        if (this.state.isAdmin) {
+          this.renderAdminTables();
+        }
+      },
+
+      renderCards(filterText = '') {
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
+
+        const items = this.state.activities.filter(a => 
+          a.status === 'Publicado' && 
+          (a.title.toLowerCase().includes(filterText.toLowerCase()) || 
+           a.desc.toLowerCase().includes(filterText.toLowerCase()))
+        );
+
+        if (items.length === 0) {
+          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhuma atividade encontrada.</p>';
+          return;
         }
 
-        await update(uRef, { 
-            xp: user.xp + xp, 
-            coins: (user.coins || 0) + c,
-            streak: novoStreak,
-            lastDate: hoje
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'window-card';
+          card.onclick = () => this.viewItem(item, 'atividade');
+          card.innerHTML = `
+            <div class="window-header">
+              <span>Atividade</span>
+              <span>📌</span>
+            </div>
+            <div class="card-content-wrapper">
+              ${item.cover ? `<img src="${item.cover}" alt="${item.title}" class="card-cover-img">` : ''}
+              <div class="window-body">
+                <div class="window-title">${item.title}</div>
+                <div class="window-desc">${item.desc}</div>
+                <span class="meta-tag">Acessar conteúdo</span>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
         });
-        await remove(ref(db, 'v64_pedidos/' + key));
-        confetti();
-    };
+      },
 
-    function syncRanking() {
-        onValue(ref(db, 'v64_users'), snap => {
-            const list = Object.values(snap.val() || {}).sort((a,b) => b.xp - a.xp);
-            document.getElementById('rank-lista').innerHTML = list.map((u,i) => `
-                <div class="card mission-row">
-                    <span>${i+1}º ${u.nome}</span>
-                    <b>${u.xp} XP</b>
-                </div>
-            `).join('');
+      renderActivitiesPage() {
+        const container = document.getElementById('activitiesContainer');
+        container.innerHTML = '';
+
+        const published = this.state.activities.filter(a => a.status === 'Publicado');
+
+        published.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'window-card';
+          card.onclick = () => this.viewItem(item, 'atividade');
+          card.innerHTML = `
+            <div class="window-header">
+              <span>🎯 Pedagógico</span>
+              <span>📖</span>
+            </div>
+            <div class="card-content-wrapper">
+              ${item.cover ? `<img src="${item.cover}" alt="${item.title}" class="card-cover-img">` : ''}
+              <div class="window-body">
+                <div class="window-title">${item.title}</div>
+                <div class="window-desc">${item.desc}</div>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
         });
-    }
+      },
 
-    window.aba = (id, el) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
+      filterPractice(category, btn) {
+        this.state.practiceFilter = category;
+        document.querySelectorAll('.tabs-header .tab-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        this.renderPracticeCards();
+      },
+
+      renderPracticeCards() {
+        const container = document.getElementById('practiceContainer');
+        container.innerHTML = '';
+
+        const items = this.state.practiceItems.filter(p => {
+          if (this.state.practiceFilter === 'Todos') return true;
+          return p.category === this.state.practiceFilter;
+        });
+
+        if (items.length === 0) {
+          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhum registro encontrado nesta categoria.</p>';
+          return;
+        }
+
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'window-card';
+          card.onclick = () => this.viewItem(item, 'pratica');
+          card.innerHTML = `
+            <div class="window-header">
+              <span>${item.category}</span>
+              <span>📸</span>
+            </div>
+            <div class="card-content-wrapper">
+              ${item.cover ? `<img src="${item.cover}" alt="${item.title}" class="card-cover-img">` : ''}
+              <div class="window-body">
+                <div class="window-title">${item.title}</div>
+                <div class="window-desc">${item.desc}</div>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      },
+
+      renderMaterialsPage() {
+        const container = document.getElementById('materialsContainer');
+        container.innerHTML = '';
+
+        if (this.state.materials.length === 0) {
+          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhum material de apoio cadastrado no momento.</p>';
+          return;
+        }
+
+        this.state.materials.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'window-card';
+
+          let icon = '🔗';
+          if (item.type === 'pdf') icon = '📄';
+          if (item.type === 'imagem') icon = '🖼️';
+
+          card.innerHTML = `
+            <div class="window-header">
+              <span>${item.type.toUpperCase()}</span>
+              <span>${icon}</span>
+            </div>
+            <div class="card-content-wrapper">
+              ${item.type === 'imagem' && item.fileUrl ? `<img src="${item.fileUrl}" alt="${item.title}" class="card-cover-img">` : ''}
+              <div class="window-body">
+                <div class="window-title">${item.title}</div>
+                <div class="window-desc">${item.desc}</div>
+                <br>
+                <a href="${item.fileUrl}" target="_blank" class="btn-action" style="display: inline-block; text-decoration: none; text-align: center; width: 100%;">
+                  ${item.type === 'link' ? 'Acessar Link' : 'Baixar / Visualizar'}
+                </a>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      },
+
+      viewItem(item, type) {
+        document.getElementById('viewTitle').textContent = item.title;
+        document.getElementById('viewMetaInfo').textContent = type === 'pratica' ? `Categoria: ${item.category}` : `Status: ${item.status}`;
+        
+        const coverContainer = document.getElementById('viewCoverContainer');
+        if (item.cover) {
+          coverContainer.innerHTML = `<img src="${item.cover}" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 1rem;">`;
+        } else {
+          coverContainer.innerHTML = '';
+        }
+
+        document.getElementById('viewBody').innerHTML = item.content || '<p>Sem conteúdo cadastrado.</p>';
+        this.navigateTo('contentView');
+      },
+
+      renderAdminTables() {
+        document.getElementById('statTotal').textContent = this.state.activities.length;
+        document.getElementById('statPractice').textContent = this.state.practiceItems.length;
+        document.getElementById('statMaterials').textContent = this.state.materials.length;
+
+        const actBody = document.getElementById('adminTableBody');
+        actBody.innerHTML = '';
+        this.state.activities.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.title}</td>
+            <td><span class="meta-tag">${item.status}</span></td>
+            <td>
+              <button class="btn-action" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.editActivity('${item.id}')">Editar</button>
+              <button class="btn-action btn-secondary" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.deleteActivity('${item.id}')">Excluir</button>
+            </td>
+          `;
+          actBody.appendChild(tr);
+        });
+
+        const prcBody = document.getElementById('practiceAdminTableBody');
+        prcBody.innerHTML = '';
+        this.state.practiceItems.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.title}</td>
+            <td>${item.category}</td>
+            <td>
+              <button class="btn-action" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.editPractice('${item.id}')">Editar</button>
+              <button class="btn-action btn-secondary" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.deletePractice('${item.id}')">Excluir</button>
+            </td>
+          `;
+          prcBody.appendChild(tr);
+        });
+
+        const matBody = document.getElementById('materialAdminTableBody');
+        matBody.innerHTML = '';
+        this.state.materials.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.title}</td>
+            <td><strong>${item.type.toUpperCase()}</strong></td>
+            <td>
+              <button class="btn-action" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.editMaterial('${item.id}')">Editar</button>
+              <button class="btn-action btn-secondary" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.deleteMaterial('${item.id}')">Excluir</button>
+            </td>
+          `;
+          matBody.appendChild(tr);
+        });
+      },
+
+      toggleMaterialFields() {
+        const type = document.getElementById('inputMaterialType').value;
+        const linkGroup = document.getElementById('materialLinkGroup');
+        const fileGroup = document.getElementById('materialFileGroup');
+        const fileInput = document.getElementById('inputMaterialFile');
+
+        if (type === 'link') {
+          linkGroup.style.display = 'block';
+          fileGroup.style.display = 'none';
+        } else {
+          linkGroup.style.display = 'none';
+          fileGroup.style.display = 'block';
+
+          if (type === 'pdf') {
+            fileInput.setAttribute('accept', '.pdf');
+          } else if (type === 'imagem') {
+            fileInput.setAttribute('accept', 'image/*');
+          }
+        }
+      },
+
+      editMaterial(id) {
+        const item = this.state.materials.find(m => m.id === id);
+        if (!item) return;
+
+        document.getElementById('editMaterialId').value = item.id;
+        document.getElementById('inputMaterialTitle').value = item.title;
+        document.getElementById('inputMaterialType').value = item.type;
+        document.getElementById('inputMaterialDesc').value = item.desc;
+        document.getElementById('currentMaterialFileUrl').value = item.fileUrl || '';
+        document.getElementById('materialFormTitle').textContent = '✏️ Editar Material de Apoio';
+
+        this.toggleMaterialFields();
+
+        if (item.type === 'link') {
+          document.getElementById('inputMaterialUrl').value = item.fileUrl || '';
+        } else if (item.type === 'imagem' && item.fileUrl) {
+          document.getElementById('materialFilePreview').innerHTML = `<img src="${item.fileUrl}" style="height: 60px; border-radius: 4px;">`;
+        } else {
+          document.getElementById('materialFilePreview').innerHTML = `<em>Arquivo já anexado.</em>`;
+        }
+      },
+
+      deleteMaterial(id) {
+        if (confirm('Deseja excluir este material de apoio?')) {
+          remove(ref(db, `materials/${id}`))
+            .then(() => alert('Material removido!'))
+            .catch(err => alert('Erro ao excluir: ' + err.message));
+        }
+      },
+
+      resetMaterialForm() {
+        document.getElementById('editMaterialId').value = '';
+        document.getElementById('currentMaterialFileUrl').value = '';
+        document.getElementById('materialForm').reset();
+        document.getElementById('materialFilePreview').innerHTML = '';
+        document.getElementById('materialFormTitle').textContent = '📚 Adicionar Material de Apoio';
+        this.toggleMaterialFields();
+      },
+
+      editActivity(id) {
+        const item = this.state.activities.find(a => a.id === id);
+        if (!item) return;
+
+        document.getElementById('editId').value = item.id;
+        document.getElementById('inputTitle').value = item.title;
+        document.getElementById('inputDesc').value = item.desc;
+        document.getElementById('inputStatus').value = item.status;
+        document.getElementById('editorContent').innerHTML = item.content || '';
+        document.getElementById('currentCoverUrl').value = item.cover || '';
+        document.getElementById('formTitle').textContent = '✏️ Editar Atividade';
+
+        if (item.cover) {
+          document.getElementById('coverPreview').innerHTML = `<img src="${item.cover}" style="height: 60px; border-radius: 4px;">`;
+        } else {
+          document.getElementById('coverPreview').innerHTML = '';
+        }
+      },
+
+      deleteActivity(id) {
+        if (confirm('Tem certeza que deseja excluir esta atividade?')) {
+          remove(ref(db, `activities/${id}`))
+            .then(() => alert('Atividade removida!'))
+            .catch(err => alert('Erro ao excluir: ' + err.message));
+        }
+      },
+
+      resetForm() {
+        document.getElementById('editId').value = '';
+        document.getElementById('currentCoverUrl').value = '';
+        document.getElementById('contentForm').reset();
+        document.getElementById('editorContent').innerHTML = '';
+        document.getElementById('coverPreview').innerHTML = '';
+        document.getElementById('formTitle').textContent = '➕ Criar Nova Atividade';
+      },
+
+      editPractice(id) {
+        const item = this.state.practiceItems.find(p => p.id === id);
+        if (!item) return;
+
+        document.getElementById('editPracticeId').value = item.id;
+        document.getElementById('inputPracticeTitle').value = item.title;
+        document.getElementById('inputPracticeCategory').value = item.category;
+        document.getElementById('inputPracticeDesc').value = item.desc;
+        document.getElementById('practiceEditorContent').innerHTML = item.content || '';
+        document.getElementById('currentPracticeCoverUrl').value = item.cover || '';
+        document.getElementById('practiceFormTitle').textContent = '✏️ Editar Registro na Prática';
+
+        if (item.cover) {
+          document.getElementById('practiceCoverPreview').innerHTML = `<img src="${item.cover}" style="height: 60px; border-radius: 4px;">`;
+        } else {
+          document.getElementById('practiceCoverPreview').innerHTML = '';
+        }
+      },
+
+      deletePractice(id) {
+        if (confirm('Deseja excluir este registro da prática?')) {
+          remove(ref(db, `practice/${id}`))
+            .then(() => alert('Registro removido!'))
+            .catch(err => alert('Erro ao excluir: ' + err.message));
+        }
+      },
+
+      resetPracticeForm() {
+        document.getElementById('editPracticeId').value = '';
+        document.getElementById('currentPracticeCoverUrl').value = '';
+        document.getElementById('practiceForm').reset();
+        document.getElementById('practiceEditorContent').innerHTML = '';
+        document.getElementById('practiceCoverPreview').innerHTML = '';
+        document.getElementById('practiceFormTitle').textContent = '📸 Adicionar Registro: Projeto na Prática';
+      },
+
+      logoutAdmin() {
+        this.state.isAdmin = false;
+        document.getElementById('adminLoginBox').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('inputPassword').value = '';
+      },
+
+      execCmd(cmd, value = null) {
+        document.execCommand(cmd, false, value);
+      },
+      execAboutCmd(cmd, value = null) {
+        document.execCommand(cmd, false, value);
+      },
+      execPracticeCmd(cmd, value = null) {
+        document.execCommand(cmd, false, value);
+      },
+
+      triggerImageUpload() {
+        document.getElementById('editorImgInput').click();
+      },
+      insertEditorImage(input) {
+        const file = input.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.execCmd('insertImage', e.target.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      },
+
+      triggerPracticeImageUpload() {
+        document.getElementById('practiceEditorImgInput').click();
+      },
+      insertPracticeEditorImage(input) {
+        const file = input.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.execPracticeCmd('insertImage', e.target.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
     };
 
-    window.verificarMestre = () => {
-        if(prompt("PIN:") === "1234") aba('tab-prof', document.querySelectorAll('.nav-item')[2]);
-    };
-</script>
+    window.App = App;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      App.init();
+    });
+  </script>
 </body>
 </html>
