@@ -6,495 +6,106 @@
   <title id="docTitle">Escravo, Nem Pensar!</title>
   <style>
     :root {
-      --fundo: #F4E7C8;
-      --fundo-claro: #FFF7E6;
-      --branco: #FFFFFF;
-      --terracota: #B94E2E;
-      --terracota-escuro: #963B24;
-      --laranja-terra: #D87532;
-      --azul-marinho: #142B3D;
-      --azul-marinho-claro: #1D3A4D;
-      --bege: #F5DDA5;
-      --bege-claro: #FFF1CC;
-      --texto: #142B3D;
-      --texto-secundario: #5C4635;
-      --ocre: #C58A35;
-      --amarelo-sol: #E6A83B;
-      --vermelho: #A63D2F;
-      --card-border: rgba(185, 78, 46, 0.2);
-      --sidebar-width: 260px;
-      --sidebar-collapsed-width: 70px;
-      --header-height: 60px;
+      --primaria: #10b981;
+      --primaria-hover: #059669;
+      --fundo: #f8fafc;
+      --superficie: #ffffff;
+      --texto: #1e293b;
+      --texto-secundario: #64748b;
+      --borda: #e2e8f0;
+      --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --sidebar-largura: 280px;
     }
 
     [data-theme="dark"] {
-      --fundo: #111820;
-      --fundo-claro: #18232C;
-      --branco: #FFFFFF;
-      --terracota: #D66A43;
-      --terracota-escuro: #B84E30;
-      --laranja-terra: #D98A45;
-      --azul-marinho: #E7D3A5;
-      --azul-marinho-claro: #F1DFC0;
-      --bege: #FFFFFF;
-      --bege-claro: #FFFFFF;
-      --texto: #FFFFFF;
-      --texto-secundario: #D8C9B5;
-      --ocre: #D49A43;
-      --amarelo-sol: #E5AE4A;
-      --card-border: rgba(214, 106, 67, 0.3);
+      --primaria: #34d399;
+      --primaria-hover: #10b981;
+      --fundo: #0f172a;
+      --superficie: #1e293b;
+      --texto: #f8fafc;
+      --texto-secundario: #94a3b8;
+      --borda: #334155;
+      --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      transition: background-color 0.25s, color 0.25s, border-color 0.25s;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--fundo); color: var(--texto); display: flex; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background-color: var(--fundo-claro);
-      color: var(--texto);
-      min-height: 100vh;
-      display: flex;
-    }
+    /* LAYOUT & SIDEBAR */
+    aside { width: var(--sidebar-largura); background-color: var(--superficie); border-right: 1px solid var(--borda); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; transition: transform 0.3s ease; }
+    .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 1rem; }
+    .sidebar-header img { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; }
+    .sidebar-header h1 { font-size: 1.1rem; font-weight: 700; color: var(--texto); }
+    
+    nav { padding: 1rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+    .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--texto); text-decoration: none; border-radius: 8px; font-weight: 500; transition: background 0.2s, color 0.2s; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
+    .nav-item:hover, .nav-item.active { background-color: var(--primaria); color: #ffffff; }
 
-    /* HEADER */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--header-height);
-      background-color: var(--terracota);
-      color: var(--bege-claro);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.25rem;
-      z-index: 100;
-    }
+    .sidebar-footer { padding: 1rem; border-top: 1px solid var(--borda); display: flex; flex-direction: column; gap: 0.5rem; }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    /* MAIN CONTENT */
+    main { margin-left: var(--sidebar-largura); flex: 1; display: flex; flex-direction: column; min-width: 0; transition: margin 0.3s ease; }
+    header { background-color: var(--superficie); border-bottom: 1px solid var(--borda); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 90; }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .btn-icon { background: none; border: 1px solid var(--borda); border-radius: 6px; padding: 0.5rem; cursor: pointer; color: var(--texto); display: flex; align-items: center; justify-content: center; }
+    .btn-icon:hover { background-color: var(--borda); }
 
-    .header-logos {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .header-logo {
-      height: 38px;
-      max-width: 100px;
-      object-fit: contain;
-      border-radius: 4px;
-    }
-
-    .icon-btn {
-      background: none;
-      border: none;
-      color: var(--bege-claro);
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.3rem;
-      border-radius: 4px;
-    }
-
-    .icon-btn:hover, .icon-btn:focus-visible {
-      background-color: var(--terracota-escuro);
-      outline: 2px solid var(--bege-claro);
-    }
-
-    .header-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .theme-btn {
-      background-color: var(--azul-marinho);
-      color: var(--bege-claro);
-      border: 1px solid var(--laranja-terra);
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    /* SIDEBAR & OVERLAY */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 85;
-      display: none;
-    }
-
-    aside {
-      position: fixed;
-      top: var(--header-height);
-      bottom: 0;
-      left: 0;
-      width: var(--sidebar-width);
-      background-color: var(--azul-marinho);
-      color: var(--bege-claro);
-      z-index: 90;
-      transition: width 0.25s ease, transform 0.25s ease;
-      overflow-y: auto;
-    }
-
-    body.sidebar-collapsed aside {
-      width: var(--sidebar-collapsed-width);
-    }
-
-    nav {
-      display: flex;
-      flex-direction: column;
-      padding-top: 1rem;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 0.85rem 1.25rem;
-      color: var(--bege-claro);
-      text-decoration: none;
-      cursor: pointer;
-      gap: 1rem;
-      white-space: nowrap;
-      border-left: 4px solid transparent;
-    }
-
-    .nav-item:hover, .nav-item.active {
-      background-color: var(--azul-marinho-claro);
-      border-left-color: var(--laranja-terra);
-    }
-
-    body.sidebar-collapsed .nav-text {
-      display: none;
-    }
-
-    /* MAIN */
-    main {
-      margin-top: var(--header-height);
-      margin-left: var(--sidebar-width);
-      padding: 2rem;
-      width: 100%;
-      transition: margin-left 0.25s ease;
-    }
-
-    body.sidebar-collapsed main {
-      margin-left: var(--sidebar-collapsed-width);
-    }
-
+    .content-area { padding: 2rem; flex: 1; }
     .page { display: none; }
     .page.active { display: block; }
 
-    .hero-banner {
-      background-color: var(--fundo);
-      border: 1px solid var(--card-border);
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-    }
+    /* COMPONENTES */
+    .hero-banner { background: linear-gradient(135deg, var(--primaria), #059669); color: white; padding: 3rem 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: var(--sombra); }
+    .hero-banner h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .hero-banner p { opacity: 0.9; font-size: 1.1rem; }
 
-    .hero-banner h1 {
-      color: var(--terracota);
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-    }
+    .search-box { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--borda); border-radius: 8px; background-color: var(--superficie); color: var(--texto); font-size: 1rem; margin-bottom: 2rem; outline: none; transition: border-color 0.2s; }
+    .search-box:focus { border-color: var(--primaria); }
 
-    /* CARDS COMO JANELAS DE CONTEÚDO (MELHORIA RESPONSIVA) */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
-    }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .window-card { background-color: var(--superficie); border: 1px solid var(--borda); border-radius: 10px; overflow: hidden; box-shadow: var(--sombra); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: flex; flex-direction: column; }
+    .window-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .window-header { background-color: var(--borda); padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; color: var(--texto-secundario); }
+    .card-cover-img { width: 100%; height: 160px; object-fit: cover; }
+    .window-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+    .window-title { font-size: 1.15rem; font-weight: 700; color: var(--texto); }
+    .window-desc { font-size: 0.95rem; color: var(--texto-secundario); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .meta-tag { display: inline-block; padding: 0.25rem 0.5rem; background: rgba(16, 185, 129, 0.1); color: var(--primaria); border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-top: auto; align-self: flex-start; }
 
-    .window-card {
-      background-color: var(--fundo);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-    }
+    /* ABAS / CATEGORIAS */
+    .tabs-header { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .tab-btn { padding: 0.5rem 1rem; border: 1px solid var(--borda); background: var(--superficie); color: var(--texto); border-radius: 6px; cursor: pointer; font-weight: 500; white-space: nowrap; transition: all 0.2s; }
+    .tab-btn.active, .tab-btn:hover { background-color: var(--primaria); color: white; border-color: var(--primaria); }
 
-    .window-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--terracota);
-    }
+    /* EDITOR & FORMULÁRIOS */
+    .admin-card { background-color: var(--superficie); border: 1px solid var(--borda); border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: var(--sombra); }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    .form-group input[type="text"], .form-group input[type="password"], .form-group input[type="url"], .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--borda); border-radius: 6px; background-color: var(--fundo); color: var(--texto); font-size: 1rem; }
+    
+    .editor-container { border: 1px solid var(--borda); border-radius: 6px; overflow: hidden; background: var(--fundo); }
+    .editor-toolbar { background: var(--superficie); border-bottom: 1px solid var(--borda); padding: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .editor-toolbar button, .editor-toolbar select { background: transparent; border: 1px solid var(--borda); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; color: var(--texto); font-size: 0.9rem; }
+    .editor-toolbar button:hover { background: var(--borda); }
+    .editor-content { min-height: 200px; padding: 1rem; outline: none; background: var(--fundo); color: var(--texto); }
 
-    .window-header {
-      background-color: var(--azul-marinho);
-      color: var(--bege-claro);
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .btn-action { background-color: var(--primaria); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn-action:hover { background-color: var(--primaria-hover); }
+    .btn-secondary { background-color: var(--texto-secundario); }
+    .btn-secondary:hover { opacity: 0.9; }
 
-    /* Layout Horizontal no Computador e Vertical no Celular para os Cards */
-    .card-content-wrapper {
-      display: flex;
-      flex-direction: column; /* Padrão Mobile: Vertical */
-      flex-grow: 1;
-    }
+    /* TABELAS ADMINISTRATIVAS */
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .admin-table th, .admin-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--borda); font-size: 0.95rem; }
+    .admin-table th { font-weight: 600; color: var(--texto-secundario); }
 
-    .card-cover-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    @media (min-width: 769px) {
-      .card-content-wrapper {
-        flex-direction: row; /* Computador: Horizontal (Imagem lado esquerdo, texto lado direito) */
-      }
-      .card-cover-img {
-        width: 140px;
-        height: auto;
-        min-height: 100%;
-        border-bottom: none;
-        border-right: 1px solid var(--card-border);
-      }
-    }
-
-    .window-body {
-      padding: 1.25rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .window-title {
-      color: var(--terracota);
-      font-size: 1.15rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .window-desc {
-      color: var(--texto-secundario);
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .meta-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      background-color: var(--laranja-terra);
-      color: #fff;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      margin-top: 0.5rem;
-      align-self: flex-start;
-    }
-
-    /* ÁREA DE EXIBIÇÃO DE CONTEÚDO ENRIQUECIDO */
-    .content-area {
-      background-color: var(--fundo);
-      border: 1px solid var(--card-border);
-      padding: 2rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-      line-height: 1.6;
-    }
-
-    .content-area img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-      margin: 1rem 0;
-      display: block;
-    }
-
-    .btn-action {
-      background-color: var(--terracota);
-      color: var(--bege-claro);
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn-action:hover {
-      background-color: var(--terracota-escuro);
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--terracota);
-      color: var(--texto);
-    }
-
-    /* EDITOR VISUAL DE TEXTO (WYSIWYG) */
-    .editor-container {
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      overflow: hidden;
-      background-color: var(--fundo-claro);
-    }
-
-    .editor-toolbar {
-      background-color: var(--fundo);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0.5rem;
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .editor-toolbar button, .editor-toolbar select {
-      background: var(--fundo-claro);
-      border: 1px solid var(--card-border);
-      color: var(--texto);
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 0.85rem;
-    }
-
-    .editor-toolbar button:hover {
-      background-color: var(--terracota);
-      color: var(--bege-claro);
-    }
-
-    .editor-content {
-      min-height: 200px;
-      padding: 1rem;
-      outline: none;
-      color: var(--texto);
-    }
-
-    /* ADMIN & TABELAS */
-    .admin-card {
-      background-color: var(--fundo);
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      border: 1px solid var(--card-border);
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 4px;
-      border: 1px solid var(--card-border);
-      background-color: var(--fundo-claro);
-      color: var(--texto);
-      font-family: inherit;
-    }
-
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: var(--fundo);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 2rem;
-    }
-
-    .admin-table th, .admin-table td {
-      padding: 0.8rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .admin-table th {
-      background-color: var(--azul-marinho);
-      color: var(--bege-claro);
-    }
-
-    .stats-container {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-box {
-      background-color: var(--fundo);
-      border: 1px solid var(--card-border);
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      flex: 1;
-    }
-
-    .stat-box span {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--texto-secundario);
-    }
-
-    .stat-box strong {
-      font-size: 1.5rem;
-      color: var(--terracota);
-    }
-
-    .tabs-header {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid var(--card-border);
-      overflow-x: auto;
-    }
-
-    .tab-btn {
-      padding: 0.5rem 1rem;
-      background: none;
-      border: none;
-      font-weight: 600;
-      color: var(--texto-secundario);
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      white-space: nowrap;
-    }
-
-    .tab-btn.active {
-      color: var(--terracota);
-      border-bottom-color: var(--terracota);
-    }
-
-    /* MOBILE ADJUSTMENTS */
-    @media (max-width: 768px) {
-      aside {
-        transform: translateX(-100%);
-        width: var(--sidebar-width) !important;
-      }
+    /* OVERLAY / RESPONSIVIDADE */
+    .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 95; }
+    @media(max-width: 768px) {
+      aside { transform: translateX(-100%); }
+      main { margin-left: 0; }
       body.sidebar-open aside { transform: translateX(0); }
       body.sidebar-open .overlay { display: block; }
-      main { margin-left: 0 !important; }
-      .stats-container { flex-direction: column; gap: 0.75rem; }
-      .header-logo { height: 30px; }
-      .header-title { font-size: 1rem; }
     }
   </style>
 </head>
@@ -502,455 +113,362 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <header>
-    <div class="header-left">
-      <button class="icon-btn" id="btnToggleSidebar" aria-label="Abrir ou recolher menu lateral">☰</button>
-      <div class="header-logos">
-        <img src="Logo.png" alt="Logo Plataforma" class="header-logo" id="platformLogo" onerror="this.style.display='none'">
-        <img src="EscolaLogo.png" alt="Logo Escola" class="header-logo" id="schoolLogo" onerror="this.style.display='none'">
-      </div>
-      <div class="header-title" id="headerTitleText">Escravo, Nem Pensar!</div>
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <img id="schoolLogo" src="" alt="Logo" style="display: none;">
+      <h1 id="headerTitleText">Escravo, Nem Pensar!</h1>
     </div>
-    <button class="theme-btn" id="btnToggleTheme" aria-label="Alternar tema">Modo Escuro</button>
-  </header>
-
-  <aside aria-label="Menu principal">
     <nav>
-      <a class="nav-item active" data-target="home">
-        <span>🏠</span>
-        <span class="nav-text">Início</span>
-      </a>
-      <a class="nav-item" data-target="about">
-        <span>📖</span>
-        <span class="nav-text">Sobre o projeto</span>
-      </a>
-      <a class="nav-item" data-target="activities">
-        <span>🎯</span>
-        <span class="nav-text">Atividades</span>
-      </a>
-      <a class="nav-item" data-target="practice">
-        <span>📸</span>
-        <span class="nav-text">Projeto na Prática</span>
-      </a>
-      <a class="nav-item" data-target="materials">
-        <span>📚</span>
-        <span class="nav-text">Materiais</span>
-      </a>
-      <a class="nav-item" data-target="admin">
-        <span>🔐</span>
-        <span class="nav-text">Administração</span>
-      </a>
+      <button class="nav-item active" data-target="home">🏠 Início</button>
+      <button class="nav-item" data-target="about">📖 Sobre</button>
+      <button class="nav-item" data-target="activities">🎯 Atividades</button>
+      <button class="nav-item" data-target="practice">📸 Projeto na Prática</button>
+      <button class="nav-item" data-target="materials">📚 Materiais de Apoio</button>
+      <button class="nav-item" data-target="admin">⚙️ Administração</button>
     </nav>
+    <div class="sidebar-footer">
+      <button class="nav-item" id="btnToggleTheme">Modo Escuro</button>
+    </div>
   </aside>
 
+  <!-- MAIN -->
   <main>
-    <!-- PÁGINA INICIAL -->
-    <section id="home" class="page active">
-      <div class="hero-banner">
-        <h1 id="heroTitleText">Projeto Escravo, Nem Pensar!</h1>
-        <p style="color: var(--texto-secundario);">
-          Plataforma de conteúdos educativos e informativos para a prevenção ao trabalho escravo e promoção dos direitos humanos.
-        </p>
+    <header>
+      <div class="header-left">
+        <button class="btn-icon" id="btnToggleSidebar" title="Menu">☰</button>
+        <span id="docHeaderTitle" style="font-weight: 600;">Painel Interativo</span>
       </div>
-      <h2>Módulos e Atividades em Destaque</h2>
-      <br>
-      <div class="form-group" style="max-width: 320px;">
-        <input type="text" id="searchInput" placeholder="🔍 Buscar por título ou palavra-chave...">
-      </div>
-      <br>
-      <div class="cards-grid" id="cardsContainer"></div>
-    </section>
+    </header>
 
-    <!-- SOBRE O PROJETO -->
-    <section id="about" class="page">
-      <h1>Sobre o projeto</h1>
-      <div class="content-area" id="aboutPageContent">
-        <p>O <strong>Escravo, Nem Pensar!</strong> é um programa de educação dedicado à prevenção do trabalho escravo no Brasil.</p>
-        <br>
-        <p>Esta plataforma foi desenvolvida de forma modular para organizar e disponibilizar atividades, textos de apoio, fotos e materiais interativos sobre direitos humanos e trabalho digno.</p>
-      </div>
-    </section>
+    <div class="content-area">
 
-    <!-- ATIVIDADES -->
-    <section id="activities" class="page">
-      <h1>🎯 Atividades Pedagógicas</h1>
-      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Explore o acervo completo de atividades educativas.</p>
-      <div class="cards-grid" id="activitiesContainer"></div>
-    </section>
-
-    <!-- PROJETO NA PRÁTICA -->
-    <section id="practice" class="page">
-      <h1>📸 Projeto na Prática</h1>
-      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Registros das ações, culminâncias, apresentações e trabalhos realizados pelos estudantes.</p>
-      
-      <div class="tabs-header">
-        <button class="tab-btn active" onclick="App.filterPractice('Todos', this)">Todos</button>
-        <button class="tab-btn" onclick="App.filterPractice('Culminância', this)">Culminância</button>
-        <button class="tab-btn" onclick="App.filterPractice('Galeria de Fotos', this)">Fotos</button>
-        <button class="tab-btn" onclick="App.filterPractice('Apresentações', this)">Apresentações</button>
-        <button class="tab-btn" onclick="App.filterPractice('Relatos dos estudantes', this)">Relatos</button>
-        <button class="tab-btn" onclick="App.filterPractice('Trabalhos produzidos', this)">Trabalhos</button>
-      </div>
-
-      <div class="cards-grid" id="practiceContainer"></div>
-    </section>
-
-    <!-- MATERIAIS DE APOIO -->
-    <section id="materials" class="page">
-      <h1>📚 Materiais de Apoio</h1>
-      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Guias pedagógicos, cartilhas, imagens e links de referência disponíveis para acesso.</p>
-      <div class="cards-grid" id="materialsContainer"></div>
-    </section>
-
-    <!-- VISUALIZADOR DE CONTEÚDO -->
-    <section id="contentView" class="page">
-      <button class="btn-action btn-secondary" onclick="App.navigateTo('home')">← Voltar</button>
-      <h1 id="viewTitle" style="margin-top: 1rem; color: var(--terracota);"></h1>
-      <div id="viewMetaInfo" style="margin-top: 0.5rem; color: var(--texto-secundario);"></div>
-      <div id="viewCoverContainer"></div>
-      <div class="content-area" id="viewBody"></div>
-    </section>
-
-    <!-- ÁREA DO ADMINISTRADOR -->
-    <section id="admin" class="page">
-      <h1>🔐 Área do Administrador</h1>
-      <p style="margin-bottom: 1.5rem; color: var(--texto-secundario);">Gerencie o conteúdo do site e os registros das atividades na prática.</p>
-
-      <!-- PAINEL DE LOGIN -->
-      <div id="adminLoginBox" class="admin-card" style="max-width: 400px;">
-        <h3>Acesso Restrito</h3>
-        <br>
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="inputPassword">Senha de Acesso</label>
-            <input type="password" id="inputPassword" required autocomplete="current-password">
-          </div>
-          <button type="submit" class="btn-action">Entrar</button>
-        </form>
-      </div>
-
-      <!-- PAINEL ADMINISTRATIVO -->
-      <div id="adminPanel" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <span>Sessão ativa como <strong>Administrador</strong></span>
-          <button class="btn-action btn-secondary" onclick="App.logoutAdmin()">Sair</button>
+      <!-- PÁGINA: INÍCIO -->
+      <section id="home" class="page active">
+        <div class="hero-banner">
+          <h2 id="heroTitleText">Projeto Escravo, Nem Pensar!</h2>
+          <p>Plataforma modular para compartilhamento de atividades pedagógicas, registros e materiais educativos.</p>
         </div>
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar atividades...">
+        <div id="cardsContainer" class="grid-cards"></div>
+      </section>
 
-        <div class="stats-container">
-          <div class="stat-box">
-            <span>Total de Atividades</span>
-            <strong id="statTotal">0</strong>
-          </div>
-          <div class="stat-box">
-            <span>Registros na Prática</span>
-            <strong id="statPractice">0</strong>
-          </div>
-          <div class="stat-box">
-            <span>Materiais de Apoio</span>
-            <strong id="statMaterials">0</strong>
-          </div>
-        </div>
-
-        <!-- CONFIGURAÇÕES GERAIS / TEXTO E LOGO -->
+      <!-- PÁGINA: SOBRE -->
+      <section id="about" class="page">
         <div class="admin-card">
-          <h3>⚙️ Configurações Gerais da Plataforma</h3>
+          <h2 style="margin-bottom: 1rem;">Sobre o Projeto</h2>
+          <div id="aboutPageContent"></div>
+        </div>
+      </section>
+
+      <!-- PÁGINA: ATIVIDADES -->
+      <section id="activities" class="page">
+        <h2 style="margin-bottom: 1.5rem;">Atividades Pedagógicas</h2>
+        <div id="activitiesContainer" class="grid-cards"></div>
+      </section>
+
+      <!-- PÁGINA: PROJETO NA PRÁTICA -->
+      <section id="practice" class="page">
+        <h2 style="margin-bottom: 1.5rem;">Projeto na Prática</h2>
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="App.filterPractice('Todos', this)">Todos</button>
+          <button class="tab-btn" onclick="App.filterPractice('Culminância', this)">Culminância</button>
+          <button class="tab-btn" onclick="App.filterPractice('Galeria de Fotos', this)">Galeria de Fotos</button>
+          <button class="tab-btn" onclick="App.filterPractice('Apresentações', this)">Apresentações</button>
+          <button class="tab-btn" onclick="App.filterPractice('Relatos dos estudantes', this)">Relatos dos estudantes</button>
+          <button class="tab-btn" onclick="App.filterPractice('Trabalhos produzidos', this)">Trabalhos produzidos</button>
+        </div>
+        <div id="practiceContainer" class="grid-cards"></div>
+      </section>
+
+      <!-- PÁGINA: MATERIAIS DE APOIO -->
+      <section id="materials" class="page">
+        <h2 style="margin-bottom: 1.5rem;">Materiais de Apoio</h2>
+        <div id="materialsContainer" class="grid-cards"></div>
+      </section>
+
+      <!-- PÁGINA: VISUALIZAÇÃO DE CONTEÚDO INDIVIDUAL -->
+      <section id="contentView" class="page">
+        <button class="btn-action btn-secondary" style="margin-bottom: 1.5rem;" onclick="App.navigateTo('home')">← Voltar</button>
+        <div class="admin-card">
+          <h1 id="viewTitle" style="margin-bottom: 0.5rem;"></h1>
+          <p id="viewMetaInfo" style="color: var(--texto-secundario); font-size: 0.9rem;"></p>
+          <div id="viewCoverContainer"></div>
+          <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--borda);">
+          <div id="viewBody" style="line-height: 1.6;"></div>
+        </div>
+      </section>
+
+      <!-- PÁGINA: ADMINISTRAÇÃO -->
+      <section id="admin" class="page">
+        
+        <!-- LOGIN BOX (FIREBASE AUTH) -->
+        <div id="adminLoginBox" class="admin-card" style="max-width: 400px; margin: 2rem auto;">
+          <h2>🔐 Acesso Restrito</h2>
           <br>
-          <form id="settingsForm">
+          <form id="loginForm">
             <div class="form-group">
-              <label for="inputHeaderTitle">Nome da Plataforma (Título Superior)</label>
-              <input type="text" id="inputHeaderTitle" required placeholder="Ex: Escravo, Nem Pensar!">
+              <label for="inputEmail">E-mail Administrativo</label>
+              <input type="text" id="inputEmail" required placeholder="admin@escola.com">
             </div>
-
             <div class="form-group">
-              <label for="inputSchoolLogo">Logo da Escola (Enviar Imagem)</label>
-              <input type="file" id="inputSchoolLogo" accept="image/*">
-              <input type="hidden" id="currentSchoolLogoUrl">
-              <div id="schoolLogoPreview" style="margin-top: 0.5rem;"></div>
+              <label for="inputPassword">Senha</label>
+              <input type="password" id="inputPassword" required placeholder="••••••••">
             </div>
+            <button type="submit" class="btn-action" style="width: 100%;">Entrar</button>
+          </form>
+        </div>
 
-            <div class="form-group">
-              <label>Texto da Página "Sobre o Projeto" (Editor Visual)</label>
-              <div class="editor-container">
-                <div class="editor-toolbar">
-                  <!-- Fontes -->
-                  <select onchange="App.execAboutCmd('fontName', this.value)">
-                    <option value="Arial">Arial</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Verdana">Verdana</option>
-                  </select>
-                  <!-- Tamanho -->
-                  <select onchange="App.execAboutCmd('fontSize', this.value)">
-                    <option value="1">Pequena (Muito pequena)</option>
-                    <option value="2">Pequena</option>
-                    <option value="3" selected>Normal</option>
-                    <option value="4">Média</option>
-                    <option value="5">Grande</option>
-                    <option value="6">Muito Grande</option>
-                  </select>
-                  <button type="button" onclick="App.execAboutCmd('bold')" title="Negrito">B</button>
-                  <button type="button" onclick="App.execAboutCmd('italic')" title="Itálico">I</button>
-                  <button type="button" onclick="App.execAboutCmd('underline')" title="Sublinhado">U</button>
-                  <button type="button" onclick="App.execAboutCmd('strikeThrough')" title="Tachado">S</button>
-                  <button type="button" onclick="App.execAboutCmd('insertUnorderedList')" title="Lista">• Lista</button>
-                </div>
-                <div id="aboutEditorContent" class="editor-content" contenteditable="true"></div>
+        <!-- PAINEL ADMINISTRATIVO (OCULTO ATÉ LOGAR) -->
+        <div id="adminPanel" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2>Painel de Controle</h2>
+            <button class="btn-action btn-secondary" onclick="App.logoutAdmin()">Sair do Sistema</button>
+          </div>
+
+          <!-- ESTATÍSTICAS -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="admin-card" style="margin-bottom:0; text-align:center;">
+              <h3 id="statTotal" style="font-size: 2rem; color: var(--primaria);">0</h3>
+              <p style="color: var(--texto-secundario);">Atividades</p>
+            </div>
+            <div class="admin-card" style="margin-bottom:0; text-align:center;">
+              <h3 id="statPractice" style="font-size: 2rem; color: var(--primaria);">0</h3>
+              <p style="color: var(--texto-secundario);">Registros na Prática</p>
+            </div>
+            <div class="admin-card" style="margin-bottom:0; text-align:center;">
+              <h3 id="statMaterials" style="font-size: 2rem; color: var(--primaria);">0</h3>
+              <p style="color: var(--texto-secundario);">Materiais</p>
+            </div>
+          </div>
+
+          <!-- FORMULÁRIO 0: CONFIGURAÇÕES GERAIS -->
+          <div class="admin-card">
+            <h3>⚙️ Configurações Gerais</h3>
+            <br>
+            <form id="settingsForm">
+              <div class="form-group">
+                <label for="inputHeaderTitle">Nome do Projeto / Título do Header</label>
+                <input type="text" id="inputHeaderTitle" required>
               </div>
-            </div>
-
-            <button type="submit" class="btn-action">Salvar Configurações Gerais</button>
-          </form>
-        </div>
-
-        <!-- FORMULÁRIO 1: ATIVIDADES -->
-        <div class="admin-card">
-          <h3 id="formTitle">➕ Criar Nova Atividade</h3>
-          <br>
-          <form id="contentForm">
-            <input type="hidden" id="editId">
-            <input type="hidden" id="currentCoverUrl">
-
-            <div class="form-group">
-              <label for="inputTitle">Título da Atividade</label>
-              <input type="text" id="inputTitle" required placeholder="Ex: Atividade 01 — Trabalho Digno">
-            </div>
-            
-            <div class="form-group">
-              <label for="inputDesc">Descrição Curta</label>
-              <input type="text" id="inputDesc" required placeholder="Ex: Aprenda a reconhecer situações de exploração.">
-            </div>
-
-            <div class="form-group">
-              <label for="inputStatus">Status</label>
-              <select id="inputStatus">
-                <option value="Publicado">Publicado</option>
-                <option value="Rascunho">Rascunho</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="inputCover">Imagem de Capa</label>
-              <input type="file" id="inputCover" accept="image/*">
-              <div id="coverPreview" style="margin-top: 0.5rem;"></div>
-            </div>
-
-            <div class="form-group">
-              <label>Conteúdo Detalhado (Editor Visual WYSIWYG)</label>
-              <div class="editor-container">
-                <div class="editor-toolbar">
-                  <!-- Fontes -->
-                  <select onchange="App.execCmd('fontName', this.value)">
-                    <option value="Arial">Arial</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Verdana">Verdana</option>
-                  </select>
-                  <!-- Tamanho -->
-                  <select onchange="App.execCmd('fontSize', this.value)">
-                    <option value="1">Pequena (Muito pequena)</option>
-                    <option value="2">Pequena</option>
-                    <option value="3" selected>Normal</option>
-                    <option value="4">Média</option>
-                    <option value="5">Grande</option>
-                    <option value="6">Muito Grande</option>
-                  </select>
-                  <button type="button" onclick="App.execCmd('bold')" title="Negrito">B</button>
-                  <button type="button" onclick="App.execCmd('italic')" title="Itálico">I</button>
-                  <button type="button" onclick="App.execCmd('underline')" title="Sublinhado">U</button>
-                  <button type="button" onclick="App.execCmd('strikeThrough')" title="Tachado">S</button>
-                  <button type="button" onclick="App.execCmd('formatBlock', '<h2>')" title="Título">H2</button>
-                  <button type="button" onclick="App.execCmd('insertUnorderedList')" title="Lista">• Lista</button>
-                  <button type="button" onclick="App.triggerImageUpload()" title="Inserir Imagem">📷 Imagem</button>
-                  <input type="file" id="editorImgInput" accept="image/*" style="display:none;" onchange="App.insertEditorImage(this)">
-                </div>
-                <div id="editorContent" class="editor-content" contenteditable="true"></div>
+              <div class="form-group">
+                <label for="inputSchoolLogo">Logo da Escola / Projeto (Nova Imagem)</label>
+                <input type="file" id="inputSchoolLogo" accept="image/*">
               </div>
-            </div>
-
-            <div style="display: flex; gap: 0.5rem;">
-              <button type="submit" class="btn-action">Salvar Atividade</button>
-              <button type="button" class="btn-action btn-secondary" onclick="App.resetForm()">Cancelar</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="admin-card">
-          <h3>📋 Atividades Cadastradas</h3>
-          <br>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="adminTableBody"></tbody>
-          </table>
-        </div>
-
-        <!-- FORMULÁRIO 2: PROJETO NA PRÁTICA -->
-        <div class="admin-card">
-          <h3 id="practiceFormTitle">📸 Adicionar Registro: Projeto na Prática</h3>
-          <br>
-          <form id="practiceForm">
-            <input type="hidden" id="editPracticeId">
-            <input type="hidden" id="currentPracticeCoverUrl">
-
-            <div class="form-group">
-              <label for="inputPracticeTitle">Título do Registro</label>
-              <input type="text" id="inputPracticeTitle" required placeholder="Ex: Feira Cultural sobre Direitos Humanos">
-            </div>
-
-            <div class="form-group">
-              <label for="inputPracticeCategory">Categoria</label>
-              <select id="inputPracticeCategory" required>
-                <option value="Culminância">Culminância</option>
-                <option value="Galeria de Fotos">Galeria de Fotos</option>
-                <option value="Apresentações">Apresentações</option>
-                <option value="Relatos dos estudantes">Relatos dos estudantes</option>
-                <option value="Trabalhos produzidos">Trabalhos produzidos</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="inputPracticeDesc">Descrição Resumida</label>
-              <input type="text" id="inputPracticeDesc" required placeholder="Ex: Fotos das maquetes criadas pelas turmas do 9º ano.">
-            </div>
-
-            <div class="form-group">
-              <label for="inputPracticeCover">Imagem Principal / Capa</label>
-              <input type="file" id="inputPracticeCover" accept="image/*">
-              <div id="practiceCoverPreview" style="margin-top: 0.5rem;"></div>
-            </div>
-
-            <div class="form-group">
-              <label>Relato / Conteúdo Completo (Editor Visual)</label>
-              <div class="editor-container">
-                <div class="editor-toolbar">
-                  <!-- Fontes -->
-                  <select onchange="App.execPracticeCmd('fontName', this.value)">
-                    <option value="Arial">Arial</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Verdana">Verdana</option>
-                  </select>
-                  <!-- Tamanho -->
-                  <select onchange="App.execPracticeCmd('fontSize', this.value)">
-                    <option value="1">Pequena (Muito pequena)</option>
-                    <option value="2">Pequena</option>
-                    <option value="3" selected>Normal</option>
-                    <option value="4">Média</option>
-                    <option value="5">Grande</option>
-                    <option value="6">Muito Grande</option>
-                  </select>
-                  <button type="button" onclick="App.execPracticeCmd('bold')" title="Negrito">B</button>
-                  <button type="button" onclick="App.execPracticeCmd('italic')" title="Itálico">I</button>
-                  <button type="button" onclick="App.execPracticeCmd('underline')" title="Sublinhado">U</button>
-                  <button type="button" onclick="App.execPracticeCmd('strikeThrough')" title="Tachado">S</button>
-                  <button type="button" onclick="App.execPracticeCmd('insertUnorderedList')" title="Lista">• Lista</button>
-                  <button type="button" onclick="App.triggerPracticeImageUpload()" title="Inserir Imagem">📷 Imagem</button>
-                  <input type="file" id="practiceEditorImgInput" accept="image/*" style="display:none;" onchange="App.insertPracticeEditorImage(this)">
+              <div class="form-group">
+                <label>Texto da Página "Sobre"</label>
+                <div class="editor-container">
+                  <div class="editor-toolbar">
+                    <button type="button" onclick="App.execAboutCmd('bold')" title="Negrito">B</button>
+                    <button type="button" onclick="App.execAboutCmd('italic')" title="Itálico">I</button>
+                    <button type="button" onclick="App.execAboutCmd('underline')" title="Sublinhado">U</button>
+                  </div>
+                  <div id="aboutEditorContent" class="editor-content" contenteditable="true"></div>
                 </div>
-                <div id="practiceEditorContent" class="editor-content" contenteditable="true"></div>
               </div>
-            </div>
+              <button type="submit" class="btn-action" id="btnSaveSettings">Salvar Configurações Gerais</button>
+            </form>
+          </div>
 
-            <div style="display: flex; gap: 0.5rem;">
-              <button type="submit" class="btn-action">Salvar Registro na Prática</button>
-              <button type="button" class="btn-action btn-secondary" onclick="App.resetPracticeForm()">Cancelar</button>
-            </div>
-          </form>
+          <!-- FORMULÁRIO 1: ATIVIDADES -->
+          <div class="admin-card">
+            <h3 id="formTitle">➕ Criar Nova Atividade</h3>
+            <br>
+            <form id="contentForm">
+              <input type="hidden" id="editId">
+              <input type="hidden" id="currentCoverUrl">
+              <input type="hidden" id="currentCoverStoragePath">
+
+              <div class="form-group">
+                <label for="inputTitle">Título da Atividade</label>
+                <input type="text" id="inputTitle" required placeholder="Ex: Atividade 01 — Trabalho Digno">
+              </div>
+              <div class="form-group">
+                <label for="inputDesc">Descrição Curta</label>
+                <input type="text" id="inputDesc" required placeholder="Ex: Aprenda a reconhecer situações...">
+              </div>
+              <div class="form-group">
+                <label for="inputStatus">Status</label>
+                <select id="inputStatus">
+                  <option value="Publicado">Publicado</option>
+                  <option value="Rascunho">Rascunho</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inputCover">Imagem de Capa</label>
+                <input type="file" id="inputCover" accept="image/*">
+                <div id="coverPreview" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="form-group">
+                <label>Conteúdo Detalhado (Editor Visual)</label>
+                <div class="editor-container">
+                  <div class="editor-toolbar">
+                    <button type="button" onclick="App.execCmd('bold')" title="Negrito">B</button>
+                    <button type="button" onclick="App.execCmd('italic')" title="Itálico">I</button>
+                    <button type="button" onclick="App.execCmd('formatBlock', '<h2>')" title="Título">H2</button>
+                    <button type="button" onclick="App.triggerImageUpload()" title="Inserir Imagem">📷 Imagem</button>
+                    <input type="file" id="editorImgInput" accept="image/*" style="display:none;" onchange="App.insertEditorImage(this)">
+                  </div>
+                  <div id="editorContent" class="editor-content" contenteditable="true"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn-action" id="btnSaveActivity">Salvar Atividade</button>
+                <button type="button" class="btn-action btn-secondary" onclick="App.resetForm()">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="admin-card">
+            <h3>📋 Atividades Cadastradas</h3>
+            <br>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- FORMULÁRIO 2: PROJETO NA PRÁTICA -->
+          <div class="admin-card">
+            <h3 id="practiceFormTitle">📸 Adicionar Registro: Projeto na Prática</h3>
+            <br>
+            <form id="practiceForm">
+              <input type="hidden" id="editPracticeId">
+              <input type="hidden" id="currentPracticeCoverUrl">
+              <input type="hidden" id="currentPracticeStoragePath">
+
+              <div class="form-group">
+                <label for="inputPracticeTitle">Título do Registro</label>
+                <input type="text" id="inputPracticeTitle" required>
+              </div>
+              <div class="form-group">
+                <label for="inputPracticeCategory">Categoria</label>
+                <select id="inputPracticeCategory" required>
+                  <option value="Culminância">Culminância</option>
+                  <option value="Galeria de Fotos">Galeria de Fotos</option>
+                  <option value="Apresentações">Apresentações</option>
+                  <option value="Relatos dos estudantes">Relatos dos estudantes</option>
+                  <                  <option value="Trabalhos produzidos">Trabalhos produzidos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inputPracticeDesc">Descrição Resumida</label>
+                <input type="text" id="inputPracticeDesc" required>
+              </div>
+              <div class="form-group">
+                <label for="inputPracticeCover">Imagem Principal / Capa</label>
+                <input type="file" id="inputPracticeCover" accept="image/*">
+                <div id="practiceCoverPreview" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="form-group">
+                <label>Relato / Conteúdo Completo</label>
+                <div class="editor-container">
+                  <div class="editor-toolbar">
+                    <button type="button" onclick="App.execPracticeCmd('bold')" title="Negrito">B</button>
+                    <button type="button" onclick="App.execPracticeCmd('italic')" title="Itálico">I</button>
+                    <button type="button" onclick="App.triggerPracticeImageUpload()" title="Inserir Imagem">📷 Imagem</button>
+                    <input type="file" id="practiceEditorImgInput" accept="image/*" style="display:none;" onchange="App.insertPracticeEditorImage(this)">
+                  </div>
+                  <div id="practiceEditorContent" class="editor-content" contenteditable="true"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn-action" id="btnSavePractice">Salvar Registro</button>
+                <button type="button" class="btn-action btn-secondary" onclick="App.resetPracticeForm()">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="admin-card">
+            <h3>📋 Registros do "Projeto na Prática"</h3>
+            <br>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Categoria</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="practiceAdminTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- FORMULÁRIO 3: MATERIAIS DE APOIO -->
+          <div class="admin-card">
+            <h3 id="materialFormTitle">📚 Adicionar Material de Apoio</h3>
+            <br>
+            <form id="materialForm">
+              <input type="hidden" id="editMaterialId">
+              <input type="hidden" id="currentMaterialFileUrl">
+              <input type="hidden" id="currentMaterialStoragePath">
+
+              <div class="form-group">
+                <label for="inputMaterialTitle">Título do Material</label>
+                <input type="text" id="inputMaterialTitle" required>
+              </div>
+              <div class="form-group">
+                <label for="inputMaterialType">Tipo de Material</label>
+                <select id="inputMaterialType" onchange="App.toggleMaterialFields()">
+                  <option value="link">Link Externo</option>
+                  <option value="pdf">Arquivo PDF</option>
+                  <option value="imagem">Imagem</option>
+                </select>
+              </div>
+              <div class="form-group" id="materialLinkGroup">
+                <label for="inputMaterialUrl">URL do Link</label>
+                <input type="url" id="inputMaterialUrl" placeholder="https://exemplo.com">
+              </div>
+              <div class="form-group" id="materialFileGroup" style="display: none;">
+                <label for="inputMaterialFile">Selecione o Arquivo</label>
+                <input type="file" id="inputMaterialFile">
+                <div id="materialFilePreview" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="form-group">
+                <label for="inputMaterialDesc">Descrição Curta</label>
+                <input type="text" id="inputMaterialDesc" required>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn-action" id="btnSaveMaterial">Salvar Material</button>
+                <button type="button" class="btn-action btn-secondary" onclick="App.resetMaterialForm()">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="admin-card">
+            <h3>📋 Materiais Cadastrados</h3>
+            <br>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="materialAdminTableBody"></tbody>
+            </table>
+          </div>
+
         </div>
+      </section>
 
-        <div class="admin-card">
-          <h3>📋 Registros do "Projeto na Prática"</h3>
-          <br>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Categoria</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="practiceAdminTableBody"></tbody>
-          </table>
-        </div>
-
-        <!-- FORMULÁRIO 3: CADASTRAR MATERIAIS DE APOIO -->
-        <div class="admin-card">
-          <h3 id="materialFormTitle">📚 Adicionar Material de Apoio</h3>
-          <br>
-          <form id="materialForm">
-            <input type="hidden" id="editMaterialId">
-            <input type="hidden" id="currentMaterialFileUrl">
-
-            <div class="form-group">
-              <label for="inputMaterialTitle">Título do Material</label>
-              <input type="text" id="inputMaterialTitle" required placeholder="Ex: Cartilha sobre Trabalho Escravo Contemporâneo">
-            </div>
-
-            <div class="form-group">
-              <label for="inputMaterialType">Tipo de Material</label>
-              <select id="inputMaterialType" onchange="App.toggleMaterialFields()">
-                <option value="link">Link Externo</option>
-                <option value="pdf">Arquivo PDF</option>
-                <option value="imagem">Imagem</option>
-              </select>
-            </div>
-
-            <!-- Campo Link -->
-            <div class="form-group" id="materialLinkGroup">
-              <label for="inputMaterialUrl">URL do Link</label>
-              <input type="url" id="inputMaterialUrl" placeholder="https://exemplo.com/cartilha">
-            </div>
-
-            <!-- Campo Arquivo (PDF / Imagem) -->
-            <div class="form-group" id="materialFileGroup" style="display: none;">
-              <label for="inputMaterialFile">Selecione o Arquivo</label>
-              <input type="file" id="inputMaterialFile" accept=".pdf">
-              <div id="materialFilePreview" style="margin-top: 0.5rem;"></div>
-            </div>
-
-            <div class="form-group">
-              <label for="inputMaterialDesc">Descrição Curta</label>
-              <input type="text" id="inputMaterialDesc" required placeholder="Ex: Material explicativo produzido pelo programa.">
-            </div>
-
-            <div style="display: flex; gap: 0.5rem;">
-              <button type="submit" class="btn-action">Salvar Material</button>
-              <button type="button" class="btn-action btn-secondary" onclick="App.resetMaterialForm()">Cancelar</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="admin-card">
-          <h3>📋 Materiais Cadastrados</h3>
-          <br>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Tipo</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="materialAdminTableBody"></tbody>
-          </table>
-        </div>
-
-      </div>
-    </section>
+    </div>
   </main>
 
-  <!-- FIREBASE IMPORTS & APLICAÇÃO INTEGRADA -->
+  <!-- FIREBASE IMPORTS & LÓGICA DA APLICAÇÃO -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB6GV-yNCPWl6GlRLNgkj_r4YIsiiJF1L0",
@@ -964,6 +482,8 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
 
     const App = {
       state: {
@@ -973,7 +493,7 @@
         settings: {
           headerTitle: 'Escravo, Nem Pensar!',
           schoolLogo: '',
-          aboutText: '<p>O <strong>Escravo, Nem Pensar!</strong> é um programa de educação dedicado à prevenção do trabalho escravo no Brasil.</p><br><p>Esta plataforma foi desenvolvida de forma modular para organizar e disponibilizar atividades, textos de apoio, fotos e materiais interativos sobre direitos humanos e trabalho digno.</p>'
+          aboutText: '<p>O <strong>Escravo, Nem Pensar!</strong> é um programa de educação dedicado à prevenção do trabalho escravo no Brasil.</p>'
         },
         isAdmin: false,
         activePage: 'home',
@@ -983,57 +503,56 @@
       init() {
         this.bindFirebaseListeners();
         this.bindEvents();
+        this.checkAuth();
+      },
+
+      escapeHTML(str) {
+        if (!str) return '';
+        return str.replace(/[&<>'"]/g, 
+          tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+      },
+
+      checkAuth() {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            this.state.isAdmin = true;
+            document.getElementById('adminLoginBox').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            this.populateSettingsForm();
+            this.renderAdminTables();
+          } else {
+            this.state.isAdmin = false;
+            document.getElementById('adminLoginBox').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+          }
+        });
       },
 
       bindFirebaseListeners() {
-        const actRef = ref(db, 'activities');
-        onValue(actRef, (snapshot) => {
+        onValue(ref(db, 'activities'), (snapshot) => {
           const data = snapshot.val();
-          if (data) {
-            this.state.activities = Object.keys(data).map(key => ({
-              id: key,
-              ...data[key]
-            }));
-          } else {
-            this.state.activities = [];
-          }
+          this.state.activities = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+          this.state.activities.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
           this.renderAll();
         });
 
-        const pracRef = ref(db, 'practice');
-        onValue(pracRef, (snapshot) => {
+        onValue(ref(db, 'practice'), (snapshot) => {
           const data = snapshot.val();
-          if (data) {
-            this.state.practiceItems = Object.keys(data).map(key => ({
-              id: key,
-              ...data[key]
-            }));
-          } else {
-            this.state.practiceItems = [];
-          }
+          this.state.practiceItems = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+          this.state.practiceItems.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
           this.renderAll();
         });
 
-        const matRef = ref(db, 'materials');
-        onValue(matRef, (snapshot) => {
+        onValue(ref(db, 'materials'), (snapshot) => {
           const data = snapshot.val();
-          if (data) {
-            this.state.materials = Object.keys(data).map(key => ({
-              id: key,
-              ...data[key]
-            }));
-          } else {
-            this.state.materials = [];
-          }
+          this.state.materials = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
           this.renderAll();
         });
 
-        const setRef = ref(db, 'settings');
-        onValue(setRef, (snapshot) => {
+        onValue(ref(db, 'settings'), (snapshot) => {
           const data = snapshot.val();
-          if (data) {
-            this.state.settings = { ...this.state.settings, ...data };
-          }
+          if (data) this.state.settings = { ...this.state.settings, ...data };
           this.applySettings();
         });
       },
@@ -1043,13 +562,17 @@
           const currentTheme = document.documentElement.getAttribute('data-theme');
           const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
           document.documentElement.setAttribute('data-theme', nextTheme);
+          localStorage.setItem('theme', nextTheme);
           document.getElementById('btnToggleTheme').textContent = nextTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
         });
 
-        const toggleBtn = document.getElementById('btnToggleSidebar');
-        const overlay = document.getElementById('overlay');
-        
-        toggleBtn.addEventListener('click', () => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+          document.getElementById('btnToggleTheme').textContent = savedTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+        }
+
+        document.getElementById('btnToggleSidebar').addEventListener('click', () => {
           if (window.innerWidth <= 768) {
             document.body.classList.toggle('sidebar-open');
           } else {
@@ -1057,7 +580,7 @@
           }
         });
 
-        overlay.addEventListener('click', () => {
+        document.getElementById('overlay').addEventListener('click', () => {
           document.body.classList.remove('sidebar-open');
         });
 
@@ -1065,9 +588,7 @@
           item.addEventListener('click', () => {
             const target = item.getAttribute('data-target');
             this.navigateTo(target);
-            if (window.innerWidth <= 768) {
-              document.body.classList.remove('sidebar-open');
-            }
+            if (window.innerWidth <= 768) document.body.classList.remove('sidebar-open');
           });
         });
 
@@ -1077,160 +598,189 @@
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
           e.preventDefault();
+          const email = document.getElementById('inputEmail').value;
           const pass = document.getElementById('inputPassword').value;
-          if (pass === 'admin123') {
-            this.state.isAdmin = true;
-            document.getElementById('adminLoginBox').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            this.populateSettingsForm();
-            this.renderAdminTables();
-          } else {
-            alert('Senha incorreta!');
+          signInWithEmailAndPassword(auth, email, pass)
+            .catch(err => alert('Erro no login: ' + err.message));
+        });
+
+        // Configurações Gerais
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById('btnSaveSettings');
+          btn.textContent = 'Salvando...';
+          btn.disabled = true;
+
+          try {
+            let logoUrl = this.state.settings.schoolLogo;
+            let logoPath = this.state.settings.schoolStoragePath || '';
+            const logoFile = document.getElementById('inputSchoolLogo').files[0];
+
+            if (logoFile) {
+              if (logoPath) await deleteObject(storageRef(storage, logoPath)).catch(() => {});
+              logoPath = `logos/${Date.now()}_${logoFile.name}`;
+              const snap = await uploadBytes(storageRef(storage, logoPath), logoFile);
+              logoUrl = await getDownloadURL(snap.ref);
+            }
+
+            await set(ref(db, 'settings'), {
+              headerTitle: document.getElementById('inputHeaderTitle').value,
+              aboutText: document.getElementById('aboutEditorContent').innerHTML,
+              schoolLogo: logoUrl,
+              schoolStoragePath: logoPath
+            });
+            alert('Configurações salvas com sucesso!');
+          } catch (err) {
+            alert('Erro ao salvar: ' + err.message);
+          } finally {
+            btn.textContent = 'Salvar Configurações Gerais';
+            btn.disabled = false;
           }
         });
 
-        document.getElementById('settingsForm').addEventListener('submit', (e) => {
+        // Atividades
+        document.getElementById('contentForm').addEventListener('submit', async (e) => {
           e.preventDefault();
-          const headerTitle = document.getElementById('inputHeaderTitle').value;
-          const aboutText = document.getElementById('aboutEditorContent').innerHTML;
-          const schoolLogoFile = document.getElementById('inputSchoolLogo').files[0];
+          const btn = document.getElementById('btnSaveActivity');
+          btn.textContent = 'Salvando...';
+          btn.disabled = true;
 
-          const saveSettingsFirebase = (logoUrl) => {
-            const updatedSettings = {
-              headerTitle,
-              aboutText,
-              schoolLogo: logoUrl !== undefined ? logoUrl : (this.state.settings.schoolLogo || '')
-            };
-            set(ref(db, 'settings'), updatedSettings)
-              .then(() => alert('Configurações salvas no Firebase!'))
-              .catch(err => alert('Erro ao salvar configurações: ' + err.message));
-          };
-
-          if (schoolLogoFile) {
-            const reader = new FileReader();
-            reader.onload = (evt) => saveSettingsFirebase(evt.target.result);
-            reader.readAsDataURL(schoolLogoFile);
-          } else {
-            saveSettingsFirebase();
-          }
-        });
-
-        document.getElementById('contentForm').addEventListener('submit', (e) => {
-          e.preventDefault();
           const editId = document.getElementById('editId').value;
-          const title = document.getElementById('inputTitle').value;
-          const desc = document.getElementById('inputDesc').value;
-          const status = document.getElementById('inputStatus').value;
-          const content = document.getElementById('editorContent').innerHTML;
           const coverFile = document.getElementById('inputCover').files[0];
 
-          const processSave = (coverUrl) => {
+          try {
+            let coverUrl = document.getElementById('currentCoverUrl').value;
+            let storagePath = document.getElementById('currentCoverStoragePath').value;
+
+            if (coverFile) {
+              if (storagePath) await deleteObject(storageRef(storage, storagePath)).catch(() => {});
+              storagePath = `covers/${Date.now()}_${coverFile.name}`;
+              const snap = await uploadBytes(storageRef(storage, storagePath), coverFile);
+              coverUrl = await getDownloadURL(snap.ref);
+            }
+
             const activityData = {
-              title, desc, status, content,
-              cover: coverUrl || ''
+              title: document.getElementById('inputTitle').value,
+              desc: document.getElementById('inputDesc').value,
+              status: document.getElementById('inputStatus').value,
+              content: document.getElementById('editorContent').innerHTML,
+              cover: coverUrl,
+              storagePath,
+              createdAt: editId ? (this.state.activities.find(a => a.id === editId)?.createdAt || Date.now()) : Date.now()
             };
 
             if (editId) {
-              update(ref(db, `activities/${editId}`), activityData)
-                .then(() => {
-                  alert('Atividade atualizada!');
-                  this.resetForm();
-                });
+              await update(ref(db, `activities/${editId}`), activityData);
+              alert('Atividade atualizada!');
             } else {
-              push(ref(db, 'activities'), activityData)
-                .then(() => {
-                  alert('Atividade criada!');
-                  this.resetForm();
-                });
+              await push(ref(db, 'activities'), activityData);
+              alert('Atividade criada!');
             }
-          };
-
-          if (coverFile) {
-            const reader = new FileReader();
-            reader.onload = (evt) => processSave(evt.tatarget.result);
-            reader.readAsDataURL(coverFile);
-          } else {
-            processSave(document.getElementById('currentCoverUrl').value);
+            this.resetForm();
+          } catch (err) {
+            alert('Erro: ' + err.message);
+          } finally {
+            btn.textContent = 'Salvar Atividade';
+            btn.disabled = false;
           }
         });
 
-        document.getElementById('practiceForm').addEventListener('submit', (e) => {
+        // Prática
+        document.getElementById('practiceForm').addEventListener('submit', async (e) => {
           e.preventDefault();
+          const btn = document.getElementById('btnSavePractice');
+          btn.textContent = 'Salvando...';
+          btn.disabled = true;
+
           const editId = document.getElementById('editPracticeId').value;
-          const title = document.getElementById('inputPracticeTitle').value;
-          const category = document.getElementById('inputPracticeCategory').value;
-          const desc = document.getElementById('inputPracticeDesc').value;
-          const content = document.getElementById('practiceEditorContent').innerHTML;
           const coverFile = document.getElementById('inputPracticeCover').files[0];
 
-          const processSave = (coverUrl) => {
+          try {
+            let coverUrl = document.getElementById('currentPracticeCoverUrl').value;
+            let storagePath = document.getElementById('currentPracticeStoragePath').value;
+
+            if (coverFile) {
+              if (storagePath) await deleteObject(storageRef(storage, storagePath)).catch(() => {});
+              storagePath = `practice/${Date.now()}_${coverFile.name}`;
+              const snap = await uploadBytes(storageRef(storage, storagePath), coverFile);
+              coverUrl = await getDownloadURL(snap.ref);
+            }
+
             const practiceData = {
-              title, category, desc, content,
-              cover: coverUrl || ''
+              title: document.getElementById('inputPracticeTitle').value,
+              category: document.getElementById('inputPracticeCategory').value,
+              desc: document.getElementById('inputPracticeDesc').value,
+              content: document.getElementById('practiceEditorContent').innerHTML,
+              cover: coverUrl,
+              storagePath,
+              createdAt: editId ? (this.state.practiceItems.find(p => p.id === editId)?.createdAt || Date.now()) : Date.now()
             };
 
             if (editId) {
-              update(ref(db, `practice/${editId}`), practiceData)
-                .then(() => {
-                  alert('Registro atualizado!');
-                  this.resetPracticeForm();
-                });
+              await update(ref(db, `practice/${editId}`), practiceData);
+              alert('Registro atualizado!');
             } else {
-              push(ref(db, 'practice'), practiceData)
-                .then(() => {
-                  alert('Registro inserido com sucesso!');
-                  this.resetPracticeForm();
-                });
+              await push(ref(db, 'practice'), practiceData);
+              alert('Registro inserido!');
             }
-          };
-
-          if (coverFile) {
-            const reader = new FileReader();
-            reader.onload = (evt) => processSave(evt.target.result);
-            reader.readAsDataURL(coverFile);
-          } else {
-            processSave(document.getElementById('currentPracticeCoverUrl').value);
+            this.resetPracticeForm();
+          } catch (err) {
+            alert('Erro: ' + err.message);
+          } finally {
+            btn.textContent = 'Salvar Registro';
+            btn.disabled = false;
           }
         });
 
-        document.getElementById('materialForm').addEventListener('submit', (e) => {
+        // Materiais
+        document.getElementById('materialForm').addEventListener('submit', async (e) => {
           e.preventDefault();
+          const btn = document.getElementById('btnSaveMaterial');
+          btn.textContent = 'Salvando...';
+          btn.disabled = true;
+
           const editId = document.getElementById('editMaterialId').value;
-          const title = document.getElementById('inputMaterialTitle').value;
           const type = document.getElementById('inputMaterialType').value;
-          const desc = document.getElementById('inputMaterialDesc').value;
-          const urlInput = document.getElementById('inputMaterialUrl').value;
           const fileInput = document.getElementById('inputMaterialFile').files[0];
 
-          const processSave = (fileOrUrl) => {
+          try {
+            let fileUrl = document.getElementById('currentMaterialFileUrl').value;
+            let storagePath = document.getElementById('currentMaterialStoragePath').value;
+
+            if (type === 'link') {
+              fileUrl = document.getElementById('inputMaterialUrl').value;
+              if (storagePath) {
+                await deleteObject(storageRef(storage, storagePath)).catch(() => {});
+                storagePath = '';
+              }
+            } else if (fileInput) {
+              if (storagePath) await deleteObject(storageRef(storage, storagePath)).catch(() => {});
+              storagePath = `materials/${Date.now()}_${fileInput.name}`;
+              const snap = await uploadBytes(storageRef(storage, storagePath), fileInput);
+              fileUrl = await getDownloadURL(snap.ref);
+            }
+
             const materialData = {
-              title, type, desc,
-              fileUrl: fileOrUrl || ''
+              title: document.getElementById('inputMaterialTitle').value,
+              type,
+              desc: document.getElementById('inputMaterialDesc').value,
+              fileUrl,
+              storagePath
             };
 
             if (editId) {
-              update(ref(db, `materials/${editId}`), materialData)
-                .then(() => {
-                  alert('Material atualizado!');
-                  this.resetMaterialForm();
-                });
+              await update(ref(db, `materials/${editId}`), materialData);
+              alert('Material atualizado!');
             } else {
-              push(ref(db, 'materials'), materialData)
-                .then(() => {
-                  alert('Material cadastrado!');
-                  this.resetMaterialForm();
-                });
+              await push(ref(db, 'materials'), materialData);
+              alert('Material cadastrado!');
             }
-          };
-
-          if (type === 'link') {
-            processSave(urlInput);
-          } else if (fileInput) {
-            const reader = new FileReader();
-            reader.onload = (evt) => processSave(evt.target.result);
-            reader.readAsDataURL(fileInput);
-          } else {
-            processSave(document.getElementById('currentMaterialFileUrl').value);
+            this.resetMaterialForm();
+          } catch (err) {
+            alert('Erro: ' + err.message);
+          } finally {
+            btn.textContent = 'Salvar Material';
+            btn.disabled = false;
           }
         });
       },
@@ -1239,16 +789,16 @@
         this.state.activePage = pageId;
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('nav .nav-item').forEach(n => n.classList.remove('active'));
-
         const targetPage = document.getElementById(pageId);
         if (targetPage) targetPage.classList.add('active');
-
         const navLink = document.querySelector(`nav .nav-item[data-target="${pageId}"]`);
         if (navLink) navLink.classList.add('active');
+        window.scrollTo(0, 0);
       },
 
       applySettings() {
         document.getElementById('docTitle').textContent = this.state.settings.headerTitle || 'Escravo, Nem Pensar!';
+        document.getElementById('docHeaderTitle').textContent = this.state.settings.headerTitle || 'Escravo, Nem Pensar!';
         document.getElementById('headerTitleText').textContent = this.state.settings.headerTitle || 'Escravo, Nem Pensar!';
         document.getElementById('heroTitleText').textContent = `Projeto ${this.state.settings.headerTitle || 'Escravo, Nem Pensar!'}`;
         document.getElementById('aboutPageContent').innerHTML = this.state.settings.aboutText || '';
@@ -1263,6 +813,7 @@
       },
 
       populateSettingsForm() {
+        document.getElementById('inputHeaderTitle').value = this.state.settings.headerTitle |      populateSettingsForm() {
         document.getElementById('inputHeaderTitle').value = this.state.settings.headerTitle || '';
         document.getElementById('aboutEditorContent').innerHTML = this.state.settings.aboutText || '';
       },
@@ -1273,15 +824,12 @@
         this.renderActivitiesPage();
         this.renderPracticeCards();
         this.renderMaterialsPage();
-        if (this.state.isAdmin) {
-          this.renderAdminTables();
-        }
+        if (this.state.isAdmin) this.renderAdminTables();
       },
 
       renderCards(filterText = '') {
         const container = document.getElementById('cardsContainer');
         container.innerHTML = '';
-
         const items = this.state.activities.filter(a => 
           a.status === 'Publicado' && 
           (a.title.toLowerCase().includes(filterText.toLowerCase()) || 
@@ -1303,10 +851,10 @@
               <span>📌</span>
             </div>
             <div class="card-content-wrapper">
-              ${item.cover ? `<img src="${item.cover}" alt="${item.title}" class="card-cover-img">` : ''}
+              ${item.cover ? `<img src="${this.escapeHTML(item.cover)}" alt="" class="card-cover-img">` : ''}
               <div class="window-body">
-                <div class="window-title">${item.title}</div>
-                <div class="window-desc">${item.desc}</div>
+                <div class="window-title">${this.escapeHTML(item.title)}</div>
+                <div class="window-desc">${this.escapeHTML(item.desc)}</div>
                 <span class="meta-tag">Acessar conteúdo</span>
               </div>
             </div>
@@ -1318,7 +866,6 @@
       renderActivitiesPage() {
         const container = document.getElementById('activitiesContainer');
         container.innerHTML = '';
-
         const published = this.state.activities.filter(a => a.status === 'Publicado');
 
         published.forEach(item => {
@@ -1331,10 +878,10 @@
               <span>📖</span>
             </div>
             <div class="card-content-wrapper">
-              ${item.cover ? `<img src="${item.cover}" alt="${item.title}" class="card-cover-img">` : ''}
+              ${item.cover ? `<img src="${this.escapeHTML(item.cover)}" alt="" class="card-cover-img">` : ''}
               <div class="window-body">
-                <div class="window-title">${item.title}</div>
-                <div class="window-desc">${item.desc}</div>
+                <div class="window-title">${this.escapeHTML(item.title)}</div>
+                <div class="window-desc">${this.escapeHTML(item.desc)}</div>
               </div>
             </div>
           `;
@@ -1352,14 +899,13 @@
       renderPracticeCards() {
         const container = document.getElementById('practiceContainer');
         container.innerHTML = '';
-
         const items = this.state.practiceItems.filter(p => {
           if (this.state.practiceFilter === 'Todos') return true;
           return p.category === this.state.practiceFilter;
         });
 
         if (items.length === 0) {
-          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhum registro encontrado nesta categoria.</p>';
+          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhum registro encontrado.</p>';
           return;
         }
 
@@ -1369,14 +915,14 @@
           card.onclick = () => this.viewItem(item, 'pratica');
           card.innerHTML = `
             <div class="window-header">
-              <span>${item.category}</span>
+              <span>${this.escapeHTML(item.category)}</span>
               <span>📸</span>
             </div>
             <div class="card-content-wrapper">
-              ${item.cover ? `<img src="${item.cover}" alt="${item.title}" class="card-cover-img">` : ''}
+              ${item.cover ? `<img src="${this.escapeHTML(item.cover)}" alt="" class="card-cover-img">` : ''}
               <div class="window-body">
-                <div class="window-title">${item.title}</div>
-                <div class="window-desc">${item.desc}</div>
+                <div class="window-title">${this.escapeHTML(item.title)}</div>
+                <div class="window-desc">${this.escapeHTML(item.desc)}</div>
               </div>
             </div>
           `;
@@ -1387,32 +933,27 @@
       renderMaterialsPage() {
         const container = document.getElementById('materialsContainer');
         container.innerHTML = '';
-
         if (this.state.materials.length === 0) {
-          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhum material de apoio cadastrado no momento.</p>';
+          container.innerHTML = '<p style="color: var(--texto-secundario);">Nenhum material cadastrado.</p>';
           return;
         }
 
         this.state.materials.forEach(item => {
           const card = document.createElement('div');
           card.className = 'window-card';
-
-          let icon = '🔗';
-          if (item.type === 'pdf') icon = '📄';
-          if (item.type === 'imagem') icon = '🖼️';
-
+          let icon = item.type === 'pdf' ? '📄' : (item.type === 'imagem' ? '🖼️' : '🔗');
           card.innerHTML = `
             <div class="window-header">
-              <span>${item.type.toUpperCase()}</span>
+              <span>${this.escapeHTML(item.type.toUpperCase())}</span>
               <span>${icon}</span>
             </div>
             <div class="card-content-wrapper">
-              ${item.type === 'imagem' && item.fileUrl ? `<img src="${item.fileUrl}" alt="${item.title}" class="card-cover-img">` : ''}
+              ${item.type === 'imagem' && item.fileUrl ? `<img src="${this.escapeHTML(item.fileUrl)}" alt="" class="card-cover-img">` : ''}
               <div class="window-body">
-                <div class="window-title">${item.title}</div>
-                <div class="window-desc">${item.desc}</div>
+                <div class="window-title">${this.escapeHTML(item.title)}</div>
+                <div class="window-desc">${this.escapeHTML(item.desc)}</div>
                 <br>
-                <a href="${item.fileUrl}" target="_blank" class="btn-action" style="display: inline-block; text-decoration: none; text-align: center; width: 100%;">
+                <a href="${this.escapeHTML(item.fileUrl)}" target="_blank" class="btn-action" style="display: block; text-decoration: none; text-align: center;">
                   ${item.type === 'link' ? 'Acessar Link' : 'Baixar / Visualizar'}
                 </a>
               </div>
@@ -1425,15 +966,9 @@
       viewItem(item, type) {
         document.getElementById('viewTitle').textContent = item.title;
         document.getElementById('viewMetaInfo').textContent = type === 'pratica' ? `Categoria: ${item.category}` : `Status: ${item.status}`;
-        
         const coverContainer = document.getElementById('viewCoverContainer');
-        if (item.cover) {
-          coverContainer.innerHTML = `<img src="${item.cover}" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 1rem;">`;
-        } else {
-          coverContainer.innerHTML = '';
-        }
-
-        document.getElementById('viewBody').innerHTML = item.content || '<p>Sem conteúdo cadastrado.</p>';
+        coverContainer.innerHTML = item.cover ? `<img src="${item.cover}" style="max-width: 100%; border-radius: 8px; margin-top: 1rem;">` : '';
+        document.getElementById('viewBody').innerHTML = item.content || '<p>Sem conteúdo.</p>';
         this.navigateTo('contentView');
       },
 
@@ -1445,10 +980,12 @@
         const actBody = document.getElementById('adminTableBody');
         actBody.innerHTML = '';
         this.state.activities.forEach(item => {
+          const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('pt-BR') : '-';
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${item.title}</td>
-            <td><span class="meta-tag">${item.status}</span></td>
+            <td>${this.escapeHTML(item.title)}</td>
+            <td><span class="meta-tag">${this.escapeHTML(item.status)}</span></td>
+            <td>${dateStr}</td>
             <td>
               <button class="btn-action" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.editActivity('${item.id}')">Editar</button>
               <button class="btn-action btn-secondary" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.deleteActivity('${item.id}')">Excluir</button>
@@ -1462,8 +999,8 @@
         this.state.practiceItems.forEach(item => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${item.title}</td>
-            <td>${item.category}</td>
+            <td>${this.escapeHTML(item.title)}</td>
+            <td>${this.escapeHTML(item.category)}</td>
             <td>
               <button class="btn-action" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.editPractice('${item.id}')">Editar</button>
               <button class="btn-action btn-secondary" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.deletePractice('${item.id}')">Excluir</button>
@@ -1477,8 +1014,8 @@
         this.state.materials.forEach(item => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${item.title}</td>
-            <td><strong>${item.type.toUpperCase()}</strong></td>
+            <td>${this.escapeHTML(item.title)}</td>
+            <td><strong>${this.escapeHTML(item.type.toUpperCase())}</strong></td>
             <td>
               <button class="btn-action" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.editMaterial('${item.id}')">Editar</button>
               <button class="btn-action btn-secondary" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="App.deleteMaterial('${item.id}')">Excluir</button>
@@ -1490,187 +1027,161 @@
 
       toggleMaterialFields() {
         const type = document.getElementById('inputMaterialType').value;
-        const linkGroup = document.getElementById('materialLinkGroup');
-        const fileGroup = document.getElementById('materialFileGroup');
-        const fileInput = document.getElementById('inputMaterialFile');
+        document.getElementById('materialLinkGroup').style.display = type === 'link' ? 'block' : 'none';
+        document.getElementById('materialFileGroup').style.display = type === 'link' ? 'none' : 'block';
+        document.getElementById('inputMaterialFile').setAttribute('accept', type === 'pdf' ? '.pdf' : 'image/*');
+      },
 
-        if (type === 'link') {
-          linkGroup.style.display = 'block';
-          fileGroup.style.display = 'none';
-        } else {
-          linkGroup.style.display = 'none';
-          fileGroup.style.display = 'block';
-
-          if (type === 'pdf') {
-            fileInput.setAttribute('accept', '.pdf');
-          } else if (type === 'imagem') {
-            fileInput.setAttribute('accept', 'image/*');
+      async deleteActivity(id) {
+        if (!confirm('Deseja excluir esta atividade?')) return;
+        try {
+          const item = this.state.activities.find(a => a.id === id);
+          if (item && item.storagePath) {
+            await deleteObject(storageRef(storage, item.storagePath)).catch(() => {});
           }
+          await remove(ref(db, `activities/${id}`));
+          alert('Atividade removida!');
+        } catch (err) {
+          alert('Erro ao excluir: ' + err.message);
         }
       },
 
-      editMaterial(id) {
-        const item = this.state.materials.find(m => m.id === id);
-        if (!item) return;
-
-        document.getElementById('editMaterialId').value = item.id;
-        document.getElementById('inputMaterialTitle').value = item.title;
-        document.getElementById('inputMaterialType').value = item.type;
-        document.getElementById('inputMaterialDesc').value = item.desc;
-        document.getElementById('currentMaterialFileUrl').value = item.fileUrl || '';
-        document.getElementById('materialFormTitle').textContent = '✏️ Editar Material de Apoio';
-
-        this.toggleMaterialFields();
-
-        if (item.type === 'link') {
-          document.getElementById('inputMaterialUrl').value = item.fileUrl || '';
-        } else if (item.type === 'imagem' && item.fileUrl) {
-          document.getElementById('materialFilePreview').innerHTML = `<img src="${item.fileUrl}" style="height: 60px; border-radius: 4px;">`;
-        } else {
-          document.getElementById('materialFilePreview').innerHTML = `<em>Arquivo já anexado.</em>`;
+      async deletePractice(id) {
+        if (!confirm('Deseja excluir este registro?')) return;
+        try {
+          const item = this.state.practiceItems.find(p => p.id === id);
+          if (item && item.storagePath) {
+            await deleteObject(storageRef(storage, item.storagePath)).catch(() => {});
+          }
+          await remove(ref(db, `practice/${id}`));
+          alert('Registro removido!');
+        } catch (err) {
+          alert('Erro ao excluir: ' + err.message);
         }
       },
 
-      deleteMaterial(id) {
-        if (confirm('Deseja excluir este material de apoio?')) {
-          remove(ref(db, `materials/${id}`))
-            .then(() => alert('Material removido!'))
-            .catch(err => alert('Erro ao excluir: ' + err.message));
+      async deleteMaterial(id) {
+        if (!confirm('Deseja excluir este material?')) return;
+        try {
+          const item = this.state.materials.find(m => m.id === id);
+          if (item && item.storagePath) {
+            await deleteObject(storageRef(storage, item.storagePath)).catch(() => {});
+          }
+          await remove(ref(db, `materials/${id}`));
+          alert('Material removido!');
+        } catch (err) {
+          alert('Erro ao excluir: ' + err.message);
         }
-      },
-
-      resetMaterialForm() {
-        document.getElementById('editMaterialId').value = '';
-        document.getElementById('currentMaterialFileUrl').value = '';
-        document.getElementById('materialForm').reset();
-        document.getElementById('materialFilePreview').innerHTML = '';
-        document.getElementById('materialFormTitle').textContent = '📚 Adicionar Material de Apoio';
-        this.toggleMaterialFields();
       },
 
       editActivity(id) {
         const item = this.state.activities.find(a => a.id === id);
         if (!item) return;
-
         document.getElementById('editId').value = item.id;
         document.getElementById('inputTitle').value = item.title;
         document.getElementById('inputDesc').value = item.desc;
         document.getElementById('inputStatus').value = item.status;
         document.getElementById('editorContent').innerHTML = item.content || '';
         document.getElementById('currentCoverUrl').value = item.cover || '';
+        document.getElementById('currentCoverStoragePath').value = item.storagePath || '';
         document.getElementById('formTitle').textContent = '✏️ Editar Atividade';
-
-        if (item.cover) {
-          document.getElementById('coverPreview').innerHTML = `<img src="${item.cover}" style="height: 60px; border-radius: 4px;">`;
-        } else {
-          document.getElementById('coverPreview').innerHTML = '';
-        }
-      },
-
-      deleteActivity(id) {
-        if (confirm('Tem certeza que deseja excluir esta atividade?')) {
-          remove(ref(db, `activities/${id}`))
-            .then(() => alert('Atividade removida!'))
-            .catch(err => alert('Erro ao excluir: ' + err.message));
-        }
-      },
-
-      resetForm() {
-        document.getElementById('editId').value = '';
-        document.getElementById('currentCoverUrl').value = '';
-        document.getElementById('contentForm').reset();
-        document.getElementById('editorContent').innerHTML = '';
-        document.getElementById('coverPreview').innerHTML = '';
-        document.getElementById('formTitle').textContent = '➕ Criar Nova Atividade';
+        document.getElementById('coverPreview').innerHTML = item.cover ? `<img src="${item.cover}" style="height: 60px; border-radius: 4px;">` : '';
+        window.scrollTo({ top: document.getElementById('contentForm').offsetTop, behavior: 'smooth' });
       },
 
       editPractice(id) {
         const item = this.state.practiceItems.find(p => p.id === id);
         if (!item) return;
-
         document.getElementById('editPracticeId').value = item.id;
         document.getElementById('inputPracticeTitle').value = item.title;
         document.getElementById('inputPracticeCategory').value = item.category;
         document.getElementById('inputPracticeDesc').value = item.desc;
         document.getElementById('practiceEditorContent').innerHTML = item.content || '';
         document.getElementById('currentPracticeCoverUrl').value = item.cover || '';
-        document.getElementById('practiceFormTitle').textContent = '✏️ Editar Registro na Prática';
-
-        if (item.cover) {
-          document.getElementById('practiceCoverPreview').innerHTML = `<img src="${item.cover}" style="height: 60px; border-radius: 4px;">`;
-        } else {
-          document.getElementById('practiceCoverPreview').innerHTML = '';
-        }
+        document.getElementById('currentPracticeStoragePath').value = item.storagePath || '';
+        document.getElementById('practiceFormTitle').textContent = '✏️ Editar Registro';
+        document.getElementById('practiceCoverPreview').innerHTML = item.cover ? `<img src="${item.cover}" style="height: 60px; border-radius: 4px;">` : '';
+        window.scrollTo({ top: document.getElementById('practiceForm').offsetTop, behavior: 'smooth' });
       },
 
-      deletePractice(id) {
-        if (confirm('Deseja excluir este registro da prática?')) {
-          remove(ref(db, `practice/${id}`))
-            .then(() => alert('Registro removido!'))
-            .catch(err => alert('Erro ao excluir: ' + err.message));
+      editMaterial(id) {
+        const item = this.state.materials.find(m => m.id === id);
+        if (!item) return;
+        document.getElementById('editMaterialId').value = item.id;
+        document.getElementById('inputMaterialTitle').value = item.title;
+        document.getElementById('inputMaterialType').value = item.type;
+        document.getElementById('inputMaterialDesc').value = item.desc;
+        document.getElementById('currentMaterialFileUrl').value = item.fileUrl || '';
+        document.getElementById('currentMaterialStoragePath').value = item.storagePath || '';
+        document.getElementById('materialFormTitle').textContent = '✏️ Editar Material';
+        this.toggleMaterialFields();
+        if (item.type === 'link') {
+          document.getElementById('inputMaterialUrl').value = item.fileUrl || '';
         }
+        window.scrollTo({ top: document.getElementById('materialForm').offsetTop, behavior: 'smooth' });
+      },
+
+      resetForm() {
+        document.getElementById('editId').value = '';
+        document.getElementById('currentCoverUrl').value = '';
+        document.getElementById('currentCoverStoragePath').value = '';
+        document.getElementById('contentForm').reset();
+        document.getElementById('editorContent').innerHTML = '';
+        document.getElementById('coverPreview').innerHTML = '';
+        document.getElementById('formTitle').textContent = '➕ Criar Nova Atividade';
       },
 
       resetPracticeForm() {
         document.getElementById('editPracticeId').value = '';
         document.getElementById('currentPracticeCoverUrl').value = '';
+        document.getElementById('currentPracticeStoragePath').value = '';
         document.getElementById('practiceForm').reset();
         document.getElementById('practiceEditorContent').innerHTML = '';
         document.getElementById('practiceCoverPreview').innerHTML = '';
         document.getElementById('practiceFormTitle').textContent = '📸 Adicionar Registro: Projeto na Prática';
       },
 
+      resetMaterialForm() {
+        document.getElementById('editMaterialId').value = '';
+        document.getElementById('currentMaterialFileUrl').value = '';
+        document.getElementById('currentMaterialStoragePath').value = '';
+        document.getElementById('materialForm').reset();
+        document.getElementById('materialFilePreview').innerHTML = '';
+        document.getElementById('materialFormTitle').textContent = '📚 Adicionar Material de Apoio';
+        this.toggleMaterialFields();
+      },
+
       logoutAdmin() {
-        this.state.isAdmin = false;
-        document.getElementById('adminLoginBox').style.display = 'block';
-        document.getElementById('adminPanel').style.display = 'none';
-        document.getElementById('inputPassword').value = '';
+        signOut(auth).then(() => alert('Logout realizado com sucesso!'));
       },
 
-      execCmd(cmd, value = null) {
-        document.execCommand(cmd, false, value);
-      },
-      execAboutCmd(cmd, value = null) {
-        document.execCommand(cmd, false, value);
-      },
-      execPracticeCmd(cmd, value = null) {
-        document.execCommand(cmd, false, value);
-      },
+      execCmd(cmd, value = null) { document.execCommand(cmd, false, value); },
+      execAboutCmd(cmd, value = null) { document.execCommand(cmd, false, value); },
+      execPracticeCmd(cmd, value = null) { document.execCommand(cmd, false, value); },
 
-      triggerImageUpload() {
-        document.getElementById('editorImgInput').click();
-      },
+      triggerImageUpload() { document.getElementById('editorImgInput').click(); },
       insertEditorImage(input) {
         const file = input.files[0];
         if (file) {
           const reader = new FileReader();
-          reader.onload = (e) => {
-            this.execCmd('insertImage', e.target.result);
-          };
+          reader.onload = (e) => this.execCmd('insertImage', e.target.result);
           reader.readAsDataURL(file);
         }
       },
 
-      triggerPracticeImageUpload() {
-        document.getElementById('practiceEditorImgInput').click();
-      },
+      triggerPracticeImageUpload() { document.getElementById('practiceEditorImgInput').click(); },
       insertPracticeEditorImage(input) {
         const file = input.files[0];
         if (file) {
           const reader = new FileReader();
-          reader.onload = (e) => {
-            this.execPracticeCmd('insertImage', e.target.result);
-          };
+          reader.onload = (e) => this.execPracticeCmd('insertImage', e.target.result);
           reader.readAsDataURL(file);
         }
       }
     };
 
     window.App = App;
-
-    document.addEventListener('DOMContentLoaded', () => {
-      App.init();
-    });
+    document.addEventListener('DOMContentLoaded', () => App.init());
   </script>
 </body>
 </html>
