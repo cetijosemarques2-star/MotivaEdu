@@ -40,7 +40,7 @@
 .section-title{font-size:22px;margin:5px 0 0;letter-spacing:-.03em;color:var(--vb-navy)}
 .date-label{font-size:12px;color:var(--vb-muted)}
 .lead-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(260px,1fr);gap:20px}
-.lead-card{position:relative;min-height:380px;border-radius:16px;overflow:hidden;background:var(--vb-night);color:white;display:flex;align-items:flex-end;box-shadow:var(--shadow)}
+.lead-card{position:relative;min-height:380px;border-radius:16px;overflow:hidden;background:var(--vb-night);color:white;display:flex;align-items:flex-end;box-shadow:var(--shadow);cursor:pointer}
 .lead-card.has-image{background-size:cover;background-position:center}
 .lead-card:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#050735ed 0%,#080b4a90 42%,#05073505 100%)}
 .lead-content{position:relative;padding:27px;max-width:760px}
@@ -49,7 +49,7 @@
 .lead-sub{font-size:15px;color:#e0e5f6;line-height:1.6;max-width:620px;margin:0 0 15px}
 .byline{font-size:11px;color:#d4d9ee}
 .side-stories{display:grid;grid-template-rows:1fr 1fr;gap:16px}
-.side-story{display:grid;grid-template-columns:42% 1fr;min-height:180px;border:1px solid var(--vb-line);border-radius:14px;overflow:hidden;background:var(--vb-white);transition:transform .18s,box-shadow .18s}
+.side-story{display:grid;grid-template-columns:42% 1fr;min-height:180px;border:1px solid var(--vb-line);border-radius:14px;overflow:hidden;background:var(--vb-white);transition:transform .18s,box-shadow .18s;cursor:pointer}
 .side-story:hover,.news-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px #05073512}
 .story-image{background:var(--vb-light);display:grid;place-items:center;overflow:hidden;color:var(--vb-purple);font-weight:900;font-size:28px}
 .story-image img{width:100%;height:100%;object-fit:cover}
@@ -74,8 +74,9 @@
 .footer strong{font-size:14px;letter-spacing:.06em;color:var(--vb-cyan)}
 .footer p{margin:5px 0 0;color:#aeb7d2;font-size:11px}
 .footer small{color:#aeb7d2;font-size:11px}
-.overlay{position:fixed;inset:0;background:#050735cc;display:none;align-items:center;justify-content:center;padding:18px;z-index:30;overflow:auto}.overlay.open{display:flex}
-.modal{width:min(100%,460px);background:#fff;border-radius:17px;box-shadow:0 30px 90px #05073580;padding:25px}
+.overlay{position:fixed;inset:0;background:#050735cc;display:none;align-items:center;justify-content:center;padding:18px;z-index:30}
+.overlay.open{display:flex}
+.modal{width:min(100%,460px);background:#fff;border-radius:17px;box-shadow:0 30px 90px #05073580;padding:25px;max-height:90vh;overflow-y:auto}
 .modal h2{margin:0 0 7px;font-size:22px;color:var(--vb-navy)}
 .modal p{color:var(--vb-muted);font-size:13px;line-height:1.5}
 .modal-top{display:flex;justify-content:space-between;gap:12px}
@@ -211,7 +212,7 @@
 
 <!-- ARTICLE VIEW MODAL -->
 <div class="overlay article-overlay" id="articleOverlay" role="dialog" aria-modal="true"><div class="modal"><div class="article-top"><b>PORTAL VB · NOTÍCIAS</b><button class="close" id="closeArticle">×</button></div><div class="article-hero" id="articleHero"></div><article class="article-content"><div class="category" id="articleViewCategory"></div><h1 id="articleViewTitle"></h1><div class="article-subtitle" id="articleViewSubtitle"></div><div class="meta" id="articleViewMeta" style="margin-top:15px"></div><div class="article-body" id="articleViewBody"></div><button class="btn primary" id="shareArticle" style="margin-top:22px">↗ Compartilhar notícia</button></article></div></div>
-<div cs="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 const $ = s => document.querySelector(s);
@@ -425,7 +426,7 @@ $('#articleImage').onchange = e => {
   r.onload = () => {
     editingImage = r.result;
     $('#imagePreview').src = editingImage;
-    $('#imagePreview'].style.display = 'block';
+    $('#imagePreview').style.display = 'block';
   };
   r.readAsDataURL(f);
 };
